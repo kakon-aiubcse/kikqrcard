@@ -1,11 +1,11 @@
 {
-  "name": "qrconnect",
+  "name": "kikqrcard",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 9999",
+    "dev": "next dev --port 7000",
     "build": "next build",
-    "start": "next start --port 9999",
+    "start": "next start --port 7000",
     "lint": "next lint"
   },
   "dependencies": {
