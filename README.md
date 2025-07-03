@@ -1,8 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# 💳 KIKQrcards
 
-## Getting Started
+**KIKQrcards** is a smart digital card platform that lets users create and share personalized digital business cards using QR codes. Designed for professionals, freelancers, creators, and students, it offers a clean, contactless, and customizable way to network and share information.
 
-First, run the development server:
+Built with **Next.js**, **Tailwind CSS**, and **Firebase**, this platform is mobile-friendly, fast, and easy to use.
+
+---
+
+## ✨ Features
+
+- 🔐 **User Authentication** with Google or email/password
+- 🧑‍💼 **Create/Edit Smart Cards** with name, role, bio, and links
+- 🎨 **Card Customization** with color themes and templates
+- 📱 **Mobile-Optimized Public Cards** with unique URLs
+- 📤 **QR Code Generation** for easy sharing
+- 🌐 **Responsive Design** for all devices
+- ⚙️ **Admin Dashboard** (future scope)
+- 📊 **Card Analytics** (Pro feature - coming soon)
+
+---
+
+## 🧱 Tech Stack
+
+| Layer       | Tech                          |
+|-------------|-------------------------------|
+| Frontend    | Next.js, React, Tailwind CSS  |
+| State Mgmt  | React hooks |
+| Styling     | Tailwind CSS, Framer Motion   |
+| Auth        | Firebase Authentication       |
+| Database    | Firebase Firestore            |
+| File Upload | Firebase Storage              |
+| QR Codes    | react-qr-code                 |
+| Hostings    | netlify                       |
+| Versioning  | Git + GitHub                  |
+
+---
+
+
+
 
 ```bash
 npm run dev
