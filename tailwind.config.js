@@ -7,6 +7,9 @@ module.exports = {
         manrope: ["Manrope", "sans-serif"],
       },
     },
+    screens:{
+      xs:{max:"430px"}
+    }
   },
   plugins: [],
 };
