@@ -6,9 +6,9 @@ const Allcards = () => {
   let urlToEncode = "https://www.reddit.com/user/kakonaiubcse/";
 
   return (
-    <div className="min-h-screen flex flex-row items-center justify-center w-auto xs:h-screen xs:flex xs:flex-col xs:bg-slate-400">
-      <h1 className="text-4xl font-bold text-gray-950 mb-6 flex relative bottom-[240px]">
-        QRCONNECT
+    <div className="bg-bgrnd-0 min-h-screen flex flex-row items-center justify-center w-auto xs:h-screen xs:flex xs:flex-col xs:bg-slate-400">
+      <h1 className="text-4xl font-bold text-btton-0 mb-6 flex relative bottom-[240px]">
+       All cards
       </h1>
 
       <div className=" w-[648px] h-[408px] items-center overflow-hidden  rounded-[20px] bg-gradient-to-r from-indigo-400 to-sky-500  flex relative right-[180px] p-6   shadow-md">

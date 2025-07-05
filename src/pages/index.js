@@ -11,14 +11,14 @@ import Feature from "./about/features";
 export default function index() {
   return (
     <>
-      <div className="flex h-screen w-full overflow-hidden xs:flex xs:flex-col">
-        <div className=" w-1/12 h-full pb-2 xs:flex xs:flex-row xs:w-screen xs:h-auto">
+      <div className="flex h-screen w-full overflow-hidden bg-bgrnd-0 xs:flex xs:flex-col">
+        <div className=" w-1/12 h-full pb-2 bg-btton-0 xs:flex xs:flex-row xs:w-screen xs:h-auto">
           <section className=" w-auto items-center justify-center flex ">
             <Header />
           </section>
         </div>
 
-        <div className="flex flex-col w-11/12 h-full overflow-y-auto  xs:flex xs:overflow-x-auto">
+        <div className="flex flex-col w-11/12 h-full overflow-y-auto bg-bgrnd-0 xs:flex xs:overflow-x-auto">
           <section className="flex items-center justify-center ">
             <Home />
           </section>
