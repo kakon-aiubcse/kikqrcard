@@ -10,7 +10,7 @@ const Header = () => {
   return (
     <>
       {" "}
-      <div className="flex flex-col h-screen bg-slate-100 xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto">
+      <div className="flex flex-col h-screen bg-violet-100 xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto">
         {/* logo */}
 
         <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 ">
@@ -70,12 +70,12 @@ const Header = () => {
         <div
           className={`  flex flex-col h-full ${
             menu
-              ? "hidden xs:flex xs:absolute bg-slate-100 xs:top-20 xs:w-screen xs:h-full xs:items-center xs:justify-start xs:z-50"
+              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-20 xs:w-screen xs:h-full xs:items-center xs:justify-start xs:z-50"
               : "flex xs:hidden"
           }`}
         >
           <nav className="h-[60%] items-start">
-            <ul className="h-full flex flex-col  items-start justify-evenly relative ml-10 text-sky-900 font-semibold text-[20px]">
+            <ul className="h-full flex flex-col mt-4 items-start justify-evenly relative ml-10 text-sky-900 font-semibold text-[20px]">
               <li className="text-start font-ios flex items-center gap-4">
                 Home{" "}
               </li>
@@ -87,7 +87,13 @@ const Header = () => {
                 Features
               </li>
               <li className="text-start font-ios flex items-center gap-4">
-                About us
+                Pricing
+              </li>
+               <li className="text-start font-ios flex items-center gap-4">
+                Contact
+              </li>
+              <li className="text-start font-ios flex items-center gap-4">
+                About
               </li>
             </ul>
           </nav>
@@ -95,8 +101,8 @@ const Header = () => {
           <div
             className={`h-[20%] flex items-center justify-center font-ios  text-sky-900 ${
               menu
-                ? "hidden xs:flex xs:relative bg-slate-100 xs:top-[00px] xs:left-[20px] xs:z-50"
-                : "flex xs:hidden"
+                ? "hidden xs:flex xs:relative bg-violet-100 xs:top-[10px] xs:left-[20px] xs:z-50"
+                : "flex mt-16 xs:hidden"
             }`}
           >
             <div className="font-bold text-[25px] flex justify-end gap-4">
