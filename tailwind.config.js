@@ -30,7 +30,8 @@ module.exports = {
       },
       screens: {
         xs: { max: "430px" },
-        lp: { min: "1024px" },
+        lp: { min: "1024px",max: "1600px" },
+        
       },
     },
   },
