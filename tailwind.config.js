@@ -3,13 +3,7 @@ module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
-       colors: {
-        bgrnd: ["#16161a"],
      
-     
-        btton: ["#FF6500"],
-        bttext: ["#fffffe"],
-      },
       fontFamily: {
         ios: [
           "-apple-system",
