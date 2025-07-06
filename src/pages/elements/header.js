@@ -25,7 +25,7 @@ const Header = () => {
               height="60"
               viewBox="0 0 200 60"
               fill="none"
-              font-style="italic"
+              fontStyle="italic"
               xmlns="http://www.w3.org/2000/svg"
             >
               <rect width="200" height="60" rx="12" ry="12" fill="#8F87F1" />
@@ -70,42 +70,42 @@ const Header = () => {
         <div
           className={`  flex flex-col h-full ${
             menu
-              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-20 xs:w-screen xs:h-full xs:items-center xs:justify-start xs:z-50"
+              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-16 xs:w-screen xs:h-full xs:items-center xs:justify-start xs:z-50"
               : "flex xs:hidden"
           }`}
         >
           <nav className="h-[60%] items-start">
-            <ul className="h-full flex flex-col mt-4 items-start justify-evenly relative ml-10 text-sky-900 font-semibold text-[20px]">
-              <li className="text-start font-ios flex items-center gap-4">
+            <ul className="h-full flex flex-col  items-start justify-evenly relative  text-sky-900 font-semibold text-[20px]">
+              <li className="text-start font-cp flex items-center gap-0">
                 Home{" "}
               </li>
-              <li className="text-start font-ios flex items-center gap-4">
+              <li className="text-start font-cp flex items-center gap-0">
                 Cards{" "}
               </li>
-              <li className="text-start font-ios flex items-center gap-4">
+              <li className="text-start font-cp flex items-center gap-0">
                 {" "}
                 Features
               </li>
-              <li className="text-start font-ios flex items-center gap-4">
+              <li className="text-start font-cp flex items-center gap-0">
                 Pricing
               </li>
-               <li className="text-start font-ios flex items-center gap-4">
+               <li className="text-start font-cp flex items-center gap-0">
                 Contact
               </li>
-              <li className="text-start font-ios flex items-center gap-4">
+              <li className="text-start font-cp flex items-center gap-0">
                 About
               </li>
             </ul>
           </nav>
           {/* profile */}
           <div
-            className={`h-[20%] flex items-center justify-center font-ios  text-sky-900 ${
+            className={`h-[20%] flex items-center justify-start font-ios  text-sky-900 ${
               menu
-                ? "hidden xs:flex xs:relative bg-violet-100 xs:top-[10px] xs:left-[20px] xs:z-50"
-                : "flex mt-16 xs:hidden"
+                ? "hidden xs:flex xs:relative bg-violet-100 xs:top-[10px]  xs:z-50"
+                : "flex mt-16  xs:hidden"
             }`}
           >
-            <div className="font-bold text-[25px] flex justify-end gap-4">
+            <div className="font-bold text-[25px] flex justify-end gap-0">
               Profile
             </div>
           </div>{" "}

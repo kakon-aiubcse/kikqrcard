@@ -3,7 +3,6 @@ module.exports = {
   content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
   theme: {
     extend: {
-     
       fontFamily: {
         ios: [
           "-apple-system",
@@ -15,12 +14,25 @@ module.exports = {
           "sans-serif",
         ],
         manrope: ["Manrope", "sans-serif"],
+        cp: [
+          "nativeCode",
+          "nativecode-outfit",
+          "system-ui",
+          "-apple-system",
+          '"Segoe UI"',
+          "Roboto",
+          "Helvetica",
+          "Arial",
+          "sans-serif",
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+        ],
       },
-
+      screens: {
+        xs: { max: "430px" },
+        lp: { min: "1024px" },
+      },
     },
-    screens:{
-      xs:{max:"430px"}
-    }
   },
   plugins: [],
 };

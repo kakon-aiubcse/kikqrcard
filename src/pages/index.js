@@ -18,28 +18,28 @@ export default function index() {
           </section>
         </div>
 
-        <div className="flex flex-col w-10/12 h-full overflow-y-auto xs:flex xs:items-center xs:justify-start xs:overflow-hidden xs:w-screen">
-          <section className="w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+        <div className="flex flex-col w-10/12 h-full overflow-x-hidden xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:min-h-screen">
+          <section className="w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Home />
           </section>
 
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto ">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen ">
             <Allcards />
           </section>
-            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Blog />
           </section>
 
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Faq />
           </section>
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Tc />
           </section>
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Feature />
           </section>
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Footer />
           </section> 
         </div>
