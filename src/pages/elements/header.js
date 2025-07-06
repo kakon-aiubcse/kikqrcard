@@ -28,13 +28,13 @@ const Header = () => {
               font-style="italic"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <rect width="200" height="60" rx="12" ry="12" fill="#DF3C5F" />
+              <rect width="200" height="60" rx="12" ry="12" fill="#8F87F1" />
 
               <text
                 x="25"
                 y="45"
                 font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                font-size="36"
+                fontSize={36}
                 font-weight="700"
                 fill="white"
               >
