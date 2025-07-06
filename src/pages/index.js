@@ -12,13 +12,13 @@ export default function index() {
   return (
     <>
       <div className="flex h-screen w-full overflow-hidden bg-bgrnd-0 xs:flex xs:flex-col">
-        <div className=" w-1/12 h-full pb-2 bg-btton-0 xs:flex xs:flex-row xs:w-screen xs:h-auto">
-          <section className=" w-auto items-center justify-center flex ">
+        <div className=" w-2/12 h-full pb-2 bg-btton-0 xs:flex xs:flex-row xs:w-screen xs:h-auto">
+          <section className=" w-auto items-center justify-center flex h-full">
             <Header />
           </section>
         </div>
 
-        <div className="flex flex-col w-11/12 h-full overflow-y-auto bg-bgrnd-0 xs:flex xs:overflow-x-auto">
+        <div className="flex flex-col w-10/12 h-full overflow-y-auto bg-bgrnd-0 xs:flex xs:overflow-x-auto">
           <section className="flex items-center justify-center ">
             <Home />
           </section>
