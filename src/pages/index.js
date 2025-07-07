@@ -28,6 +28,9 @@ export default function index() {
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0  xs:relative  ">
             <Allcards />
           </section>
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+            <Feature />
+          </section>
           {/* <div>
            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen xs:top-[2000px]">
             <Feature />

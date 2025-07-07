@@ -30,7 +30,7 @@ const Home = () => {
         </div>
       </div>
       <div className="flex items-center w-2/3 xs:flex xs:order-1 xs:relative xs:top-24  xs:ml-48">
-        <img src="/intro.jpg" className="xs:w-[350px] xs:h-[200px]" />
+        <img src="/intro.jpg" className="xs:bg-transparent xs:w-[350px] xs:h-[200px]" />
       </div>
     </div>
   );

@@ -3,7 +3,7 @@ import React from 'react'
 
 const Feature = () => {
   return (
-    <div>Feature</div>
+    <div className='bg-red-500 min-h-screen mb-32 xs:w-screen'>Feature</div>
   )
 }
 
