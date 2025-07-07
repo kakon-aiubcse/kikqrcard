@@ -70,8 +70,8 @@ const Allcards = () => {
                 </span>
               </div>
               <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
                   Scan QR
                   <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>
@@ -199,8 +199,8 @@ const Allcards = () => {
                 </span>
               </div>
               <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
                   Scan QR
                   <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>
@@ -327,9 +327,9 @@ const Allcards = () => {
                   {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
                 </span>
               </div>
-              <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+               <div className="flex flex-col w-1/2">
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
                   Scan QR
                   <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>

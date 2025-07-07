@@ -12,7 +12,7 @@ export default function index() {
   return (
     <>
       <div className="flex h-screen w-full overflow-hidden xs:flex xs:flex-col xs:w-screen">
-        <div className=" w-2/12 h-full  bg-violet-100 xs:flex xs:flex-row xs:w-screen xs:h-[100px] xs:pb-0">
+        <div className=" w-2/12 h-full  bg-violet-100 xs:flex xs:flex-row xs:w-screen xs:h-[110px] xs:pb-0">
           <section className=" w-auto items-center justify-center flex h-full xs:w-screen ">
             <Header />
           </section>

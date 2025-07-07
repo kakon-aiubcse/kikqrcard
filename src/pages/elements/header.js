@@ -13,7 +13,7 @@ const Header = () => {
       <div className="flex flex-col h-screen bg-violet-100 xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto">
         {/* logo */}
 
-        <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 xs:pt-2 ">
+        <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 xs:py-1 ">
           <div
             className=" items-center "
             onClick={() => {
@@ -70,7 +70,7 @@ const Header = () => {
         <div
           className={`  flex flex-col h-full ${
             menu
-              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-16 xs:w-screen xs:h-full xs:items-start xs:pl-5 xs:justify-start xs:z-50"
+              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-[68px] xs:w-screen xs:h-full xs:items-start xs:pl-5 xs:justify-start xs:z-50"
               : "flex xs:hidden"
           }`}
         >
