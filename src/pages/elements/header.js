@@ -13,7 +13,7 @@ const Header = () => {
       <div className="flex flex-col h-screen bg-violet-100 xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto">
         {/* logo */}
 
-        <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 ">
+        <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 xs:pt-2 ">
           <div
             className=" items-center "
             onClick={() => {
@@ -31,7 +31,7 @@ const Header = () => {
               <rect width="200" height="60" rx="12" ry="12" fill="#8F87F1" />
 
               <text
-                x="25"
+                x="20"
                 y="45"
                 font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
                 fontSize={36}
@@ -47,7 +47,7 @@ const Header = () => {
               <circle cx="185" cy="40" r="3" fill="red" />
 
               <text
-                x="90"
+                x="95"
                 y="45"
                 font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
                 font-size="24"
@@ -60,7 +60,7 @@ const Header = () => {
           </div>
         </div>
         <Menu
-          className="hidden xs:flex xs:relative w-16 h-16"
+          className="hidden xs:flex xs:relative w-16 h-16 xs:pt-2"
           onClick={() => {
             setMenu(!menu);
           }}
@@ -70,29 +70,29 @@ const Header = () => {
         <div
           className={`  flex flex-col h-full ${
             menu
-              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-16 xs:w-screen xs:h-full xs:items-center xs:justify-start xs:z-50"
+              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-16 xs:w-screen xs:h-full xs:items-start xs:pl-5 xs:justify-start xs:z-50"
               : "flex xs:hidden"
           }`}
         >
           <nav className="h-[60%] items-start">
             <ul className="h-full flex flex-col  items-start justify-evenly relative  text-sky-900 font-semibold text-[20px]">
-              <li className="text-start font-cp flex items-center gap-0">
+              <li className="text-start font-cp flex items-center ">
                 Home{" "}
               </li>
-              <li className="text-start font-cp flex items-center gap-0">
+              <li className="text-start font-cp flex items-center ">
                 Cards{" "}
               </li>
-              <li className="text-start font-cp flex items-center gap-0">
+              <li className="text-start font-cp flex items-center ">
                 {" "}
                 Features
               </li>
-              <li className="text-start font-cp flex items-center gap-0">
+              <li className="text-start font-cp flex items-center ">
                 Pricing
               </li>
-               <li className="text-start font-cp flex items-center gap-0">
+               <li className="text-start font-cp flex items-center ">
                 Contact
               </li>
-              <li className="text-start font-cp flex items-center gap-0">
+              <li className="text-start font-cp flex items-center ">
                 About
               </li>
             </ul>
