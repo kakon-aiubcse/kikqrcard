@@ -6,7 +6,7 @@ export default function QRCodeGenerator() {
       {/* Use either QRCodeCanvas or QRCodeSVG here */}
       <QRCodeCanvas
         value="https://www.reddit.com/user/kakonaiubcse/"
-        size={188}
+        size={50}
       />
     </div>
   );
