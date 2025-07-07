@@ -7,7 +7,7 @@ const Allcards = () => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:top-[350px]">
+      <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32">
         <div className=" flex items-center justify-center pr-60 xs:pr-0">
           <span className="text-6xl font-cp p-4 m-4 text-violet-500 font-bold">
             All Cards.
@@ -15,8 +15,10 @@ const Allcards = () => {
         </div>
         {/* Cards Section */}
         {/* first card */}
-        <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white xs:w-screen xs:m-0 xs:mx-2">
+        <div className="flex flex-row items-start justify-center  w-screen   pr-72 
+        xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -55,7 +57,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -81,7 +83,8 @@ const Allcards = () => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -120,7 +123,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -129,7 +132,7 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
               <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
             <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
@@ -144,8 +147,10 @@ const Allcards = () => {
           </div>
         </div>
         {/* second card */}
-          <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white xs:w-screen xs:m-0 xs:mx-2">
+           <div className="flex flex-row items-start justify-center  w-screen   pr-72 
+        xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -184,7 +189,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -210,7 +215,8 @@ const Allcards = () => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-500 to-slate-950 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -249,7 +255,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -258,7 +264,7 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
               <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
             <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
@@ -272,9 +278,11 @@ const Allcards = () => {
             </div>
           </div>
         </div>
-        {/* third card card */}
-         <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-sky-700 text-white xs:w-screen xs:m-0 xs:mx-2">
+        {/* third card  */}
+        <div className="flex flex-row items-start justify-center  w-screen   pr-72 
+        xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -313,7 +321,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -327,7 +335,7 @@ const Allcards = () => {
                   {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
                 </span>
               </div>
-               <div className="flex flex-col w-1/2">
+              <div className="flex flex-col w-1/2">
                 <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
                 <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
                   Scan QR
@@ -339,7 +347,8 @@ const Allcards = () => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-sky-700 text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
+          xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -378,7 +387,7 @@ const Allcards = () => {
                   x="95"
                   y="45"
                   font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  font-size="24"
+                  fontSize="24"
                   fill="white"
                   font-weight="600"
                 >
@@ -387,7 +396,7 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
               <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
             <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">

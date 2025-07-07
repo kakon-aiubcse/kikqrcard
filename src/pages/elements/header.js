@@ -50,7 +50,7 @@ const Header = () => {
                 x="95"
                 y="45"
                 font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                font-size="24"
+                fontSize="24"
                 fill="white"
                 font-weight="600"
               >
