@@ -18,12 +18,12 @@ export default function index() {
           </section>
         </div>
 
-        <div className="flex flex-col w-10/12 min-h-screen overflow-auto xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:min-h-screen">
+        <div className="flex flex-col w-10/12 min-h-screen overflow-x-hidden xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:min-h-screen">
           <section className="w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
             <Home />
           </section>
 
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:relative xs:top-[100px] xs:min-h-screen ">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0  xs:relative xs:top-[300px] xs:min-h-screen ">
             <Allcards />
           </section>
             <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">

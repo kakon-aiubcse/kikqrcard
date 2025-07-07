@@ -7,16 +7,16 @@ const Allcards = () => {
 
   return (
     <>
-      <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:top-[250px]">
-        <div className=" flex items-center justify-center">
+      <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:top-[350px]">
+        <div className=" flex items-center justify-center pr-60 xs:pr-0">
           <span className="text-6xl font-cp p-4 m-4 text-violet-500 font-bold">
             All Cards.
           </span>
         </div>
         {/* Cards Section */}
         {/* first card */}
-        <div className="flex flex-row items-start justify-center  w-screen  overflow-y-auto pr-28 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+        <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -65,23 +65,23 @@ const Allcards = () => {
             </div>
             <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
               <div className="flex w-1/2 items-center justify-center">
-                <span className="h-5 w-5">
+                <span className="shadow-2xl">
                   {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
                 </span>
               </div>
               <div className="flex flex-col w-1/2">
-                <span>connection creates community</span>
-                <span className="font-manrope  flex relative  ">
-                  Scan QRCode
-                  <img src="/left-arrow.svg" className="w-[10px] h-[10px]" />
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+                  Scan QR
+                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>
               </div>
             </div>
             <div className="w-full  h-[10%] flex items-center justify-center">
-              <span> &copy; 2024, QRCodeconnect. All rights reserved.</span>
+              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -129,14 +129,14 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span>Khairul Islam</span>
-              <span>Software Engineer</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
-            <div className="w-full  h-[10%] flex items-center justify-center space-x-2">
+            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
               <img src="/call.svg" className="h-[38px] w-[36px]" />
               <span
-                className=" flex relative  font-manrope text-slate-200  font-[1000]
-           text-[30px] leading-[30px] tracking-[18px] shadow-2xl"
+                className=" flex relative  font-ios text-slate-300  font-bold
+           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
               >
                 01923089370
               </span>
@@ -144,8 +144,8 @@ const Allcards = () => {
           </div>
         </div>
         {/* second card */}
-        <div className="flex flex-row items-start justify-center  w-screen  overflow-y-auto pr-28 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -194,23 +194,23 @@ const Allcards = () => {
             </div>
             <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
               <div className="flex w-1/2 items-center justify-center">
-                <span className="h-5 w-5">
+                <span className="shadow-2xl">
                   {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
                 </span>
               </div>
               <div className="flex flex-col w-1/2">
-                <span>connection creates community</span>
-                <span className="font-manrope  flex relative  ">
-                  Scan QRCode
-                  <img src="/left-arrow.svg" className="w-[10px] h-[10px]" />
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+                  Scan QR
+                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>
               </div>
             </div>
             <div className="w-full  h-[10%] flex items-center justify-center">
-              <span> &copy; 2024, QRCodeconnect. All rights reserved.</span>
+              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -258,14 +258,14 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span>Khairul Islam</span>
-              <span>Software Engineer</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
-            <div className="w-full  h-[10%] flex items-center justify-center space-x-2">
+            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
               <img src="/call.svg" className="h-[38px] w-[36px]" />
               <span
-                className=" flex relative  font-manrope text-slate-200  font-[1000]
-           text-[30px] leading-[30px] tracking-[18px] shadow-2xl"
+                className=" flex relative  font-ios text-slate-300  font-bold
+           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
               >
                 01923089370
               </span>
@@ -273,8 +273,8 @@ const Allcards = () => {
           </div>
         </div>
         {/* third card card */}
-        <div className="flex flex-row items-start justify-center  w-screen  overflow-y-auto pr-28 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2">
-          <div className="flex flex-col h-[280px] w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+         <div className="flex flex-row items-start justify-center  w-screen   pr-72 xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-sky-700 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -323,23 +323,23 @@ const Allcards = () => {
             </div>
             <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
               <div className="flex w-1/2 items-center justify-center">
-                <span className="h-5 w-5">
+                <span className="shadow-2xl">
                   {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
                 </span>
               </div>
               <div className="flex flex-col w-1/2">
-                <span>connection creates community</span>
-                <span className="font-manrope  flex relative  ">
-                  Scan QRCode
-                  <img src="/left-arrow.svg" className="w-[10px] h-[10px]" />
+                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap">Connection creates community.</span>
+                <span className="font-ios text-xl flex-col relative bottom-10 right-10 ">
+                  Scan QR
+                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
                 </span>
               </div>
             </div>
             <div className="w-full  h-[10%] flex items-center justify-center">
-              <span> &copy; 2024, QRCodeconnect. All rights reserved.</span>
+              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[35%] p-1 m-5 bg-black text-white xs:w-screen xs:m-0 xs:mx-2">
+          <div className="flex flex-col h-[280px]  w-[20%] lp:w-[40%] p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-sky-700 text-white xs:w-screen xs:m-0 xs:mx-2">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
                 width="60"
@@ -387,14 +387,14 @@ const Allcards = () => {
               </svg>
             </div>
             <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span>Khairul Islam</span>
-              <span>Software Engineer</span>
+              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100">Khairul Islam Kakon</span>
+              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
             </div>
-            <div className="w-full  h-[10%] flex items-center justify-center space-x-2">
+            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
               <img src="/call.svg" className="h-[38px] w-[36px]" />
               <span
-                className=" flex relative  font-manrope text-slate-200  font-[1000]
-           text-[30px] leading-[30px] tracking-[18px] shadow-2xl"
+                className=" flex relative  font-ios text-slate-300  font-bold
+           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
               >
                 01923089370
               </span>

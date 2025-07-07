@@ -19,7 +19,7 @@ const Home = () => {
             className="flex  bg-sky-900 text-white rounded-lg w-[240px] h-[65px] m-4 p-2 font-ios text-xl font-semibold items-center justify-center
       lp:m-3 lp:p-1 "
           >
-            KIK QRcards
+            How it works?
           </button>
           <button
             className="flex  bg-black text-white rounded-lg w-[240px] h-[65px] m-4 p-2 font-ios text-xl font-semibold items-center justify-center
