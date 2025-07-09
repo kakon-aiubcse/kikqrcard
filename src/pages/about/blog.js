@@ -1,6 +1,7 @@
 //blog page
 import React from "react";
 import Faq from "./faq";
+import Tc from "./t&c";
 
 const Blog = () => {
   return (
@@ -108,6 +109,7 @@ const Blog = () => {
             Let's Start!
           </button>
           <Faq/>
+          <Tc/>
 
       </div>
     </div>
