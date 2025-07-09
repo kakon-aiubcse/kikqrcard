@@ -31,26 +31,9 @@ export default function index() {
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
             <Feature />
           </section>
-          {/* <div>
-           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen xs:top-[2000px]">
-            <Feature />
-          </section>
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen xs:top-[4000px]">
-            <Blog />
-          </section>
-             <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
+           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
             <Pricing />
-          </section>
-            
-
-        
-          
-          
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:min-h-screen">
-            <Footer />
-          </section> 
-          </div> */}
-         
+          </section>         
         </div>
         
       </div>
