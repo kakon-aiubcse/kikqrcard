@@ -20,8 +20,10 @@ export default function index() {
           </section>
         </div>
 
-        <div className="flex flex-col w-10/12 min-h-screen overflow-x-hidden 
-        xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:overflow-y-auto ">
+        <div
+          className="flex flex-col w-10/12 min-h-screen overflow-x-hidden 
+        xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:overflow-y-auto "
+        >
           <section className="w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 ">
             <Home />
           </section>
@@ -32,14 +34,16 @@ export default function index() {
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
             <Feature />
           </section>
-           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
             <Pricing />
-          </section>     
-            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
+          </section>
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
             <Contact />
-          </section>       
+          </section>
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
+            <Blog />
+          </section>
         </div>
-        
       </div>
     </>
   );
