@@ -32,7 +32,7 @@ const Pricing = () => {
             <span className="font-ios text-black font-medium my-4">
               This is free way to discover our digital cards.
             </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px]"></span>
+            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
             <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
               KIK QRcard features
             </span>
@@ -101,7 +101,7 @@ const Pricing = () => {
             </div>{" "}
             <button
               className="flex relative top-10 left-10 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1"
+       lp:m-2 lp:p-1 shadow-xl "
             >
               Sign up
             </button>{" "}
@@ -123,7 +123,7 @@ const Pricing = () => {
             <span className="font-ios text-black font-medium my-4">
              Designed to meet every individual's QR card needs
             </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px]"></span>
+            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
             <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
               KIK QRcard features
             </span>
@@ -193,13 +193,13 @@ const Pricing = () => {
             <div className="flex">
               <button
                 className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1"
+     tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  lp:m-2 lp:p-1 shadow-xl"
               >
                 Purchase
               </button>
               <button
                 className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1"
+    tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  shadow-xl lp:m-2 lp:p-1"
               >
                 Sign up
               </button>{" "}
@@ -216,13 +216,13 @@ const Pricing = () => {
               Business
             </span>
             <span className="flex items-start justify-start text-black p-1 m-3 font-ios font-medium">
-              <span className="text-5xl p-1 ">250$ </span>
+              <span className="text-5xl p-1 ">110$ </span>
               <span className="relative top-7 ml-1">/6 months</span>
             </span>
             <span className="font-ios text-black font-medium my-4">
               Designed to meet every individual's QR card needs
             </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px]"></span>
+            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
             <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
               KIK QRcard features
             </span>
@@ -292,13 +292,13 @@ const Pricing = () => {
             <div className="flex">
               <button
                 className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1"
+      tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
               >
                 Purchase
               </button>
               <button
                 className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1"
+      tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
               >
                 Sign up
               </button>{" "}
