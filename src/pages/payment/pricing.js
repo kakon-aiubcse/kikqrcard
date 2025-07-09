@@ -16,7 +16,7 @@ const Pricing = () => {
         className="grid grid-cols-3 items-start justify-evenly  pr-60  p-3 m-2 gap-16 
        xs:pl-4 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-3 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1"
       >
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
+        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2  hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
           <div className="flex flex-col items-start justify-start p-4">
             <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
               KIK QRcard 
@@ -107,7 +107,7 @@ const Pricing = () => {
             </button>{" "}
           </div>
         </div>
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
+        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
           <div className="flex flex-col items-start justify-start p-4">
             <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
               KIK QRcard 
@@ -206,7 +206,7 @@ const Pricing = () => {
             </div>
           </div>
         </div>
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
+        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
           <div className="flex flex-col items-start justify-start p-4">
             <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
               KIK QRcard

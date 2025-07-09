@@ -8,6 +8,7 @@ import Faq from "./about/faq";
 import Footer from "./elements/footer";
 import Feature from "./about/features";
 import Pricing from "./payment/pricing";
+import Contact from "./about/contact";
 
 export default function index() {
   return (
@@ -33,7 +34,10 @@ export default function index() {
           </section>
            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 xs:h-auto">
             <Pricing />
-          </section>         
+          </section>     
+            <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
+            <Contact />
+          </section>       
         </div>
         
       </div>
