@@ -74,7 +74,7 @@ const Header = () => {
               : "flex xs:hidden"
           }`}
         >
-          <nav className="h-[60%] items-start">
+          <nav className="h-[60%] items-start tb:flex tb:justify-center tb:items-center">
             <ul className="h-full flex flex-col  items-start justify-evenly relative  text-sky-900 font-semibold text-[20px]">
               <li className="text-start font-cp flex items-center ">
                 Home{" "}
@@ -102,10 +102,10 @@ const Header = () => {
             className={`h-[20%] flex items-center justify-start font-ios  text-sky-900 ${
               menu
                 ? "hidden xs:flex xs:relative bg-violet-100 xs:top-[10px]  xs:z-50"
-                : "flex mt-16  xs:hidden"
+                : "flex mt-16  xs:hidden tb:flex tb:justify-center tb:items-center"
             }`}
           >
-            <div className="font-bold text-[25px] flex justify-end gap-0">
+            <div className="font-bold text-[25px] flex justify-end gap-0 ">
               Profile
             </div>
           </div>{" "}
