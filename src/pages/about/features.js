@@ -10,7 +10,7 @@ const Feature = () => {
            QRcard's Features
         </span>
       </div>
-      <div className="grid grid-cols-4 items-start justify-evenly xs:pl-8 pr-60  p-3 m-2 gap-16 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-5 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1">
+      <div className="grid grid-cols-4 items-start justify-evenly xs:pl-8 pr-60  p-3 m-2 gap-16 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-4 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1">
         {/*social links */}{" "}
         <div className="bg-violet-100 w-[300px] h-[470px]  tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative ">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">

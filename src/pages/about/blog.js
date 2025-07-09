@@ -1,5 +1,6 @@
 //blog page
 import React from "react";
+import Faq from "./faq";
 
 const Blog = () => {
   return (
@@ -32,7 +33,7 @@ const Blog = () => {
           </h2>
           <p className=" leading-relaxed text-slate-700 font-ios">
             KIK QR Card is a digital card solution that generates a dynamic QR
-            code linked to your customizable profile.<br className="hidden lp:block"/> Share your contact,
+            code linked to your customizable profile.<br className="hidden lp:block xb:block"/> Share your contact,
             portfolio, and business information instantly — no apps or paper
             needed.
           </p>
@@ -106,6 +107,7 @@ const Blog = () => {
           >
             Let's Start!
           </button>
+          <Faq/>
 
       </div>
     </div>
