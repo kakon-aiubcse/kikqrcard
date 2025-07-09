@@ -3,19 +3,20 @@ import React from "react";
 
 const Feature = () => {
   return (
-    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen">
+    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
-        <span className="text-5xl font-cp p-4 m-4 text-violet-500 font-bold tb:text-3xl">
+        <span className="text-2xl text-slate-400 font-cp font-medium">Why our digital cards?</span>
+        <span className="text-5xl font-cp p-4 m-4 text-brand font-bold tb:text-3xl xs:text-3xl">
            QRcard's Features
         </span>
       </div>
-      <div className="grid grid-cols-4 items-start justify-evenly pr-60  p-3 m-2 gap-16 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-5 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1">
+      <div className="grid grid-cols-4 items-start justify-evenly xs:pl-8 pr-60  p-3 m-2 gap-16 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-5 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1">
         {/*social links */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative ">
+        <div className="bg-violet-100 w-[300px] h-[470px]  tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative ">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/social.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px]  border-2 shadow-lg rounded-full border-gray-500 bg-brand"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -27,11 +28,11 @@ const Feature = () => {
           </div>
         </div>
         {/*whatsapp */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/whatsapp.svg"
-              className="w-[100px] h-[100px]  shadow-lg "
+              className="w-[100px] h-[100px] bg-brand rounded-xl shadow-lg "
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -43,11 +44,11 @@ const Feature = () => {
           </div>
         </div>
         {/*gallery */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/gallery.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px] bg-brand border-2 shadow-lg rounded-full border-gray-500"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -59,14 +60,14 @@ const Feature = () => {
           </div>
         </div>
         {/*youtube */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/youtube.svg"
-              className="w-[100px] h-[100px] shadow-lg  "
+              className="w-[100px] h-[100px] bg-brand rounded-xl shadow-lg  "
             />
           </div>
-          <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
+          <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl tb:text-xl font-semibold">
             YouTube Link Integraion
           </div>
           <div className="h-[50%] flex items-start text-slate-500 p-4 justify-center font-ios text-xl font-thin">
@@ -74,14 +75,14 @@ const Feature = () => {
           </div>
         </div>
         {/*google map */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/maps.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px] bg-brand border-2 shadow-lg rounded-full border-gray-500"
             />
           </div>
-          <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
+          <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl tb:text-xl font-semibold">
             Google Maps Integraion
           </div>
           <div className="h-[50%] flex items-start text-slate-500 p-4 justify-center font-ios text-xl font-thin">
@@ -90,11 +91,11 @@ const Feature = () => {
           </div>
         </div>
         {/*modern theme */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/theme.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px] bg-brand border-2 shadow-lg rounded-full border-gray-500"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -105,11 +106,11 @@ const Feature = () => {
           </div>
         </div>
         {/*clean ui */}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/cleanui.svg"
-              className="w-[100px] h-[100px] shadow-lg"
+              className="w-[100px] h-[100px] bg-brand shadow-lg rounded-xl"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -121,11 +122,11 @@ const Feature = () => {
           </div>
         </div>
         {/*faster loading*/}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/thunder.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px] bg-brand border-2 shadow-lg rounded-full border-gray-500"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">
@@ -137,11 +138,11 @@ const Feature = () => {
           </div>
         </div>
         {/*unique links*/}{" "}
-        <div className="bg-violet-100 w-[300px] h-[470px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
+        <div className="bg-violet-100 w-[300px] h-[470px] tb:w-[250px] xb:w-[290px] tb:h-[450px] flex flex-col  rounded-ee-[200px] hover:rounded-xl border border-violet-800 hover:border-2 transition-all duration-1000 hover:bottom-[10px] relative">
           <div className="h-[40%] flex items-center m-4 p-4 justify-start  w-[50%] ">
             <img
               src="/links.svg"
-              className="w-[100px] h-[100px] border-2 shadow-lg rounded-full border-gray-500"
+              className="w-[100px] h-[100px] bg-brand border-2 shadow-lg rounded-full border-gray-500"
             />
           </div>
           <div className="h-[10%] flex items-center text-sky-800  justify-center font-ios text-2xl font-semibold">

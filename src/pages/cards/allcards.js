@@ -9,7 +9,7 @@ const Allcards = () => {
     <>
       <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32">
         <div className=" flex items-center justify-center pr-60 xs:pr-0">
-          <span className="text-6xl font-cp p-4 m-4 text-violet-500 font-bold">
+          <span className="text-6xl font-cp p-4 m-4 text-brand font-bold">
             All Cards.
           </span>
         </div>
