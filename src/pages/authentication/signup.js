@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router';
 
 function Signup() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -24,6 +26,7 @@ function Signup() {
       alert('Please fill in all required fields.');
       return;
     }
+    router.push("/authentication/login")
 
     console.log('Form submitted:', formData);
   };

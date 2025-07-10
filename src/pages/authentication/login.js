@@ -22,6 +22,7 @@ function Login() {
       alert('Please fill in all required fields.');
       return;
     }
+    router.push("/dashboard/profile")
 
     // Handle login logic here (e.g., API call)
     console.log('Logging in with:', formData);

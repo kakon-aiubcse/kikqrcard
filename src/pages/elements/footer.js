@@ -1,7 +1,9 @@
 //footer page
 import React from "react";
+import { useRouter } from "next/router";
 
 const Footer = () => {
+  const router = useRouter();
   return (
     <>
    

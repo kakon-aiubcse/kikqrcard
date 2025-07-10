@@ -218,7 +218,8 @@ const Header = ({ sectionref }) => {
                 : "flex mt-16  xs:hidden tb:flex tb:justify-center tb:items-center"
             }`}
           >
-            <div className="font-bold text-[25px] flex justify-end gap-0 hover:text-sky-400 hover:underline">
+            <div className="font-bold text-[25px] flex justify-end gap-0 hover:text-sky-400 hover:underline"
+            onClick={()=>{router.push("/dashboard/profile")}}>
               Profile
             </div>
           </div>
