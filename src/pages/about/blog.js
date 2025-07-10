@@ -1,7 +1,10 @@
 //blog page
 import React,{ forwardRef } from "react";
+import { useRouter } from "next/router";
 
 const Blog =forwardRef((props, ref) => {
+  const router = useRouter();
+  const {homeref} = props;
   return (
     <div
     ref={ref}
@@ -106,6 +109,9 @@ const Blog =forwardRef((props, ref) => {
          <button
             className="flex  bg-sky-900 text-white rounded-lg w-[240px] h-[65px] m-4 p-2 font-ios text-xl font-semibold items-center justify-center
       lp:m-3 lp:p-1 "
+      onClick={() => {
+              homeref?.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           >
             Let's Start!
           </button>

@@ -1,9 +1,11 @@
 //this is homepage import React, { useState } from "react";
 import React,{ forwardRef } from "react";
-import Header from "./elements/header";
+import { useRouter } from "next/router";
 
 const Home = forwardRef((props, ref) => {
-  console.log(props)
+  const router = useRouter();
+  const { blogref } = props; 
+  
   return (
     <>
     <div ref={ref}
@@ -23,12 +25,16 @@ const Home = forwardRef((props, ref) => {
           <button
             className="flex  bg-sky-900 text-white rounded-lg w-[240px] h-[65px] m-4 p-2 font-ios text-xl font-semibold items-center justify-center
       lp:m-3 lp:p-1 "
+      onClick={() => {
+              blogref?.current?.scrollIntoView({ behavior: "smooth" });
+            }}
           >
             How it works?
           </button>
           <button
             className="flex  bg-black text-white rounded-lg w-[240px] h-[65px] m-4 p-2 font-ios text-xl font-semibold items-center justify-center
        lp:m-3 lp:p-1"
+       onClick={()=>{router.push("/authentication/signup")}}
           >
             Sign up
           </button>

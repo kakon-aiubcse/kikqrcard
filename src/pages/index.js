@@ -40,7 +40,7 @@ export default function index() {
         xs:flex xs:items-center xs:justify-start xs:overflow-x-hidden xs:w-screen xs:overflow-y-auto "
         >
           <section className="w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0 ">
-            <Home id="home" ref={homeref} />
+            <Home id="home" ref={homeref} blogref = {blogref}/>
           </section>
 
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:m-0  xs:relative  ">
@@ -56,7 +56,7 @@ export default function index() {
             <Contact id="contact" ref={contactref}/>
           </section>
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
-            <Blog id="blog" ref={blogref}/>
+            <Blog id="blog" ref={blogref} homeref = {homeref}/>
           </section>
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2  xs:h-auto">
             <Footer />

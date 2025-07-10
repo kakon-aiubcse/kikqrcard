@@ -13,7 +13,7 @@ const Header = ({ sectionref }) => {
     const handleScroll = () => {
       if (!sectionref || !Array.isArray(sectionref)) return;
 
-      const scrollPosition = window.scrollY + 80;
+      const scrollPosition = window.scrollY + 120;
 
       sectionref.forEach((ref) => {
         if (!ref || !ref.current) return;
