@@ -2,9 +2,7 @@ import React from "react";
 import Home from "./home";
 import Header from "./elements/header";
 import Allcards from "./cards/allcards";
-import Tc from "./about/t&c";
 import Blog from "./about/blog";
-import Faq from "./about/faq";
 import Footer from "./elements/footer";
 import Feature from "./about/features";
 import Pricing from "./payment/pricing";
@@ -42,6 +40,9 @@ export default function index() {
           </section>
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
             <Blog />
+          </section>
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
+            <Footer />
           </section>
         </div>
       </div>

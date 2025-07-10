@@ -33,9 +33,9 @@ const Header = () => {
               <text
                 x="20"
                 y="45"
-                font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+                fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
                 fontSize={36}
-                font-weight="700"
+                fontWeight="700"
                 fill="white"
               >
                 KIK
@@ -49,10 +49,10 @@ const Header = () => {
               <text
                 x="95"
                 y="45"
-                font-family="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
+                fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
                 fontSize="24"
                 fill="white"
-                font-weight="600"
+                fontWeight="600"
               >
                 QRcards
               </text>
