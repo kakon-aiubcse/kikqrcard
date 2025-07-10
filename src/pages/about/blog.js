@@ -1,11 +1,12 @@
 //blog page
-import React from "react";
-import Faq from "./faq";
-import Tc from "./t&c";
+import React,{ forwardRef } from "react";
 
-const Blog = () => {
+const Blog =forwardRef((props, ref) => {
   return (
-    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
+    <div
+    ref={ref}
+      id="blog" 
+    className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
         <span className="text-2xl text-slate-400 font-cp font-medium xs:text-base">
           Connecting People, One Scan at a Time
@@ -113,6 +114,6 @@ const Blog = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Blog;

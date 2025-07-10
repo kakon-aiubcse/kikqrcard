@@ -1,9 +1,10 @@
 //pricing section
-import React from "react";
+import React,{ forwardRef } from "react";
 
-const Pricing = () => {
+const Pricing = forwardRef((props, ref) => {
   return (
-    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
+    <div ref={ref}
+      id="pricing" className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
         <span className="text-2xl text-slate-400 font-cp font-medium xs:text-xl">
           Smart investing. 10× returns.
@@ -308,6 +309,6 @@ const Pricing = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Pricing;

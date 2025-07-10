@@ -1,13 +1,15 @@
 //all the designed card will be here
-
+import React,{ forwardRef } from "react";
 import QRCodeGenerator from "../qrsettings/QRCodeGenerator";
 
-const Allcards = () => {
+const Allcards =forwardRef((props, ref)  => {
   let urlToEncode = "https://www.reddit.com/user/kakonaiubcse/";
 
   return (
     <>
-      <div className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32">
+      <div 
+      ref={ref}
+      id="cards" className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32">
         <div className=" flex items-center justify-center pr-60 xs:pr-0">
           <span className="text-6xl font-cp p-4 m-4 text-brand font-bold">
             All Cards.
@@ -16,7 +18,7 @@ const Allcards = () => {
         {/* Cards Section */}
         {/* first card */}
         <div className="flex flex-row items-start justify-center  w-screen   pr-72 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
+          <div className="flex flex-col h-[280px] w-[30%]   lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -411,6 +413,6 @@ const Allcards = () => {
       </div>
     </>
   );
-};
+});
 
 export default Allcards;

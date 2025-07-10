@@ -1,8 +1,10 @@
-import React from "react";
+import React,{ forwardRef } from "react";
 
-const Contact = () => {
+const Contact = forwardRef((props, ref) => {
   return (
-    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
+    <div ref={ref}
+      id="contact" 
+    className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-72 xs:pr-0">
        <span className="text-2xl text-slate-400 font-cp font-medium xs:text-base">
          We always here to hear you.
@@ -86,6 +88,6 @@ const Contact = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Contact;

@@ -6,7 +6,7 @@ const Footer = () => {
     <>
    
       <div className="w-screen h-[300px] flex space-x-6 xs:flex xs:flex-col  ">
-        <div className="flex relative  w-screen justify-evenly pr-96 items-center xs:flex-col  xs:pr-16 tb:pr-36 lps:pr-44">
+        <div className="flex relative  w-screen justify-evenly pr-96 items-center xs:flex-col  xs:pr-16 tb:pr-36 ">
           <div
             className="flex  items-center justify-center h-full mx-4 mt-[80px] "
             onClick={() => {
@@ -78,7 +78,7 @@ const Footer = () => {
             <span className="w-screen absolute  xs:mt-[450px]  bg-slate-300 h-[1px] right-[1px] lp:right-1 xb:top-[300px] lp:top-[280px] tb:left-5 tb:top-[270px] "></span>
              <span className="w-screen absolute flex items-center justify-center xs:mt-[450px]   h-[20px] right-[1px] lp:right-1 xb:top-[310px] lp:top-[290px] tb:left-2 tb:top-[280px] ">
 <span className="text-xs text-slate-600 font-ios">
-  &copy; All Rights Reserved, 2025
+  &copy; 2025, KIK QRcards. All rights reserved.
 </span>
              </span>
           </div>

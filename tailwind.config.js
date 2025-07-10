@@ -31,8 +31,7 @@ module.exports = {
       screens: {
         xs: { max: "430px" },
         tb: { min: "431px", max: "1023px" },
-        lps: { min: "1024px", max: "1330px" },
-        lp: { min: "131px", max: "1700px" },
+        lp: { min: "1024px", max: "1700px" },
         xb: { min: "1701px" },
       },
       colors: {

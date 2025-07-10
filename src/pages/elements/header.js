@@ -1,19 +1,46 @@
 //header
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
-const Header = () => {
+const Header = ({ sectionref }) => {
   const router = useRouter();
   const [menu, setMenu] = useState(false);
+
+  const [activeSection, setActiveSection] = useState(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!sectionref || !Array.isArray(sectionref)) return;
+
+      const scrollPosition = window.scrollY + 80;
+
+      sectionref.forEach((ref) => {
+        if (!ref || !ref.current) return;
+
+        const section = ref.current;
+        const sectionTop = section.getBoundingClientRect().top + window.scrollY;
+        const sectionHeight = section.offsetHeight;
+
+        if (
+          scrollPosition >= sectionTop &&
+          scrollPosition < sectionTop + sectionHeight
+        ) {
+          setActiveSection(section.id);
+        }
+      });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [sectionref]);
   return (
     <>
       {" "}
-      <div className="flex flex-col h-screen bg-violet-100 xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto">
+      <div className="flex flex-col h-screen bg-violet-100 xs:fixed xs:top-0 xs:left-0 xs:z-[999]  xs:w-screen xs:flex xs:flex-row xs:items-start xs:justify-around xs:h-auto ">
         {/* logo */}
 
-        <div className="h-[20%] items-center justify-center top-5 relative xs:top-0 xs:py-1 ">
+        <div className="h-[20%] items-center justify-center top-5 relative xs:top-3 xs:py-1 ">
           <div
             className=" items-center "
             onClick={() => {
@@ -21,8 +48,8 @@ const Header = () => {
             }}
           >
             <svg
-              width="170"
-              height="60"
+              width="150"
+              height="40"
               viewBox="0 0 200 60"
               fill="none"
               fontStyle="italic"
@@ -59,40 +86,126 @@ const Header = () => {
             </svg>
           </div>
         </div>
-        <Menu
-          className="hidden xs:flex xs:relative w-16 h-16 xs:pt-2"
-          onClick={() => {
-            setMenu(!menu);
-          }}
-        />
+        <div className="hidden xs:flex xs:relative  xs:pt-2">
+          {menu ? (
+            <X
+              className="w-16 h-16 text-violet-600 cursor-pointer"
+              onClick={() => setMenu(false)}
+            />
+          ) : (
+            <Menu
+              className="w-16 h-16 text-violet-600 cursor-pointer"
+              onClick={() => setMenu(true)}
+            />
+          )}
+        </div>
         {/* nav */}
 
         <div
           className={`  flex flex-col h-full ${
             menu
-              ? "hidden xs:flex xs:absolute bg-violet-100 xs:top-[68px] xs:w-screen xs:h-full xs:items-start xs:pl-5 xs:justify-start xs:z-50"
-              : "flex xs:hidden"
+              ? "hidden xs:flex xs:fixed bg-violet-100 xs:top-[58px] xs:w-screen xs:h-full xs:items-start xs:pl-5 xs:justify-start xs:z-[300] "
+              : " flex xs:hidden"
           }`}
         >
           <nav className="h-[60%] items-start tb:flex tb:justify-center tb:items-center">
             <ul className="h-full flex flex-col  items-start justify-evenly relative  text-sky-900 font-semibold text-[20px]">
-              <li className="text-start font-cp flex items-center ">
-                Home{" "}
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${activeSection === "home" ? "text-violet-600 underline" : ""}`}
+                onClick={() => {
+                  sectionref[0]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
+                Home
               </li>
-              <li className="text-start font-cp flex items-center ">
-                Cards{" "}
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${
+                  activeSection === "cards" ? "text-violet-600 underline" : ""
+                }`}
+                onClick={() => {
+                  sectionref[1]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
+                Cards
               </li>
-              <li className="text-start font-cp flex items-center ">
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${
+                  activeSection === "feature" ? "text-violet-600 underline" : ""
+                }`}
+                onClick={() => {
+                  sectionref[2]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
                 {" "}
                 Features
               </li>
-              <li className="text-start font-cp flex items-center ">
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${
+                  activeSection === "pricing" ? "text-violet-600 underline" : ""
+                }`}
+                onClick={() => {
+                  sectionref[3]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
+                {" "}
                 Pricing
               </li>
-               <li className="text-start font-cp flex items-center ">
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${
+                  activeSection === "contact" ? "text-violet-600 underline" : ""
+                }`}
+                onClick={() => {
+                  sectionref[4]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
+                {" "}
                 Contact
               </li>
-              <li className="text-start font-cp flex items-center ">
+              <li
+                className={`text-start font-cp flex items-center 
+                xs:pb-3 xs:w-[300px] xs:border-b xs:border-slate-400 
+                hover:text-sky-400 hover:underline 
+                ${
+                  activeSection === "blog" ? "text-violet-600 underline" : ""
+                }`}
+                onClick={() => {
+                  sectionref[5]?.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                  setMenu(false);
+                }}
+              >
+                {" "}
                 About
               </li>
             </ul>
@@ -105,10 +218,10 @@ const Header = () => {
                 : "flex mt-16  xs:hidden tb:flex tb:justify-center tb:items-center"
             }`}
           >
-            <div className="font-bold text-[25px] flex justify-end gap-0 ">
+            <div className="font-bold text-[25px] flex justify-end gap-0 hover:text-sky-400 hover:underline">
               Profile
             </div>
-          </div>{" "}
+          </div>
         </div>
       </div>
     </>

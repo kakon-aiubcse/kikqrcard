@@ -1,9 +1,14 @@
 //this is homepage import React, { useState } from "react";
-import React from "react";
+import React,{ forwardRef } from "react";
+import Header from "./elements/header";
 
-const Home = () => {
+const Home = forwardRef((props, ref) => {
+  console.log(props)
   return (
-    <div className="w-screen flex flex-row  min-h-screen overflow-y-hidden xs:flex xs:flex-col xs:overflow-x-hidden xs:w-screen xs:min-h-screen">
+    <>
+    <div ref={ref}
+      id="home" 
+    className="w-screen flex flex-row  min-h-screen overflow-y-hidden xs:flex xs:flex-col xs:overflow-x-hidden xs:w-screen xs:min-h-screen">
       <div className="flex flex-col items-start justify-center w-2/3 xs:w-screen xs:order-2 xs:min-h-screen xs:relative xs:bottom-12">
         <span className="text-7xl font-cp p-5 font-semibold m-20 lp:text-5xl lp:p-3 lp:m-12 xs:text-5xl xs:p-1 xs:m-2 ">
           Your Network <br />
@@ -32,8 +37,8 @@ const Home = () => {
       <div className="flex items-center w-2/3 xs:flex xs:order-1 xs:relative xs:top-24  xs:ml-48">
         <img src="/intro.jpg" className="xs:bg-transparent xs:w-[350px] xs:h-[200px]" />
       </div>
-    </div>
+    </div></>
   );
-};
+});
 
 export default Home;

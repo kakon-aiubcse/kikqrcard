@@ -1,9 +1,9 @@
 //showcasing feature
-import React from "react";
-
-const Feature = () => {
+import React,{ forwardRef } from "react";
+const Feature = forwardRef((props, ref) => {
   return (
-    <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
+    <div  ref={ref}
+      id="feature" className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
         <span className="text-2xl text-slate-400 font-cp font-medium">Why our digital cards?</span>
         <span className="text-5xl font-cp p-4 m-4 text-brand font-bold tb:text-3xl xs:text-3xl">
@@ -156,6 +156,6 @@ const Feature = () => {
       </div>
     </div>
   );
-};
+});
 
 export default Feature;
