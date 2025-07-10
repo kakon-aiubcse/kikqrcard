@@ -108,8 +108,7 @@ const Blog = () => {
           >
             Let's Start!
           </button>
-          <Faq/>
-          <Tc/>
+          
 
       </div>
     </div>

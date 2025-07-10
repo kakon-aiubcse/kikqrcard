@@ -4,6 +4,9 @@ const Contact = () => {
   return (
     <div className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
       <div className=" flex flex-col items-center justify-center pr-72 xs:pr-0">
+       <span className="text-2xl text-slate-400 font-cp font-medium xs:text-base">
+         We always here to hear you.
+        </span>
         <span className="text-5xl font-cp p-4 m-4 text-brand font-bold lp:text-4xl tb:text-3xl xs:text-5xl">
           Contact
         </span>

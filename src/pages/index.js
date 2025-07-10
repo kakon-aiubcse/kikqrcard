@@ -41,7 +41,7 @@ export default function index() {
           <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
             <Blog />
           </section>
-          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2 xs:mb-0 xs:h-auto">
+          <section className=" w-screen items-center justify-center flex p-4 m-2 xs:p-2  xs:h-auto">
             <Footer />
           </section>
         </div>
