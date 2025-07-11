@@ -219,7 +219,7 @@ const Header = ({ sectionref }) => {
             }`}
           >
             <div className="font-bold text-[25px] flex justify-end gap-0 hover:text-sky-400 hover:underline"
-            onClick={()=>{router.push("/dashboard/profile")}}>
+            onClick={()=>{router.push("/dashboard")}}>
               Profile
             </div>
           </div>
