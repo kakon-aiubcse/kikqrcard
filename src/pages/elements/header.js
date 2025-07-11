@@ -86,15 +86,15 @@ const Header = ({ sectionref }) => {
             </svg>
           </div>
         </div>
-        <div className="hidden xs:flex xs:relative  xs:pt-2">
+        <div className="hidden xs:flex xs:relative  xs:pt-2 xs:mb-3">
           {menu ? (
             <X
-              className="w-16 h-16 text-violet-600 cursor-pointer"
+              className="xs:bg-brand xs:rounded-2xl  xs:text-red-600  xs:p-2 w-12 h-12  cursor-pointer"
               onClick={() => setMenu(false)}
             />
           ) : (
             <Menu
-              className="w-16 h-16 text-violet-600 cursor-pointer"
+              className="xs:bg-brand xs:rounded-2xl  xs:p-2 w-12 h-12 xs:text-slate-200  cursor-pointer"
               onClick={() => setMenu(true)}
             />
           )}
