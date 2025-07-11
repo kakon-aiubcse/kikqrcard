@@ -1,15 +1,24 @@
 //user dashboard/profile
 import { useRouter } from "next/router";
-import React from "react";
+import React,{ useState } from "react";
+import { Menu,X } from "lucide-react";
 
 const Profile = () => {
   const router = useRouter();
+  const [showmenu, setShowmenu] = useState(false)
   return (
     <>
-      <div className="relative w-full h-screen">
-        <aside className="fixed left-0 top-0  w-2/12 h-screen bg-violet-100 p-4 z-10">
-          <div className="flex flex-col items-center justify-between h-screen">
-            <div className="p-2 m-2 items-center justify-start"
+      <div className="relative w-full h-screen xs:w-screen xs:min-h-screen">
+        <aside className="fixed left-0 top-0  w-2/12 h-screen bg-violet-100 p-4 z-10 xs:fixed  xs:w-screen xs:h-[100px]">
+      {!showmenu?<Menu
+        className="hidden xs:flex xs:relative xs:left-[300px] xs:h-12 xs:w-12 xs:top-0  xs:z-50 "
+        onClick={()=>{setShowmenu(!showmenu)}}
+        /> : <X
+        className="hidden xs:flex xs:relative xs:left-[300px] xs:h-12 xs:w-12 xs:top-0  xs:z-50 "
+        onClick={()=>{setShowmenu(!showmenu)}}
+        />}  
+          <div className="flex flex-col items-center justify-between h-screen xs:h-auto ">
+            <div className="p-2 m-2 items-center justify-start xs:p-1 xs:m-0 xs:relative xs:right-24 xs:bottom-[45px] "
             onClick={()=>{router.push("/")}}>
        
               <svg
@@ -50,19 +59,19 @@ const Profile = () => {
               </text>
             </svg>
             </div>
-            <div className="flex flex-col justify-center items-center relative bottom-48">
-              <ul className="p-2 m-2 font-ios font-medium space-y-8 text-lg text-sky-900 ">
-                <li className="hover:text-sky-400">Dashboard</li>
-                <li className="hover:text-sky-400">My Cards</li>
-                <li className="hover:text-sky-400">My orders</li>
-                <li className="hover:text-sky-400 whitespace-nowrap">Payment History</li>
-                <li className="hover:text-sky-400">Edit Profile</li>
+            <div className={`${showmenu ? "hidden xs:flex xs:z-50 xs:bg-violet-100 xs:w-screen xs:h-screen xs:relative xs:bottom-5":"xs:hidden flex flex-col justify-center items-center relative bottom-48"}`}>
+              <ul className="p-2 m-2 font-ios font-medium space-y-8 text-lg text-sky-950 xs:relative xs:left-10 xs:top-5">
+                <li className="hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 ">Dashboard</li>
+                <li className="hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400">My Cards</li>
+                <li className="hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400">My orders</li>
+                <li className="hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 whitespace-nowrap">Payment History</li>
+                <li className="hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400">Edit Profile</li>
               </ul>
             </div>
           </div>
         </aside>
 
-        <main className="ml-[16.666667%] w-10/12 h-screen overflow-y-auto  p-4">
+        <main className="ml-[16.666667%] w-10/12 h-screen overflow-y-auto  p-4 xs:mt-[24%]">
         <div className="flex flex-col w-auto  items-start justify-start">
           <div className="">
             <span>page description</span>
