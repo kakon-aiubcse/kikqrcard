@@ -103,7 +103,7 @@ const Sidebar = () => {
                 }}
                 className={`${path === "/payment/orders" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
               >
-                My orders
+                Orders
               </li>
               <li
                 onClick={() => {
