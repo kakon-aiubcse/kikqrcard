@@ -125,46 +125,57 @@ function Signup() {
   }
 };
 
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  setLoading(true);
+  setMessage("");
 
-    setLoading(true);
-    setMessage("");
+  try {
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      password: formData.password,
+      profileImageBase64: imagePreview || null,
+    };
 
-    try {
-      const payload = {
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        password: formData.password,
-        profileImageBase64: imagePreview, // base64 string from preview
-      };
-
-      const res = await fetch("/api/signupapi", {
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_API_URL
+        ? `${process.env.NEXT_PUBLIC_API_URL}/signupapi`
+        : "/api/signupapi",
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-      });
+      }
+    );
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Signup failed");
-
-      setMessage("Signup successful! Redirecting to login...");
-      setTimeout(() => router.push("/authentication/login"), 2000);
-    } catch (error) {
-      setMessage(error.message);
-      console.error("Signup Error:", error.message);
-    } finally {
-      setLoading(false);
+    let data;
+    try {
+      data = await res.json();
+    } catch {
+      throw new Error("Unexpected server response");
     }
-  };
+
+    if (!res.ok) throw new Error(data.error || "Signup failed");
+
+    setMessage("Signup successful! Redirecting to login...");
+    setTimeout(() => router.push("/authentication/login"), 2000);
+  } catch (error) {
+    setMessage(error.message);
+    console.error("Signup Error:", error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen flex xs:flex-col tb:flex-col  items-center justify-center bg-gradient-to-br from-sky-300 to-brand p-4">
