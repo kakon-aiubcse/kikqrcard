@@ -11,7 +11,7 @@ function Signup() {
     email: "",
     phone: "",
     password: "",
-    conpass: "",
+    profileImageBase64: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -113,13 +113,18 @@ function Signup() {
     return errors;
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+ const handleImageUpload = (e) => {
+  const file = e.target.files[0];
+  setSelectedFile(file);
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => setImagePreview(reader.result);
+    reader.readAsDataURL(file);
+  } else {
+    setImagePreview(null);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -134,16 +139,18 @@ function Signup() {
     setMessage("");
 
     try {
-      const form = new FormData();
-      form.append("name", formData.name);
-      form.append("email", formData.email);
-      form.append("phone", formData.phone);
-      form.append("password", formData.password);
-      form.append("profileImage", selectedFile); // selectedFile is a File object
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        profileImageBase64: imagePreview, // base64 string from preview
+      };
 
       const res = await fetch("/api/signupapi", {
         method: "POST",
-        body: form, // DO NOT set headers
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -300,17 +307,7 @@ function Signup() {
     id="profileImage"
     name="profileImage"
     accept="image/*"
-    onChange={(e) => {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => setImagePreview(reader.result);
-        reader.readAsDataURL(file);
-      } else {
-        setImagePreview(null);
-      }
-    }}
+    onChange={handleImageUpload}
     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
   />
   {imagePreview && (

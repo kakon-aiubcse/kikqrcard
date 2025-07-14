@@ -8,10 +8,28 @@ const Sidebar = () => {
   const path = usePathname();
   const router = useRouter();
   const [showmenu, setShowmenu] = useState(false);
+  
+const checkUrlExists = async (url, timeout = 3000) => {
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeout);
 
- const handleLogout = async () => {
+    const response = await fetch(url, { method: "HEAD", signal: controller.signal });
+    clearTimeout(id);
+
+    return response.ok;
+  } catch {
+    return false;
+  }
+};
+const handleLogout = async () => {
   await signOut({ redirect: false });
-  window.location.href = "http://localhost:7000/authentication/login";
+
+  const url1 = "https://kikqrcard.netlify.app/authentication/login";
+  const url2 = "http://localhost:7000/authentication/login";
+
+  const exists = await checkUrlExists(url1);
+  window.location.href = exists ? url1 : url2;
 };
   return (
     <>
