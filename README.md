@@ -2,7 +2,7 @@
 
 **KIKQrcards** is a smart digital card platform that lets users create and share personalized digital business cards using QR codes. Designed for professionals, freelancers, creators, and students, it offers a clean, contactless, and customizable way to network and share information.
 
-Built with **Next.js**, **Tailwind CSS**, and **Firebase**, this platform is mobile-friendly, fast, and easy to use.
+Built with **Next.js**, **Tailwind CSS**, and **Mongodb**, this platform is mobile-friendly, fast, and easy to use.
 
 ---
 
@@ -24,11 +24,8 @@ Built with **Next.js**, **Tailwind CSS**, and **Firebase**, this platform is mob
 | Layer       | Tech                          |
 |-------------|-------------------------------|
 | Frontend    | Next.js, React, Tailwind CSS  |
-| State Mgmt  | React hooks |
+| State Mgmt  | React hooks                   |
 | Styling     | Tailwind CSS, Framer Motion   |
-| Auth        | Firebase Authentication       |
-| Database    | Firebase Firestore            |
-| File Upload | Firebase Storage              |
 | QR Codes    | react-qr-code                 |
 | Hostings    | netlify                       |
 | Versioning  | Git + GitHub                  |
