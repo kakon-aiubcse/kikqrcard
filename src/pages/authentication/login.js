@@ -1,16 +1,12 @@
-//user login
 import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { Eye, EyeClosed } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { Eye, EyeClosed } from "lucide-react";
 
 function Login() {
   const router = useRouter();
   const [viewpass, setViewpass] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -21,9 +17,10 @@ function Login() {
     setErrors((prev) => ({ ...prev, [name]: "" }));
     setMessage("");
   };
+
   const validate = () => {
-    const { email, password } = formData;
     const newErrors = {};
+    const { email, password } = formData;
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
@@ -49,41 +46,21 @@ function Login() {
       setLoading(false);
       return;
     }
+
     const result = await signIn("credentials", {
       redirect: false,
       email: formData.email,
       password: formData.password,
-
     });
 
     if (result.error) {
       setMessage("Invalid email or password");
     } else {
-      router.push("/dashboard");
-    }
-
-    try {
-      const res = await fetch("/api/loginapi", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setMessage(data.error || "Login failed.");
-        return;
-      }
-
       setMessage("Login successful!");
       router.push("/dashboard");
-    } catch (err) {
-      console.error("Login Error:", err);
-      setMessage("Unexpected error occurred.");
-    } finally {
-      setLoading(false);
     }
+
+    setLoading(false);
   };
 
   return (
