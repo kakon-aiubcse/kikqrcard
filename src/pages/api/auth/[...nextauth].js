@@ -15,7 +15,7 @@ async function connectToDatabase() {
 
   const client = new MongoClient(uri, {
     tlsAllowInvalidCertificates: true,
-    serverSelectionTimeoutMS: 5000, // Prevent long timeouts on Netlify
+    serverSelectionTimeoutMS: 5000,
   });
 
   await client.connect();
@@ -36,11 +36,16 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
+
         try {
           const { db } = await connectToDatabase();
-          const user = await db.collection("users").findOne({ email: credentials.email });
+          const user = await db.collection("users").findOne({ email: credentials.email.toLowerCase().trim() });
 
           if (!user) throw new Error("User not found");
+
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) throw new Error("Invalid password");
 
@@ -49,8 +54,8 @@ export const authOptions = {
             name: user.name,
             email: user.email,
           };
-        } catch (err) {
-          console.error(" Authorization Error:", err.message);
+        } catch (error) {
+          console.error("Authorization error:", error.message);
           throw new Error("Authentication failed");
         }
       },
@@ -85,7 +90,7 @@ export const authOptions = {
     },
   },
 
-  debug: true, // ✅ Turn off in production if not needed
+  debug: false, // disable this in production
 };
 
 export default NextAuth(authOptions);
