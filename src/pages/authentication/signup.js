@@ -1,13 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Eye, EyeClosed } from "lucide-react";
-import { auth, db } from "../../../lib/firebase/firestorecon";
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+
+
 function Signup() {
   const router = useRouter();
   const [errors, setErrors] = useState({});
@@ -23,19 +18,7 @@ function Signup() {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-
-      if (currentUser && router.pathname === "/authentication/signup") {
-        router.push("/authentication/login");
-      } else if (!currentUser && router.pathname !== "/authentication/signup") {
-        router.push("/authentication/signup");
-      }
-    });
-
-    return () => unsubscribe(); // Clean up
-  }, [router]);
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -140,29 +123,8 @@ function Signup() {
     setMessage("");
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-
-      const storage = getStorage();
-      const imageRef = ref(storage, `profileImages/${user.uid}`);
-      await uploadBytes(imageRef, profileImage);
-      const imageURL = await getDownloadURL(imageRef);
-
-      const userDoc = doc(db, "users", user.uid);
-      const userData = {
-        uid: user.uid,
-        name,
-        email,
-        pic: imageURL,
-        createdAt: new Date().toISOString(),
-      };
-
-      await setDoc(userDoc, userData);
-      setMessage("Created new User");
+    
+console.log("will change")
 
       // Redirect to login after successful signup
       // router.push("/authentication/login");
