@@ -14,8 +14,8 @@ async function connectToDatabase() {
   }
 
   const client = new MongoClient(uri, {
-    tlsAllowInvalidCertificates: true,
     serverSelectionTimeoutMS: 5000,
+    tlsAllowInvalidCertificates: true,
   });
 
   await client.connect();
@@ -29,43 +29,43 @@ async function connectToDatabase() {
 
 export const authOptions = {
   providers: [
-  CredentialsProvider({
-    name: "Credentials",
-    credentials: {
-      email: { label: "Email", type: "text" },
-      password: { label: "Password", type: "password" },
-    },
-    async authorize(credentials) {
-      console.log("Authorize called with:", credentials);
-      try {
-        const { db } = await connectToDatabase();
-        const user = await db.collection("users").findOne({ email: credentials.email.toLowerCase().trim() });
-        console.log("User found:", user);
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        try {
+          const { db } = await connectToDatabase();
+          const email = credentials.email.toLowerCase().trim();
+          const user = await db.collection("users").findOne({ email });
 
-        if (!user) {
-          console.log("User not found");
-          throw new Error("User not found");
+          if (!user) {
+            console.log("❌ User not found");
+            throw new Error("User not found");
+          }
+
+          const isValid = await bcrypt.compare(credentials.password, user.password);
+          if (!isValid) {
+            console.log("❌ Invalid password");
+            throw new Error("Invalid password");
+          }
+
+          console.log("✅ Auth success for:", email);
+
+          return {
+            id: user._id.toString(),
+            name: user.name,
+            email: user.email,
+          };
+        } catch (err) {
+          console.error("🔥 Authorization error:", err);
+          throw new Error("Authentication failed");
         }
-
-        const isValid = await bcrypt.compare(credentials.password, user.password);
-        if (!isValid) {
-          console.log("Invalid password");
-          throw new Error("Invalid password");
-        }
-
-        return {
-          id: user._id.toString(),
-          name: user.name,
-          email: user.email,
-        };
-      } catch (error) {
-        console.error("Authorization error:", error);
-        throw new Error("Authentication failed");
-      }
-    },
-  }),
-],
-
+      },
+    }),
+  ],
 
   secret: process.env.NEXTAUTH_SECRET,
 
@@ -95,7 +95,7 @@ export const authOptions = {
     },
   },
 
-  debug: true, // enable while debugging, set false in production
+  debug: process.env.NODE_ENV === "development",
 };
 
 export default NextAuth(authOptions);
