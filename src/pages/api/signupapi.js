@@ -4,27 +4,28 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
-  const sanitizedEmail = email.trim().toLowerCase();
 
+  if (req.headers["content-type"] !== "application/json") {
+    return res.status(400).json({ error: "Invalid content-type. Expected JSON." });
+  }
 
   const { email } = req.body;
 
   if (!email || typeof email !== "string") {
     return res.status(400).json({ error: "Valid email is required" });
   }
-if (req.headers["content-type"] !== "application/json") {
-  return res.status(400).json({ error: "Invalid content-type. Expected JSON." });
-}
+
+  const sanitizedEmail = email.trim().toLowerCase(); // ✅ now safe to use
 
   try {
     const client = await clientPromise;
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
-  const user = await users.findOne(
-  { email: sanitizedEmail },
-  { projection: { password: 0 } }
-);
+    const user = await users.findOne(
+      { email: sanitizedEmail },
+      { projection: { password: 0 } } // exclude password
+    );
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });

@@ -50,7 +50,7 @@ export const authOptions = {
             email: user.email,
           };
         } catch (err) {
-          console.error("❌ Authorization Error:", err.message);
+          console.error(" Authorization Error:", err.message);
           throw new Error("Authentication failed");
         }
       },
