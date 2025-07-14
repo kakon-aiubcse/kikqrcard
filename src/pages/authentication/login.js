@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { Eye, EyeClosed } from "lucide-react";
+import { signIn } from "next-auth/react";
 
 function Login() {
   const router = useRouter();
@@ -48,6 +49,18 @@ function Login() {
       setLoading(false);
       return;
     }
+    const result = await signIn("credentials", {
+      redirect: false,
+      email: formData.email,
+      password: formData.password,
+
+    });
+
+    if (result.error) {
+      setMessage("Invalid email or password");
+    } else {
+      router.push("/dashboard");
+    }
 
     try {
       const res = await fetch("/api/loginapi", {
@@ -64,7 +77,7 @@ function Login() {
       }
 
       setMessage("Login successful!");
-      router.push("/dashboard/profile");
+      router.push("/dashboard");
     } catch (err) {
       console.error("Login Error:", err);
       setMessage("Unexpected error occurred.");
@@ -94,7 +107,8 @@ function Login() {
             value={formData.email}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          /> {errors.email && (
+          />{" "}
+          {errors.email && (
             <p className="text-red-500 text-sm">{errors.email}</p>
           )}
         </div>
@@ -110,7 +124,8 @@ function Login() {
             value={formData.password}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          />{" "}{errors.password && (
+          />{" "}
+          {errors.password && (
             <p className="text-red-500 text-sm">{errors.password}</p>
           )}
         </div>
@@ -121,7 +136,7 @@ function Login() {
             <EyeClosed onClick={() => setViewpass(!viewpass)} />
           )}
         </span>
-         {message && (
+        {message && (
           <p
             className={`text-center font-medium ${
               message.toLowerCase().includes("success")
@@ -133,7 +148,7 @@ function Login() {
           </p>
         )}
 
-       <button
+        <button
           type="submit"
           disabled={loading}
           className={`w-full py-3 bg-violet-600 text-white rounded-lg font-semibold transition duration-200 ${

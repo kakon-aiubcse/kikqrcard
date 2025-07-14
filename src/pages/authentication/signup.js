@@ -9,6 +9,7 @@ function Signup() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     password: "",
     conpass: "",
   });
@@ -16,15 +17,31 @@ function Signup() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // For phone field, strip non-digit characters
+    if (name === "phone") {
+      const digitsOnly = value.replace(/\D/g, "");
+      setFormData((prev) => ({
+        ...prev,
+        [name]: digitsOnly,
+      }));
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        [name]: "",
+      }));
+      return;
+    }
 
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-
     setErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
@@ -32,7 +49,7 @@ function Signup() {
   };
   const validate = () => {
     const errors = {};
-    const { name = "", email = "", password = "" } = formData;
+    const { name = "", email = "", phone = "", password = "" } = formData;
 
     // Validate Name
     if (!name.trim()) {
@@ -50,7 +67,13 @@ function Signup() {
     } else if (!/^[a-zA-Z\d._%+-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/.test(email)) {
       errors.email = "Email must be in the format something12@domain.com";
     }
-
+    //phone validation
+    const phoneStr = String(phone || "");
+    if (!phoneStr.trim()) {
+      errors.phone = "Phone is required";
+    } else if (!/^\d{11}$/.test(phoneStr)) {
+      errors.phone = "Phone number must be exactly 11 digits";
+    }
     // Validate Password
 
     const passwordRules = [
@@ -90,39 +113,51 @@ function Signup() {
     return errors;
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  const { name, email, password } = formData;
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
 
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  setLoading(true);
-  setMessage("");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-  try {
-    const res = await fetch("/api/signupapi", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password }),
-    });
+    setLoading(true);
+    setMessage("");
 
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Signup failed");
+    try {
+      const form = new FormData();
+      form.append("name", formData.name);
+      form.append("email", formData.email);
+      form.append("phone", formData.phone);
+      form.append("password", formData.password);
+      form.append("profileImage", selectedFile); // selectedFile is a File object
 
-    setMessage("Signup successful!");
-    router.push("/authentication/login");
-  } catch (error) {
-    setMessage(error.message);
-    console.error("Signup Error:", error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      const res = await fetch("/api/signupapi", {
+        method: "POST",
+        body: form, // DO NOT set headers
+      });
 
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Signup failed");
+
+      setMessage("Signup successful! Redirecting to login...");
+      setTimeout(() => router.push("/authentication/login"), 2000);
+    } catch (error) {
+      setMessage(error.message);
+      console.error("Signup Error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex xs:flex-col tb:flex-col  items-center justify-center bg-gradient-to-br from-sky-300 to-brand p-4">
@@ -172,7 +207,7 @@ const handleSubmit = async (e) => {
       </div>
       <form
         onSubmit={handleSubmit}
-        className="w-full max-w-md bg-violet-100 shadow-xl rounded-2xl p-8 space-y-4"
+        className="w-full max-w-md bg-violet-100 shadow-xl rounded-2xl p-8 space-y-1"
       >
         <h2 className="text-3xl font-semibold text-center text-violet-600">
           Sign Up
@@ -199,6 +234,19 @@ const handleSubmit = async (e) => {
             name="email"
             type="email"
             value={formData.email}
+            onChange={handleChange}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
+          />
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="phone" className="block text-sm font-medium">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="phone"
+            name="phone"
+            type="text"
+            value={formData.phone}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
           />
@@ -243,6 +291,37 @@ const handleSubmit = async (e) => {
             )}
           </span>
         </div>
+      <div className="space-y-1">
+  <label htmlFor="profileImage" className="block text-sm font-medium">
+    Upload Profile Image
+  </label>
+  <input
+    type="file"
+    id="profileImage"
+    name="profileImage"
+    accept="image/*"
+    onChange={(e) => {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => setImagePreview(reader.result);
+        reader.readAsDataURL(file);
+      } else {
+        setImagePreview(null);
+      }
+    }}
+    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
+  />
+  {imagePreview && (
+    <img
+      src={imagePreview}
+      alt="Preview"
+      className="w-12 h-12 rounded-xl mt-2"
+    />
+  )}
+</div>
+
         {/* Submit Button */}
         {Object.values(errors).length > 0 && (
           <div className="text-center text-red-600">
@@ -254,6 +333,7 @@ const handleSubmit = async (e) => {
         {loading && (
           <p className="text-center text-violet-600">Creating account...</p>
         )}
+        {message && <p className="text-center text-violet-600">{message}</p>}
         <button
           type="submit"
           disabled={loading}

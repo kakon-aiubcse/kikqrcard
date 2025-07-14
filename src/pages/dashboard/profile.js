@@ -1,9 +1,21 @@
 //user dashboard/profile
 
-import React from "react";
-
+import React, { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 const Profile = () => {
+   const { data: session } = useSession();
+   const [name, setName] = useState("");
+   const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    if (session?.user?.name  ) {
+      setName(session.user.name);
+      
+
+     
+    }
+  }, [session]);
   return (
     <>
 
@@ -11,7 +23,7 @@ const Profile = () => {
         <div className="flex flex-col w-auto  items-start justify-start xs:w-full xs:p-4">
           <div className="flex  items-center w-full p-6 h-auto justify-start">
             <span className="text-2xl m-1 p-1 font-cp font-bold text-brand tb:text-3xl lp:text-5xl xb:text-6xl">
-              User
+              {name}
             </span>{" "}
             <span className="text-2xl p-1  font-cp tb:text-3xl lp:text-5xl xb:text-6xl">
               Dashboard
@@ -30,13 +42,13 @@ const Profile = () => {
               <span className=" font-cp font-bold text-brand text-xl">
                 Name:
               </span>{" "}
-              Khairul Islam Kakon
+              {name}
             </p>
             <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
               <span className=" font-cp font-bold text-brand text-xl">
                 Email:
               </span>{" "}
-              kakon.aiubcse@gmail.com
+             {email}
             </p>
             <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
               <span className=" font-cp font-bold text-brand text-xl ">
@@ -44,12 +56,7 @@ const Profile = () => {
               </span>{" "}
               01923089370
             </p>
-            <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
-              <span className=" font-cp font-bold text-brand text-xl">
-                NID:
-              </span>{" "}
-              445714244
-            </p>
+           
           </div>
         </div>
       </main>
