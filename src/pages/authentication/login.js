@@ -36,32 +36,42 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMessage("");
+  e.preventDefault();
+  setLoading(true);
+  setMessage("");
 
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      setLoading(false);
-      return;
-    }
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    setLoading(false);
+    return;
+  }
 
+  try {
     const result = await signIn("credentials", {
       redirect: false,
       email: formData.email,
       password: formData.password,
     });
 
-    if (result.error) {
+    if (!result || result.error) {
       setMessage("Invalid email or password");
     } else {
       setMessage("Login successful!");
-      router.push("/dashboard");
-    }
 
+      // Wait for session to sync before redirecting
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 300);
+    }
+  } catch (error) {
+    console.error("Login error:", error);
+    setMessage("Something went wrong. Please try again.");
+  } finally {
     setLoading(false);
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen flex xs:flex-col tb:flex-col items-center justify-center bg-gradient-to-tl from-sky-300 to-violet-400 p-4">
