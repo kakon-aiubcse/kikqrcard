@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/mongodb-adapter": "^3.10.0",
     "@mongodb-js/zstd": "^2.0.1",
     "autoprefixer": "^10.4.20",
     "aws4": "^1.13.2",
