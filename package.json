@@ -12,6 +12,7 @@
     "@mongodb-js/zstd": "^2.0.1",
     "autoprefixer": "^10.4.20",
     "aws4": "^1.13.2",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.2.0",
     "firebase": "^11.10.0",
     "gcp-metadata": "^5.3.0",

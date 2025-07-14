@@ -10,24 +10,67 @@ function Login() {
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+    setMessage("");
+  };
+  const validate = () => {
+    const { email, password } = formData;
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[a-zA-Z\d._%+-]+@[a-zA-Z]+\.[a-zA-Z]{2,}$/.test(email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = formData;
+    setLoading(true);
+    setMessage("");
 
-    if (!email || !password) {
-      alert("Please fill in all required fields.");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setLoading(false);
       return;
     }
-    router.push("/dashboard/profile");
 
-    // Handle login logic here (e.g., API call)
-    console.log("Logging in with:", formData);
+    try {
+      const res = await fetch("/api/loginapi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMessage(data.error || "Login failed.");
+        return;
+      }
+
+      setMessage("Login successful!");
+      router.push("/dashboard/profile");
+    } catch (err) {
+      console.error("Login Error:", err);
+      setMessage("Unexpected error occurred.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -51,7 +94,9 @@ function Login() {
             value={formData.email}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          />
+          /> {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
         </div>
 
         <div className="space-y-1">
@@ -61,25 +106,41 @@ function Login() {
           <input
             id="password"
             name="password"
-           type={viewpass ? "text" : "password"}
+            type={viewpass ? "text" : "password"}
             value={formData.password}
             onChange={handleChange}
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          />{" "}
-          <span className="w-[20%] relative bottom-[34px] overflow-hidden left-[290px]  tb:left-[340px] lp:left-[340px] xb:left-[350px]">
-            {viewpass ? (
-             <Eye onClick={() => setViewpass(!viewpass)} />
-            ) : (
-               <EyeClosed onClick={() => setViewpass(!viewpass)} />
-            )}
-          </span>
+          />{" "}{errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
         </div>
+        <span className="flex relative bottom-[54px] overflow-hidden xs:w-[20px] xs:left-[280px] left-[340px] tb:w-[20px] lp:left-[340px] xb:left-[350px]">
+          {viewpass ? (
+            <Eye onClick={() => setViewpass(!viewpass)} />
+          ) : (
+            <EyeClosed onClick={() => setViewpass(!viewpass)} />
+          )}
+        </span>
+         {message && (
+          <p
+            className={`text-center font-medium ${
+              message.toLowerCase().includes("success")
+                ? "text-green-600"
+                : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
 
-        <button
+       <button
           type="submit"
-          className="w-full py-3 bg-violet-600 text-white rounded-lg font-semibold hover:bg-violet-700 transition duration-200"
+          disabled={loading}
+          className={`w-full py-3 bg-violet-600 text-white rounded-lg font-semibold transition duration-200 ${
+            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-violet-700"
+          }`}
         >
-          Log In
+          {loading ? "Logging in..." : "Log In"}
         </button>
 
         <div className="text-center text-sm text-gray-600">
@@ -93,7 +154,7 @@ function Login() {
         </div>
       </form>
       <div
-        className="w-[30%] ml-32 xs:ml-0 xs:top-0 xs:order-1 tb:order-1 tb:mr-36 xs:p-4 xs:mr-44 xs:mb-14 "
+        className="w-[30%] ml-32 xs:ml-0 xb:ml-48 xs:top-0 xs:order-1 tb:order-1 tb:mr-36 xs:p-4 xs:mr-44 xs:mb-14 "
         onClick={() => {
           router.push("/");
         }}

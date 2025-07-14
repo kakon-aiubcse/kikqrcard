@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Eye, EyeClosed } from "lucide-react";
 
-
 function Signup() {
   const router = useRouter();
   const [errors, setErrors] = useState({});
@@ -13,12 +12,10 @@ function Signup() {
     password: "",
     conpass: "",
   });
-  const [profileImage, setProfileImage] = useState(null);
+
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
-
- 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,49 +89,40 @@ function Signup() {
 
     return errors;
   };
-  const onProfileImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setProfileImage(file);
-      console.log("Selected file:", file.name); // Log the selected file name
-    } else {
-      setErrors;
-      console.log("No file selected");
-    }
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const { name, email, password } = formData;
 
-    const { name, email, password } = formData;
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
 
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
+  setLoading(true);
+  setMessage("");
 
-    if (!profileImage) {
-      setMessage("Please select a profile image.");
-      return;
-    }
+  try {
+    const res = await fetch("/api/signupapi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-    setLoading(true);
-    setMessage("");
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Signup failed");
 
-    try {
-    
-console.log("will change")
+    setMessage("Signup successful!");
+    router.push("/authentication/login");
+  } catch (error) {
+    setMessage(error.message);
+    console.error("Signup Error:", error.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
-      // Redirect to login after successful signup
-      // router.push("/authentication/login");
-    } catch (error) {
-      console.error("Signup Error:", error.message);
-      setMessage("Error creating user. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <div className="min-h-screen flex xs:flex-col tb:flex-col  items-center justify-center bg-gradient-to-br from-sky-300 to-brand p-4">
@@ -254,27 +242,6 @@ console.log("will change")
               <EyeClosed onClick={() => setViewpass(!viewpass)} />
             )}
           </span>
-        </div>
-        <div className="flex items-center space-x-4">
-          <span className="text-sm font-medium text-scdry-0 font-ios ">
-            Select Picture:
-          </span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(event) => {
-              onProfileImageChange(event);
-              console.log("File input changed:", event.target.files[0]); // Check the file
-            }}
-            className="inline-block text-sm text-gray-500 border border-btton-0 rounded-md
-                file:mr-4 file:py-2 file:px-2 xs:file:mr-0 xs:file:relative xs:w-[230px]
-                file:rounded-full file:border-0
-                file:text-sm file:font-semibold
-                file:bg-btton-0 file:text-bttext-0
-              
-                
-                transition duration-150 ease-in-out"
-          />
         </div>
         {/* Submit Button */}
         {Object.values(errors).length > 0 && (
