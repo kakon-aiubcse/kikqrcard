@@ -3,12 +3,16 @@ import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-
+import { signOut } from "next-auth/react";
 const Sidebar = () => {
   const path = usePathname();
   const router = useRouter();
-
   const [showmenu, setShowmenu] = useState(false);
+
+ const handleLogout = async () => {
+  await signOut({ redirect: false });
+  window.location.href = "http://localhost:7000/authentication/login";
+};
   return (
     <>
       <aside className="fixed left-0 top-0  w-2/12 h-screen bg-violet-100 p-4 z-10 xs:fixed tb:h-full lp:h-full xb:h-full xs:w-screen xs:h-[100px]">
@@ -85,7 +89,11 @@ const Sidebar = () => {
                   router.push("/dashboard/");
                   setShowmenu(false);
                 }}
-                className={`${path === "/dashboard" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
+                className={`${
+                  path === "/dashboard"
+                    ? "shadow-md rounded-sm text-base text-sky-400 "
+                    : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "
+                }`}
               >
                 Dashboard
               </li>
@@ -93,7 +101,11 @@ const Sidebar = () => {
                 onClick={() => {
                   router.push("/cards/mycards");
                 }}
-                className={`${path === "/cards/mycards" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
+                className={`${
+                  path === "/cards/mycards"
+                    ? "shadow-md rounded-sm text-base text-sky-400 "
+                    : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "
+                }`}
               >
                 My Cards
               </li>
@@ -101,7 +113,11 @@ const Sidebar = () => {
                 onClick={() => {
                   router.push("/payment/orders");
                 }}
-                className={`${path === "/payment/orders" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
+                className={`${
+                  path === "/payment/orders"
+                    ? "shadow-md rounded-sm text-base text-sky-400 "
+                    : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "
+                }`}
               >
                 Orders
               </li>
@@ -109,7 +125,11 @@ const Sidebar = () => {
                 onClick={() => {
                   router.push("/payment/billings");
                 }}
-                className={`${path === "/payment/billings" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
+                className={`${
+                  path === "/payment/billings"
+                    ? "shadow-md rounded-sm text-base text-sky-400 "
+                    : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "
+                }`}
               >
                 Payment
               </li>
@@ -117,11 +137,21 @@ const Sidebar = () => {
                 onClick={() => {
                   router.push("/dashboard/editprofile");
                 }}
-                className={`${path === "/dashboard/editprofile" ? "shadow-md rounded-sm text-base text-sky-400 " : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "}`}
+                className={`${
+                  path === "/dashboard/editprofile"
+                    ? "shadow-md rounded-sm text-base text-sky-400 "
+                    : "hover:text-sky-400 xs:w-full xs:border-b xs:border-slate-700 hover:border-sky-400 "
+                }`}
               >
                 Edit Profile
               </li>
             </ul>
+            <button
+             onClick={handleLogout}
+              className="bg-red-600 hover:bg-red-700 text-white px-2 py-1 flex xs:h-[30px] xs:top-[350px] items-center justify-center relative mr-4 rounded-lg font-semibold shadow-md"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </aside>

@@ -1,7 +1,24 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Sidebar from '../dashboard/sidebar';
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 const Editprofile = () => {
+  const router = useRouter();
+    const { data: session, status } = useSession();
+   useEffect(() => {
+      if (status === "unauthenticated") {
+        router.push("/authentication/login");
+      }
+    }, [status, router]);
+  
+    if (status === "loading") {
+      return (
+        <div className="flex items-center justify-center h-screen">
+          <p className="text-lg text-violet-600 font-semibold">Checking session...</p>
+        </div>
+      );
+    }
   return (
     <>
     <Sidebar/>

@@ -1,20 +1,46 @@
 //user dashboard/profile
-
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 const Profile = () => {
-   const { data: session } = useSession();
-   const [name, setName] = useState("");
-   const [email, setEmail] = useState("");
+  const { data: session } = useSession();
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    profileImage: "",
+  });
 
   useEffect(() => {
-    if (session?.user?.name  ) {
-      setName(session.user.name);
-      
+    const fetchUser = async () => {
+      if (!session?.user?.email) return;
 
-     
-    }
+      try {
+        const res = await fetch("/api/userdata", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: session.user.email }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          setUserData({
+            name: data.name,
+            email: data.email,
+            phone: data.phone,
+            profileImage: data.profileImage,
+          });
+        } else {
+          console.error("Error fetching user:", data.error);
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+      }
+    };
+
+    fetchUser();
   }, [session]);
   return (
     <>
@@ -22,10 +48,10 @@ const Profile = () => {
       <main className="ml-[16.666667%] w-10/12 h-auto lp:ml-[20%] xb:ml-[25%] xs:w-full overflow-hidden  p-4 xs:mt-[24%] xs:ml-0 xs:p-0 ">
         <div className="flex flex-col w-auto  items-start justify-start xs:w-full xs:p-4">
           <div className="flex  items-center w-full p-6 h-auto justify-start">
-            <span className="text-2xl m-1 p-1 font-cp font-bold text-brand tb:text-3xl lp:text-5xl xb:text-6xl">
-              {name}
+            <span className="text-2xl m-1 p-1 font-cp font-bold text-brand xs:text-xl tb:text-3xl lp:text-5xl xb:text-6xl">
+              {userData.name}
             </span>{" "}
-            <span className="text-2xl p-1  font-cp tb:text-3xl lp:text-5xl xb:text-6xl">
+            <span className="text-2xl p-1 xs:text-xl font-cp tb:text-3xl lp:text-5xl xb:text-6xl">
               Dashboard
             </span>
           </div>
@@ -34,7 +60,7 @@ const Profile = () => {
               Personal Details
             </h2>
             <img
-              src="/user.jpg"
+              src={`${userData.profileImage}`}
               alt="user"
               className="w-44 h-48 ml-8 rounded-full border border-brand shadow-xl"
             />
@@ -42,19 +68,19 @@ const Profile = () => {
               <span className=" font-cp font-bold text-brand text-xl">
                 Name:
               </span>{" "}
-              {name}
+              {userData.name}
             </p>
             <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
               <span className=" font-cp font-bold text-brand text-xl">
                 Email:
               </span>{" "}
-             {email}
+             {userData.email}
             </p>
             <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
               <span className=" font-cp font-bold text-brand text-xl ">
                 Phone Number:
               </span>{" "}
-              01923089370
+              {userData.phone}
             </p>
            
           </div>
