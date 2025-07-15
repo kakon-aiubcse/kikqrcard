@@ -8,7 +8,7 @@ const Profile = () => {
     name: "",
     email: "",
     phone: "",
-    profileImage: "",
+    profileImageBase64: "",
   });
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const Profile = () => {
             name: data.name,
             email: data.email,
             phone: data.phone,
-            profileImage: data.profileImageBase64,
+            profileImageBase64: data.profileImageBase64,
           });
         } else {
           console.error("Error fetching user:", data.error);
@@ -60,7 +60,7 @@ const Profile = () => {
               Personal Details
             </h2>
             <img
-              src={`${userData.profileImage}`}
+              src={`${userData.profileImageBase64}`}
               alt="user"
               className="w-44 h-48 ml-8 rounded-full border border-brand shadow-xl"
             />
