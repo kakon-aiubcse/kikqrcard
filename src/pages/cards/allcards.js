@@ -17,8 +17,8 @@ const Allcards =forwardRef((props, ref)  => {
         </div>
         {/* Cards Section */}
         {/* first card */}
-        <div className="flex flex-row items-start justify-center  w-screen   pr-72 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]   lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
+        <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer   xs:hover:scale-100 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -84,7 +84,7 @@ const Allcards =forwardRef((props, ref)  => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
+          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -148,9 +148,9 @@ const Allcards =forwardRef((props, ref)  => {
           </div>
         </div>
         {/* second card */}
-           <div className="flex flex-row items-start justify-center  w-screen   pr-72 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start
+           <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer  hover:shadow-[#8F87F1] xs:hover:scale-100 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start
         xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white 
+          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -216,7 +216,7 @@ const Allcards =forwardRef((props, ref)  => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-500 to-slate-950 text-white 
+          <div className="flex flex-col h-[280px]  w-[30%] hover:shadow-2xl hover:shadow-[#8F87F1] lp:w-[38%] tb:w-[75%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-500 to-slate-950 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -280,8 +280,10 @@ const Allcards =forwardRef((props, ref)  => {
           </div>
         </div>
         {/* third card  */}
-        <div className="flex flex-row items-start justify-center  w-screen   pr-72 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
+        <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer  hover:shadow-[#8F87F1] xs:hover:scale-100 
+        tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start
+         xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
+          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
@@ -347,7 +349,7 @@ const Allcards =forwardRef((props, ref)  => {
               <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
             </div>
           </div>
-          <div className="flex flex-col h-[280px]  w-[30%]  lp:w-[38%] tb:w-[65%]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
+          <div className="flex flex-col h-[280px]  w-[30%] hover:shadow-2xl hover:shadow-[#8F87F1] lp:w-[38%] tb:w-[75%]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
           xs:w-screen xs:m-0 xs:mx-1">
             <div className="w-full  h-[20%] flex items-start justify-end">
               <svg
