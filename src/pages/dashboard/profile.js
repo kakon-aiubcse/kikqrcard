@@ -30,7 +30,7 @@ const Profile = () => {
             name: data.name,
             email: data.email,
             phone: data.phone,
-            profileImage: data.profileImage,
+            profileImage: data.profileImageBase64,
           });
         } else {
           console.error("Error fetching user:", data.error);
