@@ -44,7 +44,6 @@ const Profile = () => {
   }, [session]);
   return (
     <>
-
       <main className="ml-[16.666667%] w-10/12 h-auto lp:ml-[20%] xb:ml-[25%] xs:w-full overflow-hidden  p-4 xs:mt-[24%] xs:ml-0 xs:p-0 ">
         <div className="flex flex-col w-auto  items-start justify-start xs:w-full xs:p-4">
           <div className="flex  items-center w-full p-6 h-auto justify-start">
@@ -60,7 +59,7 @@ const Profile = () => {
               Personal Details
             </h2>
             <img
-              src={`${userData.profileImageBase64}`}
+              src={`${userData.profileImageBase64}`|| "/usericon.png"}
               alt="user"
               className="w-44 h-48 ml-8 rounded-full border border-brand shadow-xl"
             />
@@ -74,7 +73,7 @@ const Profile = () => {
               <span className=" font-cp font-bold text-brand text-xl">
                 Email:
               </span>{" "}
-             {userData.email}
+              {userData.email}
             </p>
             <p className="text-lg w-screen text-slate-800 font-ios font-semibold">
               <span className=" font-cp font-bold text-brand text-xl ">
@@ -82,7 +81,6 @@ const Profile = () => {
               </span>{" "}
               {userData.phone}
             </p>
-           
           </div>
         </div>
       </main>

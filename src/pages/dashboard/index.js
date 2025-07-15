@@ -10,9 +10,13 @@ const Index = () => {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/authentication/login");
+      const timer = setTimeout(() => {
+        router.push("/authentication/login");
+      }, 3000);
+
+      return () => clearTimeout(timer);
     }
-  }, [status, router]);
+  }, [status, router]); 
 
   if (status === "loading") {
     return (
@@ -23,7 +27,13 @@ const Index = () => {
   }
 
   if (status === "unauthenticated") {
-    return null; // Prevent flicker before redirect
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl text-brand font-semibold">
+          You are not logged in. Redirecting to login page...
+        </p>
+      </div>
+    );
   }
 
   return (

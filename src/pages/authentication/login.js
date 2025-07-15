@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { Eye, EyeClosed } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 function Login() {
   const router = useRouter();
@@ -10,6 +11,13 @@ function Login() {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const { data: session } = useSession();
+  
+    useEffect(() => {
+      if (session?.user?.email) {
+        router.push("/dashboard"); // 🔁 redirect if already logged in
+      }
+    }, [session, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

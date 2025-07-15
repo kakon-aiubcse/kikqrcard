@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Eye, EyeClosed } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 function Signup() {
   const router = useRouter();
@@ -13,13 +14,19 @@ function Signup() {
     password: "",
     profileImageBase64: "",
   });
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [user, setUser] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      router.push("/dashboard"); // 🔁 redirect if already logged in
+    }
+  }, [session, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,6 +54,7 @@ function Signup() {
       [name]: "",
     }));
   };
+
   const validate = () => {
     const errors = {};
     const { name = "", email = "", phone = "", password = "" } = formData;
@@ -126,48 +134,47 @@ function Signup() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    return;
-  }
-
-  setLoading(true);
-  setMessage("");
-
-  try {
-    const payload = {
-      name: formData.name,
-      email: formData.email,
-      phone: formData.phone,
-      password: formData.password,
-      profileImageBase64: imagePreview || null,
-    };
-
-    const res = await fetch("/api/signupapi", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json(); // ✅ parse only once!
-
-    if (!res.ok) {
-      throw new Error(data.error || "Signup failed");
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
 
-    setMessage("Signup successful! Redirecting to login...");
-    setTimeout(() => router.push("/authentication/login"), 2000);
-  } catch (error) {
-    setMessage(error.message);
-    console.error("Signup Error:", error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+    setLoading(true);
+    setMessage("");
 
+    try {
+      const payload = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password,
+        profileImageBase64: imagePreview || null,
+      };
+
+      const res = await fetch("/api/signupapi", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json(); // ✅ parse only once!
+
+      if (!res.ok) {
+        throw new Error(data.error || "Signup failed");
+      }
+
+      setMessage("Signup successful! Redirecting to login...");
+      setTimeout(() => router.push("/authentication/login"), 2000);
+    } catch (error) {
+      setMessage(error.message);
+      console.error("Signup Error:", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen flex xs:flex-col tb:flex-col  items-center justify-center bg-gradient-to-br from-sky-300 to-brand p-4">
