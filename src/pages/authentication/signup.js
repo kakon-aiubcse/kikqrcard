@@ -113,19 +113,19 @@ function Signup() {
     return errors;
   };
 
- const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-  setSelectedFile(file);
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
-  } else {
-    setImagePreview(null);
-  }
-};
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0];
+    setSelectedFile(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
   const validationErrors = validate();
@@ -146,20 +146,17 @@ const handleSubmit = async (e) => {
       profileImageBase64: imagePreview || null,
     };
 
-   const res = await fetch("/api/signupapi", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify(payload),
-});
+    const res = await fetch("/api/signupapi", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-    let data;
-    try {
-      data = await res.json();
-    } catch {
-      throw new Error("Unexpected server response");
+    const data = await res.json(); // ✅ parse only once!
+
+    if (!res.ok) {
+      throw new Error(data.error || "Signup failed");
     }
-
-    if (!res.ok) throw new Error(data.error || "Signup failed");
 
     setMessage("Signup successful! Redirecting to login...");
     setTimeout(() => router.push("/authentication/login"), 2000);
@@ -304,27 +301,26 @@ const handleSubmit = async (e) => {
             )}
           </span>
         </div>
-      <div className="space-y-1">
-  <label htmlFor="profileImage" className="block text-sm font-medium">
-    Upload Profile Image
-  </label>
-  <input
-    type="file"
-    id="profileImage"
-    name="profileImage"
-    accept="image/*"
-    onChange={handleImageUpload}
-    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-  />
-  {imagePreview && (
-    <img
-      src={imagePreview}
-      alt="Preview"
-      className="w-12 h-12 rounded-xl mt-2"
-    />
-  )}
-</div>
-
+        <div className="space-y-1">
+          <label htmlFor="profileImage" className="block text-sm font-medium">
+            Upload Profile Image
+          </label>
+          <input
+            type="file"
+            id="profileImage"
+            name="profileImage"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
+          />
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="Preview"
+              className="w-12 h-12 rounded-xl mt-2"
+            />
+          )}
+        </div>
         {/* Submit Button */}
         {Object.values(errors).length > 0 && (
           <div className="text-center text-red-600">

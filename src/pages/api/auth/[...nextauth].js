@@ -42,17 +42,17 @@ export const authOptions = {
           const user = await db.collection("users").findOne({ email });
 
           if (!user) {
-            console.log("❌ User not found");
+            console.log(" User not found");
             throw new Error("User not found");
           }
 
           const isValid = await bcrypt.compare(credentials.password, user.password);
           if (!isValid) {
-            console.log("❌ Invalid password");
+            console.log(" Invalid password");
             throw new Error("Invalid password");
           }
 
-          console.log("✅ Auth success for:", email);
+          console.log("Auth success for:", email);
 
           return {
             id: user._id.toString(),
@@ -60,7 +60,7 @@ export const authOptions = {
             email: user.email,
           };
         } catch (err) {
-          console.error("🔥 Authorization error:", err);
+          console.error("Authorization error:", err);
           throw new Error("Authentication failed");
         }
       },
