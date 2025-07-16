@@ -233,7 +233,7 @@ export default function CreateCard() {
               className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105
              transition-transform duration-300 ease-in-out cursor-pointer   xs:hover:scale-100 
              tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col 
-             xs:overflow-hidden xs:mb-24 xs:relative xs:right-10 xs:gap-2"
+             xs:overflow-hidden xs:mb-4 xs:relative xs:right-10 xs:gap-2"
             >
               <div
                 className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${cardInfo.bgGrad}${cardInfo.bgStyle} bg-black text-white 
@@ -384,7 +384,9 @@ export default function CreateCard() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col mr-[28%] p-4 m-4  rounded-lg hover:scale-110 transition-transform duration-500">
+         
+          </div>
+             <div className="flex flex-col mr-[28%] p-4 m-4 xs:mr-[0%]  rounded-lg hover:scale-110 transition-transform duration-500">
               <div className="bg-white rounded-xl shadow-md p-4 border border-brand">
                 <h2 className="text-xl font-semibold text-brand mb-2">
                   Card Preview Info
@@ -411,8 +413,7 @@ export default function CreateCard() {
                 </p>
               </div>
             </div>
-          </div>
-          <div className="flex gap-10 p-6 m-4 mb-10 border border-brand rounded-lg hover:scale-110 transition-transform duration-500">
+          <div className="flex gap-10 p-6 m-4 mb-72 border border-brand rounded-lg hover:scale-110 transition-transform duration-500 xs:flex-col ">
             <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
               <Heart className="" />
               Love
