@@ -221,7 +221,7 @@ const Pricing = forwardRef((props, ref) => {
               <span className="relative top-7 ml-1">/6 months</span>
             </span>
             <span className="font-ios text-black font-medium my-4">
-              Designed to meet every individual's QR card needs
+              Implemented to meet company's QR card needs
             </span>
             <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
             <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
