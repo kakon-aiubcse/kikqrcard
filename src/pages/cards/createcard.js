@@ -115,7 +115,7 @@ export default function CreateCard() {
 
   return (
     <>
-      <div className="flex ml-[8%] xs:ml-[0%]  overflow-y-hidden xs:overflow-x-hidden">
+      <div className="flex ml-[8%] xs:ml-[0%]  overflow-y-hidden xs:overflow-x-hidden ">
         <Sidebar />
 
         <div className="flex flex-col items-center w-screen min-h-screen p-2 xs:p-0 xs:top-32 xs:relative xs:right-4 overflow-x-hidden bg-gray-100">
@@ -123,7 +123,7 @@ export default function CreateCard() {
           <h1 className="text-5xl font-bold text-brand flex "> Create Card</h1>
 
           {/* Form */}
-          <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16">
+          <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16 tb:right-0 xb:right-0">
             Set up your card dynamically:
           </span>
           <div className="grid md:grid-cols-2 gap-4 w-full max-w-6xl px-6 mb-8 ml-[10%]">
@@ -386,8 +386,9 @@ export default function CreateCard() {
             </div>
          
           </div>
-             <div className="flex flex-col mr-[28%] p-4 m-4 xs:mr-[0%]  rounded-lg hover:scale-110 transition-transform duration-500">
-              <div className="bg-white rounded-xl shadow-md p-4 border border-brand">
+          {/* card preview section */}
+             <div className="flex flex-col lp:mr-[1%] p-4 m-4 xs:mr-[0%] tb:mr-[0%] xb:ml-44 tb:p-8 rounded-lg hover:scale-110 transition-transform duration-500">
+              <div className="bg-white rounded-xl shadow-md p-4 border border-brand tb:relative tb:left-5 ">
                 <h2 className="text-xl font-semibold text-brand mb-2">
                   Card Preview Info
                 </h2>
@@ -413,7 +414,8 @@ export default function CreateCard() {
                 </p>
               </div>
             </div>
-          <div className="flex gap-10 p-6 m-4 mb-72 border border-brand rounded-lg hover:scale-110 transition-transform duration-500 xs:flex-col ">
+            {/* Card functionalities */}
+          <div className="flex gap-10 p-6 m-4 mb-72 border tb:gap-6 tb:ml-20 xb:ml-44 tb:p-4 border-brand rounded-lg hover:scale-110 transition-transform duration-500 xs:flex-col ">
             <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
               <Heart className="" />
               Love
