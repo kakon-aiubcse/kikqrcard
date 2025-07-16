@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Eye, EyeClosed } from "lucide-react";
 import { useSession } from "next-auth/react";
-
+import { X } from "lucide-react";
 function Signup() {
   const router = useRouter();
   const [errors, setErrors] = useState({});
@@ -226,6 +226,8 @@ function Signup() {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-violet-100 shadow-xl rounded-2xl p-8 space-y-1"
       >
+                <span className="absolute" onClick={()=>{router.push("/")}}><X className="text-red-500"/></span>
+
         <h2 className="text-3xl font-semibold text-center text-violet-600">
           Sign Up
         </h2>

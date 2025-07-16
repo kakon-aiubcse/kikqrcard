@@ -1,9 +1,11 @@
 //all the designed card will be here
 import React,{ forwardRef } from "react";
 import QRCodeGenerator from "../qrsettings/QRCodeGenerator";
+import { useRouter } from "next/router";
 
 const Allcards =forwardRef((props, ref)  => {
   let urlToEncode = "https://www.reddit.com/user/kakonaiubcse/";
+  const router = useRouter();
 
   return (
     <>
@@ -411,6 +413,16 @@ const Allcards =forwardRef((props, ref)  => {
               </span>
             </div>
           </div>
+        </div>
+        <div className="flex mr-72 gap-5 m-3 p-3 xs:mr-4">
+          <span className="p-3 text-brand font-cp  hover:text-sky-700 border border-brand mt-5 hover:border
+           hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] 
+           duration-700 ease-in-out rounded-xl "
+           >show more</span>
+          <span className="p-3 text-brand font-cp  hover:text-sky-700 border border-brand mt-5 
+          hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg
+           hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl"
+           onClick={()=>{router.push("/cards/createcard")}}>create card?</span>
         </div>
       </div>
     </>

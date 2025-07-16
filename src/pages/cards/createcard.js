@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import React, { useState,useEffect } from "react";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import QRCode from "react-qr-code";
 import Sidebar from "../dashboard/sidebar";
 
@@ -17,16 +19,16 @@ const bgDirections = [
 ];
 
 const bgStyles = [
-  " from-indigo-500 to-sky-500",
-  " from-green-600 to-emerald-400",
+  " from-sky-400 to-violet-600",
+  " from-green-600 via-red-600 to-green-600",
   " from-purple-600 to-fuchsia-500",
-  " from-orange-600 to-red-500",
-  " from-pink-500 to-rose-400",
+  " from-orange-600 via-amber-400 to-red-500",
+  " from-pink-500 via-sky-400 to-sky-900",
   " from-yellow-400 to-yellow-600",
-  " from-cyan-500 to-blue-600",
+  " from-cyan-500 via-sky-600 to-blue-600",
   " from-red-600 to-slate-950",
   " from-teal-600 to-slate-900",
-  " from-gray-700 to-gray-900",
+  " from-gray-700 via-amber-800 to-slate-950",
 ];
 
 export default function CreateCard() {
@@ -36,18 +38,48 @@ export default function CreateCard() {
   const [slogan, setSlogan] = useState("Your Quotes here");
   const [bgGrad, setBgGrad] = useState("bg-gradient-to-l");
   const [bgStyle, setBgStyle] = useState("from-indigo-500 to-sky-500");
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      const timer = setTimeout(() => {
+        router.push("/authentication/login");
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+    
+  }, [status, router]);
+   if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-lg text-violet-600 font-semibold">Checking session...</p>
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p className="text-2xl text-brand font-semibold">
+          You are not logged in. Redirecting to login page...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <>
-      <div className="flex ml-[8%] xs:ml-[0%]  overflow-y-hidden ">
+      <div className="flex ml-[8%] xs:ml-[0%]  overflow-y-hidden xs:overflow-x-hidden">
         <Sidebar />
 
-        <div className="flex flex-col items-center w-screen min-h-screen p-4 xs:p-0 xs:relative xs:right-4 overflow-x-hidden bg-gray-100">
+        <div className="flex flex-col items-center w-screen min-h-screen p-2 xs:p-0 xs:top-32 xs:relative xs:right-4 overflow-x-hidden bg-gray-100">
           {/* Header */}
-          <h1 className="text-5xl font-bold text-brand my-6">Create Card</h1>
+          <h1 className="text-5xl font-bold text-brand ">Create Card</h1>
 
           {/* Form */}
-          <span className="flex relative right-96 m-2 text-brand">
+          <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16">
             Set up your card dynamically:
           </span>
           <div className="grid md:grid-cols-2 gap-4 w-full max-w-6xl px-6 mb-8 ml-[10%]">
@@ -108,15 +140,20 @@ export default function CreateCard() {
           </div>
 
           {/* Card Display */}
-          <div className="flex flex-col ml-[20%] md:flex-row items-start justify-center gap-6 
-          xs:w-[410px] flex-wrap xs:relative  xs:mb-10">
-            <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105
+          <div
+            className="flex flex-col ml-[30%] md:flex-row items-start justify-center gap-6 
+           flex-wrap xs:relative xs:ml-36
+            xs:mb-10 "
+          >
+            <div
+              className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105
              transition-transform duration-300 ease-in-out cursor-pointer   xs:hover:scale-100 
              tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col 
-             xs:overflow-hidden  xs:gap-2">
+             xs:overflow-hidden xs:mb-24 xs:relative xs:right-10 xs:gap-2"
+            >
               <div
-                className={`flex flex-col h-[280px] w-[30%] xs:w-[405%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${bgGrad}${bgStyle} bg-black text-white 
-               xs:w-screen xs:m-0 xs:mx-1`}
+                className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${bgGrad}${bgStyle} bg-black text-white 
+               xs:w-screen xs:m-0 xs:mx-1 order-2`}
               >
                 <div className="w-full  h-[20%] flex items-start justify-end">
                   <svg
@@ -184,16 +221,16 @@ export default function CreateCard() {
                   </div>
                 </div>
                 <div className="w-full  h-[10%] flex items-center justify-center">
-                  <span className="text-xs font-ios font-extralight text-slate-300">
+                  <span className="text-xs font-cp font-extralight text-slate-400">
                     {" "}
                     &copy; 2025, KIK QRcards. All rights reserved.
                   </span>
                 </div>
               </div>
               <div
-                className={`flex flex-col h-[280px] w-[30%] xs:w-[405%]   lp:w-[38%] tb:w-[75%] hover:shadow-2xl
+                className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]   lp:w-[38%] tb:w-[75%] hover:shadow-2xl
                    hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${bgGrad}${bgStyle} bg-black text-white 
-               xs:w-screen xs:m-0 xs:mx-1`}
+               xs:w-screen xs:m-0 xs:mx-1 order-1`}
               >
                 <div className="w-full  h-[20%] flex items-start justify-end">
                   <svg
@@ -250,7 +287,10 @@ export default function CreateCard() {
                   </span>
                 </div>
                 <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
-                  <img src="/call.svg" className="h-[38px] w-[36px] xs:h-[20px] xs:w-[20px]" />
+                  <img
+                    src="/call.svg"
+                    className="h-[38px] w-[36px] xs:h-[20px] xs:w-[20px]"
+                  />
                   <span
                     className=" flex relative xs:text-[12px] font-ios text-slate-300  font-bold
                 text-[20px] leading-[30px] tracking-[15px] shadow-2xl"

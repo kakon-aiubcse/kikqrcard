@@ -1,10 +1,12 @@
 //all selected or created cards display
 import React from "react";
+import { useRouter } from "next/router";
 
 import Sidebar from "../dashboard/sidebar";
 import { ArrowRightIcon } from "lucide-react";
 
 const Mycards = () => {
+  const router = useRouter();
   return (
     <>
       <Sidebar />
@@ -18,7 +20,8 @@ const Mycards = () => {
           </span>
         </div>
 
-        <div className="bg-white border-4 border-black flex justify-center items-center mx-4 mt-5  rounded-full shadow-[#8F87F1] shadow-2xl hover:shadow-[#7063ff]">
+        <div className="bg-white border-4 border-black flex justify-center items-center mx-4 mt-5  rounded-full shadow-[#8F87F1] shadow-2xl hover:shadow-[#7063ff]"
+        onClick={()=>{router.push("/cards/createcard")}}>
           <button className=" flex text items-center justify-center gap-10 text-3xl text-slate-800 p-4 m-4 font-cp hover:text-sky-300 hover:underline">
             Create Cards?
             <ArrowRightIcon className="w-10 h-14 hover:text-red-300" />

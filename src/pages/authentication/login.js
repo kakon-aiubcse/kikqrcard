@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { signIn } from "next-auth/react";
 import { Eye, EyeClosed } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { X } from "lucide-react";
 
 function Login() {
   const router = useRouter();
@@ -87,6 +88,7 @@ function Login() {
         onSubmit={handleSubmit}
         className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 space-y-6 xs:order-2 tb:order-2 "
       >
+        <span className="absolute" onClick={()=>{router.push("/")}}><X className="text-red-500"/></span>
         <h2 className="text-3xl font-semibold text-center text-violet-600">
           Login
         </h2>
