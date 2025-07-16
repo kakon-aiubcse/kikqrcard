@@ -4,7 +4,15 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Card from "./card";
 import Sidebar from "../dashboard/sidebar";
-import { Heart, Save, Star, Workflow, BookOpenCheck, PinIcon } from "lucide-react";
+import {
+  Heart,
+  Save,
+  Star,
+  Workflow,
+  BookOpenCheck,
+  PinIcon,
+} from "lucide-react";
+import axios from "axios";
 
 const bgDirections = [
   "bg-gradient-to-r",
@@ -48,12 +56,18 @@ export default function CreateCard() {
     profession: "",
   });
   const [cardName, setCardName] = useState("kik---qrcard");
+ const [error, setError] = useState("");
+const [message, setMessage] = useState("");
+
 
   const router = useRouter();
 
   useEffect(() => {
     const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
-    const trimmedProfession = cardInfo.profession.trim().toLowerCase().slice(0, 3);
+    const trimmedProfession = cardInfo.profession
+      .trim()
+      .toLowerCase()
+      .slice(0, 3);
     setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
 
     if (status === "unauthenticated") {
@@ -109,6 +123,51 @@ export default function CreateCard() {
       return "Max 30 letters. No numbers.";
     }
     return "";
+  };
+  const handleSaveCard = async () => {
+    try {
+      // Check for placeholder values
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
+
+      // Perform actual validation
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
+
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/saveCards", {
+        cardName: cardName,
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+      });
+
+      if (response.status === 201 ||response.status === 200) {
+        setMessage("Card saved successfully!");
+        console.log(response.data);
+      } else {
+        setError("Failed to save card.");
+      }
+    } catch (error) {
+      setError("Error saving card.");
+      console.error("Error Saving Card:", error.message);
+    }
   };
 
   return (
@@ -257,7 +316,7 @@ export default function CreateCard() {
             </div>
           </div>
           {/* Card functionalities */}
-          <div className="flex gap-10 p-6 m-4 mb-72 border tb:gap-3 tb:ml-20 xb:ml-44 tb:p-2 border-brand rounded-lg hover:scale-110 tb:hover:scale-105 transition-transform duration-500 xs:flex-col xs:items-start ">
+          <div className="flex gap-10 p-6 m-4 relative top-16 mb-72 border tb:gap-3 tb:ml-20 xb:ml-44 tb:p-2 border-brand rounded-lg hover:scale-110 tb:hover:scale-105 transition-transform duration-500 xs:flex-col xs:items-start ">
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Heart className="" />
               Love
@@ -268,7 +327,10 @@ export default function CreateCard() {
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <PinIcon /> Highlight
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+            <button
+              onClick={handleSaveCard}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
+            >
               <Save /> Save
             </button>
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
@@ -277,6 +339,18 @@ export default function CreateCard() {
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Workflow /> QRcodeconfig
             </button>
+          </div>
+          <div className="flex h-10 w-40 relative bottom-96 right-72 whitespace-nowrap tb:right-44 xs:right-16 xs:bottom-[720px]">
+            {error && (
+              <p className="text-red-600 mt-2 transition-all font-cp font-medium duration-500 ease-in">
+                {error}
+              </p>
+            )}
+            {message && (
+              <p className="text-green-600 mt-2 transition-all font-cp font-medium duration-500 ease-in">
+                {message}
+              </p>
+            )}
           </div>
         </div>
       </div>
