@@ -1,9 +1,10 @@
 "use client";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import QRCode from "react-qr-code";
 import Sidebar from "../dashboard/sidebar";
+import { Heart, Save, Star, Workflow, BookOpenCheck } from "lucide-react";
 
 const urlToEncode = "KIK QR Card";
 
@@ -32,16 +33,31 @@ const bgStyles = [
 ];
 
 export default function CreateCard() {
-  const [name, setName] = useState("Your name here");
-  const [profession, setProfession] = useState(" profession");
-  const [phone, setPhone] = useState("ContactNumber");
-  const [slogan, setSlogan] = useState("Your Quotes here");
-  const [bgGrad, setBgGrad] = useState("bg-gradient-to-l");
-  const [bgStyle, setBgStyle] = useState("from-indigo-500 to-sky-500");
+  const [cardInfo, setCardInfo] = useState({
+    name: "User Name",
+    profession: "User Profession",
+    phone: "User Number",
+    quote: "User's Quote",
+    bgGrad: "bg-gradient-to-tr",
+    bgStyle: "from-indigo-500 to-sky-500",
+  });
+
   const { data: session, status } = useSession();
+  const [errors, setErrors] = useState({
+    name: "",
+    quote: "",
+    phone: "",
+    profession: "",
+  });
+  const [cardName, setCardName] = useState("kik---qrcard");
+
   const router = useRouter();
 
   useEffect(() => {
+    const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
+     const trimmedProfession = cardInfo.profession.trim().toLowerCase().slice(0, 3);
+    setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
+
     if (status === "unauthenticated") {
       const timer = setTimeout(() => {
         router.push("/authentication/login");
@@ -49,12 +65,13 @@ export default function CreateCard() {
 
       return () => clearTimeout(timer);
     }
-    
-  }, [status, router]);
-   if (status === "loading") {
+  }, [status, router, cardInfo.name]);
+  if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-lg text-violet-600 font-semibold">Checking session...</p>
+        <p className="text-lg text-violet-600 font-semibold">
+          Checking session...
+        </p>
       </div>
     );
   }
@@ -68,6 +85,33 @@ export default function CreateCard() {
       </div>
     );
   }
+  const validateName = (value) => {
+    if (!/^[A-Za-z\s]{1,20}$/.test(value)) {
+      return "Max 20 letters. No numbers.";
+    }
+    return "";
+  };
+
+  const validatequote = (value) => {
+    if (value.length > 25) {
+      return "Max 25 characters.";
+    }
+    return "";
+  };
+
+  const validatePhone = (value) => {
+    if (!/^\d{1,11}$/.test(value)) {
+      return "Digits only, max 11.";
+    }
+    return "";
+  };
+
+  const validateProfession = (value) => {
+    if (!/^[A-Za-z\s]{1,30}$/.test(value)) {
+      return "Max 30 letters. No numbers.";
+    }
+    return "";
+  };
 
   return (
     <>
@@ -76,7 +120,7 @@ export default function CreateCard() {
 
         <div className="flex flex-col items-center w-screen min-h-screen p-2 xs:p-0 xs:top-32 xs:relative xs:right-4 overflow-x-hidden bg-gray-100">
           {/* Header */}
-          <h1 className="text-5xl font-bold text-brand ">Create Card</h1>
+          <h1 className="text-5xl font-bold text-brand flex "> Create Card</h1>
 
           {/* Form */}
           <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16">
@@ -84,35 +128,75 @@ export default function CreateCard() {
           </span>
           <div className="grid md:grid-cols-2 gap-4 w-full max-w-6xl px-6 mb-8 ml-[10%]">
             <input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={cardInfo.name}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCardInfo({ ...cardInfo, name: val });
+                setErrors({ ...errors, name: validateName(val) });
+              }}
               placeholder="Name"
-              className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
+              className={`p-2 rounded border ${
+                errors.name ? "border-red-500" : "border-gray-300"
+              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+            )}
 
             <input
-              value={profession}
-              onChange={(e) => setProfession(e.target.value)}
+              value={cardInfo.profession}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCardInfo({ ...cardInfo, profession: val });
+                setErrors({ ...errors, profession: validateProfession(val) });
+              }}
               placeholder="Profession"
-              className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
+              className={`p-2 rounded border ${
+                errors.profession ? "border-red-500" : "border-gray-300"
+              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
+            {errors.profession && (
+              <p className="text-red-500 text-sm mt-1">{errors.profession}</p>
+            )}
+
             <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={cardInfo.phone}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCardInfo({ ...cardInfo, phone: val });
+                setErrors({ ...errors, phone: validatePhone(val) });
+              }}
               placeholder="Phone"
-              className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
+              className={`p-2 rounded border ${
+                errors.phone ? "border-red-500" : "border-gray-300"
+              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+            )}
+
             <input
-              value={slogan}
-              onChange={(e) => setSlogan(e.target.value)}
-              placeholder="Slogan"
-              className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
+              value={cardInfo.quote}
+              onChange={(e) => {
+                const val = e.target.value;
+                setCardInfo({ ...cardInfo, quote: val });
+                setErrors({ ...errors, quote: validatequote(val) });
+              }}
+              placeholder="User's Quotes"
+              className={`p-2 rounded border ${
+                errors.quote ? "border-red-500" : "border-gray-300"
+              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
+            {errors.quote && (
+              <p className="text-red-500 text-sm mt-1">{errors.quote}</p>
+            )}
 
             {/* Direction Picker */}
             <select
-              value={bgGrad}
-              onChange={(e) => setBgGrad(e.target.value)}
+              value={cardInfo.bgGrad}
+              onChange={(e) =>
+                setCardInfo({ ...cardInfo, bgGrad: e.target.value })
+              }
               className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
             >
               {bgDirections.map((dir, i) => (
@@ -124,16 +208,16 @@ export default function CreateCard() {
           </div>
 
           {/* Color Swatches (Optional Visual Picker) */}
-          <div className="flex flex-wrap gap-3 mb-6 ml-[10%]">
+          <div className="flex flex-wrap gap-3 mb-6 ml-[10%] hover:scale-110 transition-transform duration-500 border border-brand rounded-2xl p-2">
             {bgStyles.map((bg, i) => (
               <div
                 key={i}
-                onClick={() => setBgStyle(bg)}
+                onClick={() => setCardInfo({ ...cardInfo, bgStyle: bg })}
                 className={`cursor-pointer w-16 h-10 rounded-md border-2 ${
-                  bgStyle === bg
-                    ? "border-brand  scale-110"
-                    : "border-gray-200 "
-                } ${bgGrad} ${bg} transition-transform`}
+                  cardInfo.bgStyle === bg
+                    ? "border-brand scale-110"
+                    : "border-gray-200"
+                } ${cardInfo.bgGrad} ${bg} transition-transform`}
                 title={bg}
               ></div>
             ))}
@@ -152,7 +236,7 @@ export default function CreateCard() {
              xs:overflow-hidden xs:mb-24 xs:relative xs:right-10 xs:gap-2"
             >
               <div
-                className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${bgGrad}${bgStyle} bg-black text-white 
+                className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${cardInfo.bgGrad}${cardInfo.bgStyle} bg-black text-white 
                xs:w-screen xs:m-0 xs:mx-1 order-2`}
               >
                 <div className="w-full  h-[20%] flex items-start justify-end">
@@ -209,7 +293,7 @@ export default function CreateCard() {
                   </div>
                   <div className="flex flex-col w-1/2">
                     <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">
-                      {slogan}
+                      {cardInfo.quote}
                     </span>
                     <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
                       Scan QR
@@ -229,7 +313,7 @@ export default function CreateCard() {
               </div>
               <div
                 className={`flex flex-col h-[280px] w-[30%] xs:w-[380%]   lp:w-[38%] tb:w-[75%] hover:shadow-2xl
-                   hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${bgGrad}${bgStyle} bg-black text-white 
+                   hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] ${cardInfo.bgGrad}${cardInfo.bgStyle} bg-black text-white 
                xs:w-screen xs:m-0 xs:mx-1 order-1`}
               >
                 <div className="w-full  h-[20%] flex items-start justify-end">
@@ -280,10 +364,10 @@ export default function CreateCard() {
                 </div>
                 <div className="w-full  h-[70%] flex flex-col items-center justify-center">
                   <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">
-                    {name}
+                    {cardInfo.name}
                   </span>
                   <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">
-                    {profession}
+                    {cardInfo.profession}
                   </span>
                 </div>
                 <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
@@ -295,11 +379,56 @@ export default function CreateCard() {
                     className=" flex relative xs:text-[12px] font-ios text-slate-300  font-bold
                 text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
                   >
-                    {phone}
+                    {cardInfo.phone}
                   </span>
                 </div>
               </div>
             </div>
+            <div className="flex flex-col mr-[28%] p-4 m-4  rounded-lg hover:scale-110 transition-transform duration-500">
+              <div className="bg-white rounded-xl shadow-md p-4 border border-brand">
+                <h2 className="text-xl font-semibold text-brand mb-2">
+                  Card Preview Info
+                </h2>
+
+                <p className="text-slate-700 text-base mb-1">
+                  <span className="font-semibold text-slate-600">
+                    Card Name:
+                  </span>{" "}
+                  <span className="text-brand font-medium">{cardName}</span>
+                </p>
+
+                <p className="text-slate-700 text-base leading-6">
+                  <span className="font-semibold text-slate-600">
+                    Card Description:
+                  </span>{" "}
+                  Name: <span className="text-slate-500">{cardInfo.name}</span>,
+                  Profession:{" "}
+                  <span className="text-slate-500">{cardInfo.profession}</span>,
+                  Quote:{" "}
+                  <span className="text-slate-500">{cardInfo.slogan}</span>,
+                  Phone:{" "}
+                  <span className="text-slate-500">{cardInfo.phone}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-10 p-6 m-4 mb-10 border border-brand rounded-lg hover:scale-110 transition-transform duration-500">
+            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+              <Heart className="" />
+              Love
+            </button>
+            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+              <Star /> Favourites
+            </button>
+            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+              <Save /> Save
+            </button>
+            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+              <BookOpenCheck /> Public
+            </button>
+            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+              <Workflow /> QRcodeconfig
+            </button>
           </div>
         </div>
       </div>
