@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Card from "./card";
 import Sidebar from "../dashboard/sidebar";
-import { Heart, Save, Star, Workflow, BookOpenCheck } from "lucide-react";
+import { Heart, Save, Star, Workflow, BookOpenCheck, PinIcon } from "lucide-react";
 
 const bgDirections = [
   "bg-gradient-to-r",
@@ -257,21 +257,24 @@ export default function CreateCard() {
             </div>
           </div>
           {/* Card functionalities */}
-          <div className="flex gap-10 p-6 m-4 mb-72 border tb:gap-6 tb:ml-20 xb:ml-44 tb:p-4 border-brand rounded-lg hover:scale-110 transition-transform duration-500 xs:flex-col ">
-            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+          <div className="flex gap-10 p-6 m-4 mb-72 border tb:gap-3 tb:ml-20 xb:ml-44 tb:p-2 border-brand rounded-lg hover:scale-110 tb:hover:scale-105 transition-transform duration-500 xs:flex-col xs:items-start ">
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Heart className="" />
               Love
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
-              <Star /> Favourites
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+              <Star /> Favourite
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+              <PinIcon /> Highlight
+            </button>
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Save /> Save
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <BookOpenCheck /> Public
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold hover:text-brand ">
+            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Workflow /> QRcodeconfig
             </button>
           </div>
