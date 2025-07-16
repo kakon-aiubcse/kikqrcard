@@ -1,13 +1,11 @@
-import { QRCodeCanvas, QRCodeSVG } from "qrcode.react";
+import QRCode from "react-qr-code";
 
-export default function QRCodeGenerator() {
+const QRCodeGenerator = ({ value }) => {
   return (
-    <div>
-      {/* Use either QRCodeCanvas or QRCodeSVG here */}
-      <QRCodeCanvas
-        value="https://www.reddit.com/user/kakonaiubcse/"
-        size={100}
-      />
+    <div className="ml-4">
+      <QRCode value={value} size={128} />
     </div>
   );
-}
+};
+
+export default QRCodeGenerator;

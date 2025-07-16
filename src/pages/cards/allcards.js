@@ -1,6 +1,6 @@
 //all the designed card will be here
 import React,{ forwardRef } from "react";
-import QRCodeGenerator from "../qrsettings/QRCodeGenerator";
+import QRCodeGenerator from "../qrsettings/qrcodegenerator";
 import { useRouter } from "next/router";
 
 const Allcards =forwardRef((props, ref)  => {
