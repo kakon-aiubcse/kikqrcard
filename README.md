@@ -24,7 +24,7 @@ Built with **Next.js**, **Tailwind CSS**, and **Mongodb**, this platform is mobi
 | Layer       | Tech                          |
 |-------------|-------------------------------|
 | Frontend    | Next.js, React, Tailwind CSS  |
-| Frontend    | Next.js,Javascript            |
+| Backend     | Next.js,Javascript            |
 | Database    | Mongodb                       |
 | State Mgmt  | React hooks                   |
 | Styling     | Tailwind CSS, Framer Motion   |
