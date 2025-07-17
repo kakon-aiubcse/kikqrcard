@@ -58,11 +58,11 @@ export default function CreateCard() {
   const [cardName, setCardName] = useState("kik---qrcard");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [savedCard, setSavedCard] = useState(false);
-  const [highlight, setHighlight] = useState(false);
-  const [favourite, setFavourite] = useState(false);
-  const [lovedCard, setLovedCard] = useState(false);
-  const [publicCard, setPublicCard] = useState(false);
+  const [savedCard, setSavedCard] = useState(true);
+  const [highlight, setHighlight] = useState(true);
+  const [favourite, setFavourite] = useState(true);
+  const [lovedCard, setLovedCard] = useState(true);
+  const [publicCard, setPublicCard] = useState(true);
 
   const router = useRouter();
 
@@ -169,10 +169,10 @@ export default function CreateCard() {
         quote: cardInfo.quote,
         bgGrad: cardInfo.bgGrad,
         bgStyle: cardInfo.bgStyle,
+        savedCard: savedCard,
       });
 
       if (response.status === 201 || response.status === 200) {
-        setSavedCard(true);
         setMessage("Card saved successfully!");
         console.log(response.data);
       } else {
@@ -221,7 +221,6 @@ export default function CreateCard() {
         ishighlighted: highlight,
       });
 
-      setHighlight(!highlight);
       setMessage("Card added to highlighted section successfully!");
       console.log(response.data);
     } catch (error) {
@@ -267,7 +266,6 @@ export default function CreateCard() {
         isfavourite: favourite,
       });
 
-      setFavourite(!favourite);
       setMessage("Card added to Favourite section successfully!");
       console.log(response.data);
     } catch (error) {
@@ -313,7 +311,6 @@ export default function CreateCard() {
         isloved: lovedCard,
       });
 
-      setLovedCard(!lovedCard);
       setMessage("Card added to Loved section successfully!");
       console.log(response.data);
     } catch (error) {
@@ -325,7 +322,7 @@ export default function CreateCard() {
       }
     }
   };
-   const handlPuliccard = async () => {
+  const handlPuliccard = async () => {
     try {
       if (
         cardInfo.name === "User Name" ||
@@ -356,10 +353,10 @@ export default function CreateCard() {
         quote: cardInfo.quote,
         bgGrad: cardInfo.bgGrad,
         bgStyle: cardInfo.bgStyle,
+        publicCard: publicCard,
       });
 
       if (response.status === 201 || response.status === 200) {
-        setSavedCard(true);
         setMessage("Card added as public card successfully!");
         console.log(response.data);
       } else {
@@ -566,11 +563,12 @@ export default function CreateCard() {
               <Save /> Save
             </button>
 
-            <button 
-            onClick={()=>{
-              handlPuliccard();
-            }}
-            className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+            <button
+              onClick={() => {
+                handlPuliccard();
+              }}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
+            >
               <BookOpenCheck /> Public
             </button>
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">

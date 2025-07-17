@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, cardName, name, profession, phone, quote, bgGrad, bgStyle } =
+  const { email, cardName, name, profession, phone, quote, bgGrad, bgStyle, savedCard } =
     req.body;
 
   if (
@@ -33,7 +33,8 @@ export default async function handler(req, res) {
     !phone ||
     !quote ||
     !bgGrad ||
-    !bgStyle
+    !bgStyle ||
+    savedCard === undefined
   ) {
     return res.status(400).json({ error: "Missing required card fields" });
   }
@@ -61,6 +62,7 @@ export default async function handler(req, res) {
       quote,
       bgGrad,
       bgStyle,
+      savedCard,
       createdAt: new Date(),
     };
 
