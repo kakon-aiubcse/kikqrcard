@@ -43,7 +43,7 @@ export default async function handler(req, res) {
     !quote ||
     !bgGrad ||
     !bgStyle ||
-    !ishighlighted
+    ishighlighted ===undefined
   ) {
     return res.status(400).json({ error: "Missing required card fields" });
   }
@@ -52,6 +52,10 @@ export default async function handler(req, res) {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("myhighlightedCards");
+    const existingCard = await cards.findOne({ cardName: cardName.toLowerCase() });
+    if (existingCard) {
+      return res.status(409).json({ error: "Card already exists" });
+    }
 
     const newCard = {
       email,

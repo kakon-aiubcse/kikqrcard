@@ -181,52 +181,54 @@ export default function CreateCard() {
     }
   };
   const handleHighlightedCard = async () => {
-    try {
-      // Check for placeholder values
-      if (
-        cardInfo.name === "User Name" ||
-        cardInfo.profession === "User Profession" ||
-        cardInfo.phone === "User Number" ||
-        cardInfo.quote === "User's Quote"
-      ) {
-        setError("You must complete the card setup to save.");
-        return;
-      }
+  try {
+    // Check for placeholder values
+    if (
+      cardInfo.name === "User Name" ||
+      cardInfo.profession === "User Profession" ||
+      cardInfo.phone === "User Number" ||
+      cardInfo.quote === "User's Quote"
+    ) {
+      setError("You must complete the card setup to save.");
+      return;
+    }
 
-      // Perform actual validation
-      const nameError = validateName(cardInfo.name);
-      const professionError = validateProfession(cardInfo.profession);
-      const phoneError = validatePhone(cardInfo.phone);
-      const quoteError = validatequote(cardInfo.quote);
+    // Perform actual validation
+    const nameError = validateName(cardInfo.name);
+    const professionError = validateProfession(cardInfo.profession);
+    const phoneError = validatePhone(cardInfo.phone);
+    const quoteError = validatequote(cardInfo.quote);
 
-      if (nameError || professionError || phoneError || quoteError) {
-        setError("Enter valid card information before saving.");
-        return;
-      }
+    if (nameError || professionError || phoneError || quoteError) {
+      setError("Enter valid card information before saving.");
+      return;
+    }
 
-      const response = await axios.post("/api/cards/highlightedCards", {
-        email: session?.user?.email,
-        cardName: cardName,
-        name: cardInfo.name,
-        profession: cardInfo.profession,
-        phone: cardInfo.phone,
-        quote: cardInfo.quote,
-        bgGrad: cardInfo.bgGrad,
-        bgStyle: cardInfo.bgStyle,
-        ishighlighted: highlight,
-      });
+    const response = await axios.post("/api/cards/highlightedCards", {
+      email: session?.user?.email,
+      cardName: cardName.toLowerCase(),
+      name: cardInfo.name,
+      profession: cardInfo.profession,
+      phone: cardInfo.phone,
+      quote: cardInfo.quote,
+      bgGrad: cardInfo.bgGrad,
+      bgStyle: cardInfo.bgStyle,
+      ishighlighted: highlight,
+    });
 
-      if (response.status === 201 || response.status === 200) {
-        setMessage("Card saved successfully!");
-        console.log(response.data);
-      } else {
-        setError("Failed to save card.");
-      }
-    } catch (error) {
+    setHighlight(!highlight);
+    setMessage("Card saved successfully!");
+    console.log(response.data);
+  } catch (error) {
+    if (error.response?.status === 409) {
+      setError("Card name already exists.");
+    } else {
       setError("Error saving card.");
       console.error("Error Saving Card:", error.message);
     }
-  };
+  }
+};
+
 
   return (
     <>
@@ -395,11 +397,15 @@ export default function CreateCard() {
             <button
               onClick={() => {
                 handleHighlightedCard();
-                setHighlight(!highlight);
               }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
+              disabled={highlight}
+              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
+                highlight
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "hover:text-brand"
+              }`}
             >
-              <PinIcon /> Highlight
+              <PinIcon /> {highlight ? "Highlighted" : "Highlight"}
             </button>
 
             <button
