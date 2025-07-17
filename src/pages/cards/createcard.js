@@ -56,36 +56,37 @@ export default function CreateCard() {
     profession: "",
   });
   const [cardName, setCardName] = useState("kik---qrcard");
- const [error, setError] = useState("");
-const [message, setMessage] = useState("");
-
+  const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+  const [highlight, setHighlight] = useState(false);
 
   const router = useRouter();
 
- useEffect(() => {
-  const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
-  const trimmedProfession = cardInfo.profession.trim().toLowerCase().slice(0, 3);
-  setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
+  useEffect(() => {
+    const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
+    const trimmedProfession = cardInfo.profession
+      .trim()
+      .toLowerCase()
+      .slice(0, 3);
+    setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
 
-  const timer2 = setTimeout(() => {
-    setError("");
-    setMessage("");
-  }, 4000);
+    const timer2 = setTimeout(() => {
+      setError("");
+      setMessage("");
+    }, 4000);
 
-  let timer;
-  if (status === "unauthenticated") {
-    timer = setTimeout(() => {
-      router.push("/authentication/login");
-    }, 3000);
-  }
+    let timer;
+    if (status === "unauthenticated") {
+      timer = setTimeout(() => {
+        router.push("/authentication/login");
+      }, 3000);
+    }
 
-  return () => {
-    clearTimeout(timer2);
-    if (timer) clearTimeout(timer);
-  };
-}, [status, router, cardInfo.name, cardInfo.profession, error, message]);
-
-
+    return () => {
+      clearTimeout(timer2);
+      if (timer) clearTimeout(timer);
+    };
+  }, [status, router, cardInfo.name, cardInfo.profession, error, message]);
 
   if (status === "loading") {
     return (
@@ -158,7 +159,7 @@ const [message, setMessage] = useState("");
       }
 
       const response = await axios.post("/api/cards/saveCards", {
-        email:session?.user?.email,
+        email: session?.user?.email,
         cardName: cardName,
         name: cardInfo.name,
         profession: cardInfo.profession,
@@ -168,7 +169,54 @@ const [message, setMessage] = useState("");
         bgStyle: cardInfo.bgStyle,
       });
 
-      if (response.status === 201 ||response.status === 200) {
+      if (response.status === 201 || response.status === 200) {
+        setMessage("Card saved successfully!");
+        console.log(response.data);
+      } else {
+        setError("Failed to save card.");
+      }
+    } catch (error) {
+      setError("Error saving card.");
+      console.error("Error Saving Card:", error.message);
+    }
+  };
+  const handleHighlightedCard = async () => {
+    try {
+      // Check for placeholder values
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
+
+      // Perform actual validation
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
+
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/highlightedCards", {
+        email: session?.user?.email,
+        cardName: cardName,
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+        ishighlighted: highlight,
+      });
+
+      if (response.status === 201 || response.status === 200) {
         setMessage("Card saved successfully!");
         console.log(response.data);
       } else {
@@ -206,7 +254,7 @@ const [message, setMessage] = useState("");
                 errors.name ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-          
+
             <input
               value={cardInfo.profession}
               onChange={(e) => {
@@ -219,7 +267,6 @@ const [message, setMessage] = useState("");
                 errors.profession ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-          
 
             <input
               value={cardInfo.phone}
@@ -233,7 +280,6 @@ const [message, setMessage] = useState("");
                 errors.phone ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-           
 
             <input
               value={cardInfo.quote}
@@ -247,7 +293,6 @@ const [message, setMessage] = useState("");
                 errors.quote ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-          
 
             {/* Direction Picker */}
             <select
@@ -265,20 +310,26 @@ const [message, setMessage] = useState("");
             </select>
           </div>
           <div className="flex flex-col w-auto h-auto p-2">
-              {errors.name && (
-              <p className="text-red-500 text-sm mt-1">Name error: {errors.name}</p>
-              
+            {errors.name && (
+              <p className="text-red-500 text-sm mt-1">
+                Name error: {errors.name}
+              </p>
             )}
-              {errors.profession && (
-              <p className="text-red-500 text-sm mt-1">Profession error:{errors.profession}</p>
+            {errors.profession && (
+              <p className="text-red-500 text-sm mt-1">
+                Profession error:{errors.profession}
+              </p>
             )}
-             {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">Phone error: {errors.phone}</p>
+            {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">
+                Phone error: {errors.phone}
+              </p>
             )}
-              {errors.quote && (
-              <p className="text-red-500 text-sm mt-1">Quote errro: {errors.quote}</p>
+            {errors.quote && (
+              <p className="text-red-500 text-sm mt-1">
+                Quote errro: {errors.quote}
+              </p>
             )}
-
           </div>
 
           {/* Color Swatches (Optional Visual Picker) */}
@@ -341,9 +392,16 @@ const [message, setMessage] = useState("");
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <Star /> Favourite
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+            <button
+              onClick={() => {
+                handleHighlightedCard();
+                setHighlight(!highlight);
+              }}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
+            >
               <PinIcon /> Highlight
             </button>
+
             <button
               onClick={handleSaveCard}
               className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
