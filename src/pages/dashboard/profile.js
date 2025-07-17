@@ -1,6 +1,7 @@
 //user dashboard/profile
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
+import Card from "../cards/card";
 
 const Profile = () => {
   const { data: session } = useSession();
@@ -10,38 +11,47 @@ const Profile = () => {
     phone: "",
     profileImageBase64: "",
   });
+  const [highlightedCards, setHighlightedCards] = useState({})
 
   useEffect(() => {
-    const fetchUser = async () => {
-      if (!session?.user?.email) return;
+  const useremail = session?.user?.email;
+  if (!useremail) return;
 
-      try {
-        const res = await fetch("/api/userdata", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: session.user.email }),
+  const fetchUserAndHighlighted = async () => {
+    try {
+      // Fetch user data
+      const res = await fetch("/api/userdata", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: useremail }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setUserData({
+          name: data.name,
+          email: data.email,
+          phone: data.phone,
+          profileImageBase64: data.profileImageBase64,
         });
-
-        const data = await res.json();
-        if (res.ok) {
-          setUserData({
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            profileImageBase64: data.profileImageBase64,
-          });
-        } else {
-          console.error("Error fetching user:", data.error);
-        }
-      } catch (err) {
-        console.error("Network error:", err);
+      } else {
+        console.error("Error fetching user:", data.error);
       }
-    };
 
-    fetchUser();
-  }, [session]);
+      // Fetch highlighted cards
+      const highlightRes = await fetch(`/api/getCards/gethighlightedcard?email=${useremail}`);
+      const highlightData = await highlightRes.json();
+      setHighlightedCards(highlightData.highlightedCards || []);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    }
+  };
+
+  fetchUserAndHighlighted();
+}, [session]);
+
   return (
     <>
       <main className="ml-[16.666667%] w-10/12 h-auto lp:ml-[20%] xb:ml-[25%] xs:w-full overflow-hidden  p-4 xs:mt-[24%] xs:ml-0 xs:p-0 ">
@@ -114,9 +124,31 @@ const Profile = () => {
 
       <div className=" ml-[16.666667%] lp:ml-[20%] xs:ml-0 flex flex-col w-full xb:ml-[25%] relative p-4 h-auto items-start overflow-hidden justify-start">
         <span className="text-2xl ml-6 font-cp font-semibold underline">
-          Highlighted Cards
+          Highlighted Card
         </span>
-        <span className="h-dvh p-6">your Highlighted cards will be here.</span>
+        
+              <div className="w-screen top-[20px] flex flex-col relative xs:right-[122px] tb:right-16 lp:right-12 xb:right-52 tb:pr-0">
+                {highlightedCards?.length > 0 ? (
+                  highlightedCards.map((highlightedCard, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col relative tb:right-52 tb:w-[1000px] lp:right-[550px] lp:w-[2000px] xb:items-center xb:right-[280px]"
+                    >
+                      <Card
+                        name={highlightedCard.name}
+                        profession={highlightedCard.profession}
+                        phone={highlightedCard.phone}
+                        quote={highlightedCard.quote}
+                        bgGrad={highlightedCard.bgGrad}
+                        bgStyle={highlightedCard.bgStyle}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">All Highlighted cards will display here</p>
+                )}
+              </div>
+        
       </div>
     </>
   );
