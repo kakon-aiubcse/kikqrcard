@@ -139,7 +139,6 @@ export default function CreateCard() {
   };
   const handleSaveCard = async () => {
     try {
-      // Check for placeholder values
       if (
         cardInfo.name === "User Name" ||
         cardInfo.profession === "User Profession" ||
@@ -150,7 +149,6 @@ export default function CreateCard() {
         return;
       }
 
-      // Perform actual validation
       const nameError = validateName(cardInfo.name);
       const professionError = validateProfession(cardInfo.profession);
       const phoneError = validatePhone(cardInfo.phone);
@@ -181,7 +179,7 @@ export default function CreateCard() {
       }
     } catch (error) {
       if (error.response?.status === 409) {
-        setError("Card name already exists.");
+        setError("This Card with same name and design exists.");
       } else {
         setError("Error saving card.");
         console.error("Error Saving Card:", error.message);
@@ -190,7 +188,6 @@ export default function CreateCard() {
   };
   const handleHighlightedCard = async () => {
     try {
-      // Check for placeholder values
       if (
         cardInfo.name === "User Name" ||
         cardInfo.profession === "User Profession" ||
@@ -201,7 +198,6 @@ export default function CreateCard() {
         return;
       }
 
-      // Perform actual validation
       const nameError = validateName(cardInfo.name);
       const professionError = validateProfession(cardInfo.profession);
       const phoneError = validatePhone(cardInfo.phone);
@@ -229,7 +225,7 @@ export default function CreateCard() {
       console.log(response.data);
     } catch (error) {
       if (error.response?.status === 409) {
-        setError("Card name already exists.");
+        setError("This Card with same name and design exists.");
       } else {
         setError("Error saving card.");
         console.error("Error Saving Card:", error.message);
@@ -238,7 +234,6 @@ export default function CreateCard() {
   };
   const handleFavouriteCard = async () => {
     try {
-      // Check for placeholder values
       if (
         cardInfo.name === "User Name" ||
         cardInfo.profession === "User Profession" ||
@@ -249,7 +244,6 @@ export default function CreateCard() {
         return;
       }
 
-      // Perform actual validation
       const nameError = validateName(cardInfo.name);
       const professionError = validateProfession(cardInfo.profession);
       const phoneError = validatePhone(cardInfo.phone);
@@ -277,7 +271,7 @@ export default function CreateCard() {
       console.log(response.data);
     } catch (error) {
       if (error.response?.status === 409) {
-        setError("Card name already exists.");
+        setError("This Card with same name and design exists.");
       } else {
         setError("Error saving card.");
         console.error("Error Saving Card:", error.message);
@@ -286,7 +280,6 @@ export default function CreateCard() {
   };
   const handleLovedCard = async () => {
     try {
-      // Check for placeholder values
       if (
         cardInfo.name === "User Name" ||
         cardInfo.profession === "User Profession" ||
@@ -297,7 +290,6 @@ export default function CreateCard() {
         return;
       }
 
-      // Perform actual validation
       const nameError = validateName(cardInfo.name);
       const professionError = validateProfession(cardInfo.profession);
       const phoneError = validatePhone(cardInfo.phone);
@@ -325,7 +317,7 @@ export default function CreateCard() {
       console.log(response.data);
     } catch (error) {
       if (error.response?.status === 409) {
-        setError("Card name already exists.");
+        setError("This Card with same name and design exists.");
       } else {
         setError("Error saving card.");
         console.error("Error Saving Card:", error.message);
@@ -494,54 +486,34 @@ export default function CreateCard() {
               onClick={() => {
                 handleLovedCard();
               }}
-              disabled={lovedCard}
-              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
-                lovedCard
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:text-brand"
-              }`}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
             >
-              <Heart /> {lovedCard ? "Loved" : "Love"}
+              <Heart /> Love
             </button>
 
             <button
               onClick={() => {
                 handleFavouriteCard();
               }}
-              disabled={favourite}
-              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
-                favourite
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:text-brand"
-              }`}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
             >
-              <Star /> {favourite ? "Favourited" : "Favourite"}
+              <Star /> Favourite
             </button>
             <button
               onClick={() => {
                 handleHighlightedCard();
               }}
-              disabled={highlight}
-              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
-                highlight
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:text-brand"
-              }`}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
             >
-              <PinIcon /> {highlight ? "Highlighted" : "Highlight"}
+              <PinIcon /> Highlight
             </button>
             <button
               onClick={() => {
                 handleSaveCard();
               }}
-              disabled={savedCard}
-              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
-                savedCard
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "hover:text-brand"
-              }`}
+              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
             >
-              <Save /> {savedCard ? "Saved" : "Save"}
+              <Save /> Save
             </button>
 
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
