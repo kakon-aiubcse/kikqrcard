@@ -58,6 +58,7 @@ export default function CreateCard() {
   const [cardName, setCardName] = useState("kik---qrcard");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
+  const [savedCard , setSavedCard] = useState(false)
   const [highlight, setHighlight] = useState(false);
    const [favourite, setFavourite] = useState(false);
 
@@ -171,14 +172,19 @@ export default function CreateCard() {
       });
 
       if (response.status === 201 || response.status === 200) {
+        setSavedCard(true);
         setMessage("Card saved successfully!");
         console.log(response.data);
       } else {
         setError("Failed to save card.");
       }
     } catch (error) {
-      setError("Error saving card.");
-      console.error("Error Saving Card:", error.message);
+      if (error.response?.status === 409) {
+        setError("Card name already exists.");
+      } else {
+        setError("Error saving card.");
+        console.error("Error Saving Card:", error.message);
+      }
     }
   };
   const handleHighlightedCard = async () => {
@@ -466,13 +472,21 @@ export default function CreateCard() {
             >
               <PinIcon /> {highlight ? "Highlighted" : "Highlight"}
             </button>
-
-            <button
-              onClick={handleSaveCard}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
+             <button
+              onClick={() => {
+                handleSaveCard();
+              }}
+              disabled={savedCard}
+              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
+                savedCard
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "hover:text-brand"
+              }`}
             >
-              <Save /> Save
+              <Save /> {savedCard ? "Saved" : "Save"}
             </button>
+
+            
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <BookOpenCheck /> Public
             </button>

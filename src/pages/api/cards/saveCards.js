@@ -32,6 +32,10 @@ export default async function handler(req, res) {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("myCard");
+    const existingcard = await cards.findOne({ cardName: cardName.toLowerCase() });
+     if (existingcard) {
+      return res.status(409).json({ error: "Card already exists" });
+    }
 
     const newCard = {
       email,
