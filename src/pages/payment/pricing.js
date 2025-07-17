@@ -1,10 +1,15 @@
 //pricing section
-import React,{ forwardRef } from "react";
+import React, { forwardRef } from "react";
+import { useRouter } from "next/router";
 
 const Pricing = forwardRef((props, ref) => {
+  const router = useRouter();
   return (
-    <div ref={ref}
-      id="pricing" className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen ">
+    <div
+      ref={ref}
+      id="pricing"
+      className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen "
+    >
       <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
         <span className="text-2xl text-slate-400 font-cp font-medium xs:text-xl">
           Smart investing. 10× returns.
@@ -20,7 +25,7 @@ const Pricing = forwardRef((props, ref) => {
         <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2  hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
           <div className="flex flex-col items-start justify-start p-4">
             <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
-              KIK QRcard 
+              KIK QRcard
             </span>
             <span className="text-lg font-cp font-bold text-black">
               {" "}
@@ -101,6 +106,9 @@ const Pricing = forwardRef((props, ref) => {
               </span>
             </div>{" "}
             <button
+              onClick={() => {
+                router.push("../authentication/signup");
+              }}
               className="flex relative top-10 left-10 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
        lp:m-2 lp:p-1 shadow-xl "
             >
@@ -111,7 +119,7 @@ const Pricing = forwardRef((props, ref) => {
         <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
           <div className="flex flex-col items-start justify-start p-4">
             <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
-              KIK QRcard 
+              KIK QRcard
             </span>
             <span className="text-lg font-cp font-bold text-black">
               {" "}
@@ -122,7 +130,7 @@ const Pricing = forwardRef((props, ref) => {
               <span className="relative top-7 ml-1">Forever</span>
             </span>
             <span className="font-ios text-black font-medium my-4">
-             Designed to meet every individual's QR card needs
+              Designed to meet every individual's QR card needs
             </span>
             <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
             <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
@@ -193,12 +201,18 @@ const Pricing = forwardRef((props, ref) => {
             </div>{" "}
             <div className="flex">
               <button
+                onClick={() => {
+                  router.push("../payment/billings");
+                }}
                 className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
      tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  lp:m-2 lp:p-1 shadow-xl"
               >
                 Purchase
               </button>
               <button
+                onClick={() => {
+                  router.push("../authentication/signup");
+                }}
                 className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
     tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  shadow-xl lp:m-2 lp:p-1"
               >
@@ -292,12 +306,18 @@ const Pricing = forwardRef((props, ref) => {
             </div>{" "}
             <div className="flex">
               <button
+                onClick={() => {
+                  router.push("../payment/billings");
+                }}
                 className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
       tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
               >
                 Purchase
               </button>
               <button
+                onClick={() => {
+                  router.push("../authentication/signup");
+                }}
                 className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
       tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
               >
