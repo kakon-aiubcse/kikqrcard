@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Card from "./card";
@@ -62,6 +62,7 @@ export default function CreateCard() {
   const [highlight, setHighlight] = useState(false);
   const [favourite, setFavourite] = useState(false);
   const [lovedCard, setLovedCard] = useState(false);
+  const [publicCard, setPublicCard] = useState(false);
 
   const router = useRouter();
 
@@ -324,6 +325,55 @@ export default function CreateCard() {
       }
     }
   };
+   const handlPuliccard = async () => {
+    try {
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
+
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
+
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/publiccards", {
+        email: session?.user?.email,
+        cardName: cardName,
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+      });
+
+      if (response.status === 201 || response.status === 200) {
+        setSavedCard(true);
+        setMessage("Card added as public card successfully!");
+        console.log(response.data);
+      } else {
+        setError("Failed to add card.");
+      }
+    } catch (error) {
+      if (error.response?.status === 409) {
+        setError("This Card with same name and design exists.");
+      } else {
+        setError("Error saving card.");
+        console.error("Error Saving Card:", error.message);
+      }
+    }
+  };
 
   return (
     <>
@@ -516,7 +566,11 @@ export default function CreateCard() {
               <Save /> Save
             </button>
 
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
+            <button 
+            onClick={()=>{
+              handlPuliccard();
+            }}
+            className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <BookOpenCheck /> Public
             </button>
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
