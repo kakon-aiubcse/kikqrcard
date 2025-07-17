@@ -22,9 +22,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { cardName, name, profession, phone, quote, bgGrad, bgStyle } = req.body;
+  const {email, cardName, name, profession, phone, quote, bgGrad, bgStyle } = req.body;
 
-  if (!cardName || !name || !profession || !phone || !quote || !bgGrad || !bgStyle) {
+  if (!email||!cardName || !name || !profession || !phone || !quote || !bgGrad || !bgStyle) {
     return res.status(400).json({ error: "Missing required card fields" });
   }
 
@@ -34,6 +34,7 @@ export default async function handler(req, res) {
     const cards = db.collection("myCard");
 
     const newCard = {
+      email,
       cardName,
       name,
       profession,

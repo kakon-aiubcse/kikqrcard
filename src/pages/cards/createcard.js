@@ -62,22 +62,31 @@ const [message, setMessage] = useState("");
 
   const router = useRouter();
 
-  useEffect(() => {
-    const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
-    const trimmedProfession = cardInfo.profession
-      .trim()
-      .toLowerCase()
-      .slice(0, 3);
-    setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
+ useEffect(() => {
+  const trimmedName = cardInfo.name.trim().toLowerCase().slice(0, 3);
+  const trimmedProfession = cardInfo.profession.trim().toLowerCase().slice(0, 3);
+  setCardName(`kik${trimmedName}${trimmedProfession}qrcard`);
 
-    if (status === "unauthenticated") {
-      const timer = setTimeout(() => {
-        router.push("/authentication/login");
-      }, 3000);
+  const timer2 = setTimeout(() => {
+    setError("");
+    setMessage("");
+  }, 4000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [status, router, cardInfo.name]);
+  let timer;
+  if (status === "unauthenticated") {
+    timer = setTimeout(() => {
+      router.push("/authentication/login");
+    }, 3000);
+  }
+
+  return () => {
+    clearTimeout(timer2);
+    if (timer) clearTimeout(timer);
+  };
+}, [status, router, cardInfo.name, cardInfo.profession, error, message]);
+
+
+
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -149,6 +158,7 @@ const [message, setMessage] = useState("");
       }
 
       const response = await axios.post("/api/cards/saveCards", {
+        email:session?.user?.email,
         cardName: cardName,
         name: cardInfo.name,
         profession: cardInfo.profession,
@@ -196,10 +206,7 @@ const [message, setMessage] = useState("");
                 errors.name ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-            )}
-
+          
             <input
               value={cardInfo.profession}
               onChange={(e) => {
@@ -212,9 +219,7 @@ const [message, setMessage] = useState("");
                 errors.profession ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-            {errors.profession && (
-              <p className="text-red-500 text-sm mt-1">{errors.profession}</p>
-            )}
+          
 
             <input
               value={cardInfo.phone}
@@ -228,9 +233,7 @@ const [message, setMessage] = useState("");
                 errors.phone ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-            )}
+           
 
             <input
               value={cardInfo.quote}
@@ -244,9 +247,7 @@ const [message, setMessage] = useState("");
                 errors.quote ? "border-red-500" : "border-gray-300"
               } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
             />
-            {errors.quote && (
-              <p className="text-red-500 text-sm mt-1">{errors.quote}</p>
-            )}
+          
 
             {/* Direction Picker */}
             <select
@@ -262,6 +263,22 @@ const [message, setMessage] = useState("");
                 </option>
               ))}
             </select>
+          </div>
+          <div className="flex flex-col w-auto h-auto p-2">
+              {errors.name && (
+              <p className="text-red-500 text-sm mt-1">Name error: {errors.name}</p>
+              
+            )}
+              {errors.profession && (
+              <p className="text-red-500 text-sm mt-1">Profession error:{errors.profession}</p>
+            )}
+             {errors.phone && (
+              <p className="text-red-500 text-sm mt-1">Phone error: {errors.phone}</p>
+            )}
+              {errors.quote && (
+              <p className="text-red-500 text-sm mt-1">Quote errro: {errors.quote}</p>
+            )}
+
           </div>
 
           {/* Color Swatches (Optional Visual Picker) */}
