@@ -1,431 +1,71 @@
-//all the designed card will be here
-import React,{ forwardRef } from "react";
-import QRCodeGenerator from "../qrsettings/qrcodegenerator";
+import React, { forwardRef, useState, useEffect } from "react";
+import Card from "./card";
 import { useRouter } from "next/router";
 
-const Allcards =forwardRef((props, ref)  => {
-  let urlToEncode = "https://www.reddit.com/user/kakonaiubcse/";
+const Allcards = forwardRef((props, ref) => {
   const router = useRouter();
+  const [allcard, setAllcard] = useState([]);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      try {
+        const response = await fetch("/api/getCards/getallcards");
+        const data = await response.json();
+        setAllcard(data.savedCards || []);
+      } catch (error) {
+        console.error("Failed to fetch cards:", error);
+      }
+    };
+
+    fetchCards();
+  }, []);
 
   return (
-    <>
-      <div 
+    <div
       ref={ref}
-      id="cards" className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32">
-        <div className=" flex items-center justify-center pr-60 xs:pr-0">
-          <span className="text-6xl font-cp p-4 m-4 text-brand font-bold">
-            All Cards.
-          </span>
-        </div>
-        {/* Cards Section */}
-        {/* first card */}
-        <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer   xs:hover:scale-100 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
-              <div className="flex w-1/2 items-center justify-center">
-                <span className="shadow-2xl">
-                  {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
-                </span>
-              </div>
-              <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
-                  Scan QR
-                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
-                </span>
-              </div>
-            </div>
-            <div className="w-full  h-[10%] flex items-center justify-center">
-              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
-            </div>
-          </div>
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-indigo-500 to-sky-500 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
-              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
-            </div>
-            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
-              <img src="/call.svg" className="h-[38px] w-[36px]" />
-              <span
-                className=" flex relative  font-ios text-slate-300  font-bold
-           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
-              >
-                01923089370
-              </span>
-            </div>
-          </div>
-        </div>
-        {/* second card */}
-           <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer  hover:shadow-[#8F87F1] xs:hover:scale-100 tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start
-        xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-600 to-slate-950 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
-              <div className="flex w-1/2 items-center justify-center">
-                <span className="shadow-2xl">
-                  {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
-                </span>
-              </div>
-              <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
-                  Scan QR
-                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
-                </span>
-              </div>
-            </div>
-            <div className="w-full  h-[10%] flex items-center justify-center">
-              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
-            </div>
-          </div>
-          <div className="flex flex-col h-[280px]  w-[30%] hover:shadow-2xl hover:shadow-[#8F87F1] lp:w-[38%] tb:w-[75%]  p-1 m-5 rounded-[20px] bg-gradient-to-l from-red-500 to-slate-950 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
-              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
-            </div>
-            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
-              <img src="/call.svg" className="h-[38px] w-[36px]" />
-              <span
-                className=" flex relative  font-ios text-slate-300  font-bold
-           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
-              >
-                01923089370
-              </span>
-            </div>
-          </div>
-        </div>
-        {/* third card  */}
-        <div className="flex flex-row items-start justify-center  w-screen   pr-72 hover:scale-105 transition-transform duration-300 ease-in-out cursor-pointer  hover:shadow-[#8F87F1] xs:hover:scale-100 
-        tb:pr-48 tb:flex tb:flex-col tb:items-center tb:justify-start
-         xs:flex xs:flex-col xs:overflow-hidden xs:mr-1 xs:gap-2 ">
-          <div className="flex flex-col h-[280px] w-[30%]  lp:w-[38%] tb:w-[75%] hover:shadow-2xl hover:shadow-[#8F87F1]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-row items-center justify-evenly">
-              <div className="flex w-1/2 items-center justify-center">
-                <span className="shadow-2xl">
-                  {urlToEncode && <QRCodeGenerator value={urlToEncode} />}{" "}
-                </span>
-              </div>
-              <div className="flex flex-col w-1/2">
-                <span className="text-xl font-ios text-slate-200 mb-20 mr-2 relative right-20 bottom-4 whitespace-nowrap xs:text-sm xs:right-14">Connection creates community.</span>
-                <span className="font-ios text-xl flex-col relative bottom-10 right-5 ">
-                  Scan QR
-                  <img src="/left-arrow.svg" className="flex relative w-[50px] h-[30px] " />
-                </span>
-              </div>
-            </div>
-            <div className="w-full  h-[10%] flex items-center justify-center">
-              <span className="text-xs font-ios font-extralight text-slate-300"> &copy; 2025, KIK QRcards. All rights reserved.</span>
-            </div>
-          </div>
-          <div className="flex flex-col h-[280px]  w-[30%] hover:shadow-2xl hover:shadow-[#8F87F1] lp:w-[38%] tb:w-[75%]  p-1 m-5 rounded-[20px] bg-gradient-to-r from-teal-600 to-slate-900 text-white 
-          xs:w-screen xs:m-0 xs:mx-1">
-            <div className="w-full  h-[20%] flex items-start justify-end">
-              <svg
-                width="60"
-                height="40"
-                viewBox="0 0 200 60"
-                fill="none"
-                fontStyle="italic"
-                xmlns="http://www.w3.org/2000/svg"
-                className="flex relative right-3"
-              >
-                <rect
-                  width="200"
-                  height="60"
-                  rx="12"
-                  ry="12"
-                  fill="transparent"
-                />
-
-                <text
-                  x="25"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize={36}
-                  fontWeight="700"
-                  fill="white"
-                >
-                  KIK
-                </text>
-
-                <circle cx="140" cy="20" r="5" fill="teal" />
-                <rect x="160" y="15" width="10" height="10" fill="blue" />
-                <rect x="160" y="35" width="5" height="5" fill="black" />
-                <circle cx="185" cy="40" r="3" fill="red" />
-
-                <text
-                  x="95"
-                  y="45"
-                  fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-                  fontSize="24"
-                  fill="white"
-                  fontWeight="600"
-                >
-                  QRcards
-                </text>
-              </svg>
-            </div>
-            <div className="w-full  h-[70%] flex flex-col items-center justify-center">
-              <span className="text-3xl font-ios relative p-5 m-5 bottom-7 font-bold italic text-sky-100 xs:text-xl">Khairul Islam Kakon</span>
-              <span className="text-base font-cp font-semibold relative bottom-16 text-slate-300">Software Engineer</span>
-            </div>
-            <div className="w-full relative bottom-4 h-[10%] flex items-center justify-center space-x-4">
-              <img src="/call.svg" className="h-[38px] w-[36px]" />
-              <span
-                className=" flex relative  font-ios text-slate-300  font-bold
-           text-[20px] leading-[30px] tracking-[15px] shadow-2xl"
-              >
-                01923089370
-              </span>
-            </div>
-          </div>
-        </div>
-        <div className="flex mr-72 gap-5 m-3 p-3 xs:mr-4">
-          <span className="p-3 text-brand font-cp  hover:text-sky-700 border border-brand mt-5 hover:border
-           hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] 
-           duration-700 ease-in-out rounded-xl "
-           >show more</span>
-          <span className="p-3 text-brand font-cp  hover:text-sky-700 border border-brand mt-5 
-          hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg
-           hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl"
-           onClick={()=>{router.push("/cards/createcard")}}>create card?</span>
-        </div>
+      id="cards"
+      className="flex flex-col min-h-screen w-screen py-2 px-1 items-center justify-center xs:gap-2 xs:relative xs:h-full xs:mb-32"
+    >
+      <div className="flex items-center justify-center pr-60 xs:pr-0">
+        <span className="text-6xl font-cp p-4 m-4 text-brand font-bold">
+          All Cards.
+        </span>
       </div>
-    </>
+
+      <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:right-16 lp:right-12 xb:right-10 tb:pr-0">
+        {allcard?.length > 0 ? (
+          allcard.map((card, index) => (
+            <div
+              key={index}
+              className="flex flex-col relative tb:right-52 tb:w-[1000px] lp:right-[550px] lp:w-[2000px] xb:items-center xb:right-[280px]"
+            >
+              <Card
+                name={card.name}
+                profession={card.profession}
+                phone={card.phone}
+                quote={card.quote}
+                bgGrad={card.bgGrad}
+                bgStyle={card.bgStyle}
+              />
+            </div>
+          ))
+        ) : (
+          <p className="text-gray-500">All public cards will display here</p>
+        )}
+      </div>
+
+      <div className="flex mr-72 gap-5 m-3 p-3 xs:mr-4">
+        <span className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl">
+          show more
+        </span>
+        <span
+          onClick={() => router.push("/cards/createcard")}
+          className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl"
+        >
+          create card?
+        </span>
+      </div>
+    </div>
   );
 });
 

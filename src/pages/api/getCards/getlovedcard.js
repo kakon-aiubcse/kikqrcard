@@ -40,6 +40,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ lovedCards });
   } catch (err) {
     console.error("Fetch error:", err);
-    return res.status(500).json({ error: "Failed to fetch favourite cards" });
+    return res.status(500).json({ error: "Failed to fetch  cards" });
   }
 }

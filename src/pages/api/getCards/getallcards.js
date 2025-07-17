@@ -18,28 +18,22 @@ async function connectToDatabase() {
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
-
-  const { email } = req.query;
-
-  if (!email) {
-    return res.status(400).json({ error: "Email is required" });
+    return res.setHeader("Allow", ["GET"]).status(405).json({ error: "Method Not Allowed" });
   }
 
   try {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
-    const cards = db.collection("myCard");
+    const cardsCollection = db.collection("allCards");
 
-    const savedCards = await cards
-      .find({ email })
+    const savedCards = await cardsCollection
+      .find({})
       .sort({ createdAt: -1 })
       .toArray();
 
     return res.status(200).json({ savedCards });
   } catch (err) {
     console.error("Fetch error:", err);
-    return res.status(500).json({ error: "Failed to fetch  cards" });
+    return res.status(500).json({ error: "Failed to fetch cards" });
   }
 }
