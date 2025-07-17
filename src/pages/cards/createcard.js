@@ -59,6 +59,7 @@ export default function CreateCard() {
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const [highlight, setHighlight] = useState(false);
+   const [favourite, setFavourite] = useState(false);
 
   const router = useRouter();
 
@@ -181,54 +182,101 @@ export default function CreateCard() {
     }
   };
   const handleHighlightedCard = async () => {
-  try {
-    // Check for placeholder values
-    if (
-      cardInfo.name === "User Name" ||
-      cardInfo.profession === "User Profession" ||
-      cardInfo.phone === "User Number" ||
-      cardInfo.quote === "User's Quote"
-    ) {
-      setError("You must complete the card setup to save.");
-      return;
+    try {
+      // Check for placeholder values
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
+
+      // Perform actual validation
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
+
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/highlightedCards", {
+        email: session?.user?.email,
+        cardName: cardName.toLowerCase(),
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+        ishighlighted: highlight,
+      });
+
+      setHighlight(!highlight);
+      setMessage("Card added to highlighted section successfully!");
+      console.log(response.data);
+    } catch (error) {
+      if (error.response?.status === 409) {
+        setError("Card name already exists.");
+      } else {
+        setError("Error saving card.");
+        console.error("Error Saving Card:", error.message);
+      }
     }
+  };
+ const handleFavouriteCard = async () => {
+    try {
+      // Check for placeholder values
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
 
-    // Perform actual validation
-    const nameError = validateName(cardInfo.name);
-    const professionError = validateProfession(cardInfo.profession);
-    const phoneError = validatePhone(cardInfo.phone);
-    const quoteError = validatequote(cardInfo.quote);
+      // Perform actual validation
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
 
-    if (nameError || professionError || phoneError || quoteError) {
-      setError("Enter valid card information before saving.");
-      return;
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/favouriteCards", {
+        email: session?.user?.email,
+        cardName: cardName.toLowerCase(),
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+        isfavourite: favourite,
+      });
+
+      setFavourite(!favourite);
+      setMessage("Card added to Favourite section successfully!");
+      console.log(response.data);
+    } catch (error) {
+      if (error.response?.status === 409) {
+        setError("Card name already exists.");
+      } else {
+        setError("Error saving card.");
+        console.error("Error Saving Card:", error.message);
+      }
     }
-
-    const response = await axios.post("/api/cards/highlightedCards", {
-      email: session?.user?.email,
-      cardName: cardName.toLowerCase(),
-      name: cardInfo.name,
-      profession: cardInfo.profession,
-      phone: cardInfo.phone,
-      quote: cardInfo.quote,
-      bgGrad: cardInfo.bgGrad,
-      bgStyle: cardInfo.bgStyle,
-      ishighlighted: highlight,
-    });
-
-    setHighlight(!highlight);
-    setMessage("Card saved successfully!");
-    console.log(response.data);
-  } catch (error) {
-    if (error.response?.status === 409) {
-      setError("Card name already exists.");
-    } else {
-      setError("Error saving card.");
-      console.error("Error Saving Card:", error.message);
-    }
-  }
-};
-
+  };
 
   return (
     <>
@@ -391,8 +439,19 @@ export default function CreateCard() {
               <Heart className="" />
               Love
             </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
-              <Star /> Favourite
+            
+             <button
+              onClick={() => {
+                handleFavouriteCard();
+              }}
+              disabled={favourite}
+              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
+                favourite
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "hover:text-brand"
+              }`}
+            >
+              <Star /> {favourite ? "Favourited" : "Favourite"}
             </button>
             <button
               onClick={() => {
