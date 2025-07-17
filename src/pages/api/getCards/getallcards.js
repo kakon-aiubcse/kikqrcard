@@ -26,12 +26,12 @@ export default async function handler(req, res) {
     const db = client.db("kikqrcard");
     const cardsCollection = db.collection("allCards");
 
-    const Allcards = await cardsCollection
+    const allcards = await cardsCollection
       .find({})
       .sort({ createdAt: -1 })
       .toArray();
 
-    return res.status(200).json({ Allcards });
+    return res.status(200).json({ allcards });
   } catch (err) {
     console.error("Fetch error:", err);
     return res.status(500).json({ error: "Failed to fetch cards" });

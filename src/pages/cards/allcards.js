@@ -11,7 +11,8 @@ const Allcards = forwardRef((props, ref) => {
       try {
         const response = await fetch("/api/getCards/getallcards");
         const data = await response.json();
-        setAllcard(data.savedCards || []);
+        
+        setAllcard(data.allcards || []);
       } catch (error) {
         console.error("Failed to fetch cards:", error);
       }
@@ -50,7 +51,7 @@ const Allcards = forwardRef((props, ref) => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500">All public cards will display here</p>
+          <p className="text-gray-500 relative left-20">All public cards will display here</p>
         )}
       </div>
 
