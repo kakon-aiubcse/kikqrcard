@@ -58,9 +58,10 @@ export default function CreateCard() {
   const [cardName, setCardName] = useState("kik---qrcard");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-  const [savedCard , setSavedCard] = useState(false)
+  const [savedCard, setSavedCard] = useState(false);
   const [highlight, setHighlight] = useState(false);
-   const [favourite, setFavourite] = useState(false);
+  const [favourite, setFavourite] = useState(false);
+  const [lovedCard, setLovedCard] = useState(false);
 
   const router = useRouter();
 
@@ -235,7 +236,7 @@ export default function CreateCard() {
       }
     }
   };
- const handleFavouriteCard = async () => {
+  const handleFavouriteCard = async () => {
     try {
       // Check for placeholder values
       if (
@@ -283,6 +284,54 @@ export default function CreateCard() {
       }
     }
   };
+  const handleLovedCard = async () => {
+    try {
+      // Check for placeholder values
+      if (
+        cardInfo.name === "User Name" ||
+        cardInfo.profession === "User Profession" ||
+        cardInfo.phone === "User Number" ||
+        cardInfo.quote === "User's Quote"
+      ) {
+        setError("You must complete the card setup to save.");
+        return;
+      }
+
+      // Perform actual validation
+      const nameError = validateName(cardInfo.name);
+      const professionError = validateProfession(cardInfo.profession);
+      const phoneError = validatePhone(cardInfo.phone);
+      const quoteError = validatequote(cardInfo.quote);
+
+      if (nameError || professionError || phoneError || quoteError) {
+        setError("Enter valid card information before saving.");
+        return;
+      }
+
+      const response = await axios.post("/api/cards/lovedCards", {
+        email: session?.user?.email,
+        cardName: cardName.toLowerCase(),
+        name: cardInfo.name,
+        profession: cardInfo.profession,
+        phone: cardInfo.phone,
+        quote: cardInfo.quote,
+        bgGrad: cardInfo.bgGrad,
+        bgStyle: cardInfo.bgStyle,
+        isloved: lovedCard,
+      });
+
+      setLovedCard(!lovedCard);
+      setMessage("Card added to Loved section successfully!");
+      console.log(response.data);
+    } catch (error) {
+      if (error.response?.status === 409) {
+        setError("Card name already exists.");
+      } else {
+        setError("Error saving card.");
+        console.error("Error Saving Card:", error.message);
+      }
+    }
+  };
 
   return (
     <>
@@ -295,7 +344,7 @@ export default function CreateCard() {
 
           {/* Form */}
           <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16 tb:right-0 xb:right-0">
-            Set up your card dynamically:
+            Set up your card carefully:
           </span>
           <div className="grid md:grid-cols-2 gap-4 w-full max-w-6xl px-6 mb-8 ml-[10%]">
             <input
@@ -441,12 +490,21 @@ export default function CreateCard() {
           </div>
           {/* Card functionalities */}
           <div className="flex gap-10 p-6 m-4 relative top-16 mb-72 border tb:gap-3 tb:ml-20 xb:ml-44 tb:p-2 border-brand rounded-lg hover:scale-110 tb:hover:scale-105 transition-transform duration-500 xs:flex-col xs:items-start ">
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
-              <Heart className="" />
-              Love
+            <button
+              onClick={() => {
+                handleLovedCard();
+              }}
+              disabled={lovedCard}
+              className={`flex justify-center items-center font-cp text-xl font-semibold tb:text-lg ${
+                lovedCard
+                  ? "text-gray-400 cursor-not-allowed"
+                  : "hover:text-brand"
+              }`}
+            >
+              <Heart /> {lovedCard ? "Loved" : "Love"}
             </button>
-            
-             <button
+
+            <button
               onClick={() => {
                 handleFavouriteCard();
               }}
@@ -472,7 +530,7 @@ export default function CreateCard() {
             >
               <PinIcon /> {highlight ? "Highlighted" : "Highlight"}
             </button>
-             <button
+            <button
               onClick={() => {
                 handleSaveCard();
               }}
@@ -486,7 +544,6 @@ export default function CreateCard() {
               <Save /> {savedCard ? "Saved" : "Save"}
             </button>
 
-            
             <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
               <BookOpenCheck /> Public
             </button>
