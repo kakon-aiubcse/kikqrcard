@@ -1,7 +1,7 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import Card from "./card";
 import { useRouter } from "next/router";
-import { Trash, HandHeart, ShoppingCart } from "lucide-react";
+import {  HandHeart, ShoppingCart } from "lucide-react";
 
 const Allcards = forwardRef((props, ref) => {
   const router = useRouter();

@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Sidebar from "../dashboard/sidebar";
-import { ArrowRightIcon } from "lucide-react";
+import Sidebar from "../dashboard/sidebar"; 
+import { ArrowRightIcon,Trash, HandHeart, ShoppingCart } from "lucide-react";
 import Card from "./card";
 
 const Mycards = () => {
@@ -83,7 +83,7 @@ const Mycards = () => {
           >
             Favourite Cards
           </div>
-          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0">
+            <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0  lp:right-[30px]">
             {favouriteCards.length > 0 ? (
               favouriteCards.map((favouriteCard, index) => (
                 <div
@@ -155,7 +155,7 @@ const Mycards = () => {
           <div className="text-3xl xs:text-2xl xs:m-4 xs:mt-6 font-cp font-bold text-brand p-2 m-12 justify-center items-center flex relative tb:right-8  lp:right-16 xb:right-28">
             Loved Cards
           </div>
-          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0">
+          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0 lp:right-[30px]">
             {lovedCards.length > 0 ? (
               lovedCards.map((lovedcard, index) => (
                 <div
@@ -227,7 +227,7 @@ const Mycards = () => {
           <div className="text-3xl xs:text-2xl xs:m-4 xs:mt-6 font-cp font-bold text-brand p-2 m-12 justify-center items-center flex relative tb:right-8 l lp:right-16 xb:right-28">
             Created cards
           </div>
-          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0">
+          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0 lp:right-[30px]">
             {savedCards.length > 0 ? (
               savedCards.map((savedcard, index) => (
                 <div
