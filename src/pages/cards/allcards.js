@@ -69,12 +69,7 @@ const Allcards = forwardRef((props, ref) => {
                         <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                       </span>
                     </li>
-                    <li>
-                      <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                        
-                        <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"/>
-                      </span>
-                    </li>
+                  
                   </ul>
                 </div>
               </div>
@@ -91,12 +86,7 @@ const Allcards = forwardRef((props, ref) => {
                         <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                       </span>
                     </li>
-                    <li>
-                      <span className="flex my-5 ">
-                        
-                        <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 "/>
-                      </span>
-                    </li>
+                   
                   </ul>
                 </div>
               </div>
