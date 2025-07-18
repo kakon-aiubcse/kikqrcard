@@ -98,9 +98,51 @@ const Mycards = () => {
                     bgGrad={favouriteCard.bgGrad}
                     bgStyle={favouriteCard.bgStyle}
                   />
-                  {/* <div className="w-[300px] h-30 flex relative ml-[20%]  m-4">
-                  hllw
-                </div> */}
+                 <div
+                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+                >
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                    <ul className="gap-3">
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                      <li>
+                        <span className="flex my-5 ">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 </div>
               ))
             ) : (
@@ -128,9 +170,51 @@ const Mycards = () => {
                     bgGrad={lovedcard.bgGrad}
                     bgStyle={lovedcard.bgStyle}
                   />
-                  {/* <div className="w-[300px] h-30 flex relative ml-[20%]  m-4">
-                  hllw
-                </div> */}
+                 <div
+                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+                >
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                    <ul className="gap-3">
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                      <li>
+                        <span className="flex my-5 ">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 </div>
               ))
             ) : (
@@ -158,9 +242,51 @@ const Mycards = () => {
                     bgGrad={savedcard.bgGrad}
                     bgStyle={savedcard.bgStyle}
                   />
-                  {/* <div className="w-[300px] h-30 flex relative ml-[20%]  m-4">
-                  hllw
-                </div> */}
+                 <div
+                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+                >
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                    <ul className="gap-3">
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                      <li>
+                        <span className="flex my-5 ">
+                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                      <li>
+                        <span className="flex my-5 ">
+                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
                 </div>
               ))
             ) : (
