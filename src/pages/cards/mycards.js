@@ -105,7 +105,7 @@ const Mycards = () => {
                   <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
                     <ul className="gap-3">
                      
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                         </span>
@@ -126,7 +126,7 @@ const Mycards = () => {
                           <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
                       </li>
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5 ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
@@ -173,7 +173,7 @@ const Mycards = () => {
                   <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
                     <ul className="gap-3">
                      
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                         </span>
@@ -194,7 +194,7 @@ const Mycards = () => {
                           <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
                       </li>
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5 ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
@@ -241,7 +241,7 @@ const Mycards = () => {
                   <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
                     <ul className="gap-3">
                      
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                         </span>
@@ -262,7 +262,7 @@ const Mycards = () => {
                           <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
                       </li>
-                      <li>
+                      <li  onClick={()=>router.push("../payment/orders")}>
                         <span className="flex my-5 ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>

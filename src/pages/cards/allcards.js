@@ -64,7 +64,8 @@ const Allcards = forwardRef((props, ref) => {
                         <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out "/>
                       </span>
                     </li>
-                    <li>
+                    <li onClick={()=>router.push("../payment/orders")}>
+                      
                       <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
                         <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                       </span>
@@ -76,7 +77,7 @@ const Allcards = forwardRef((props, ref) => {
               <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
               <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
                   <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                    <li>
+                    <li  onClick={()=>router.push("../payment/orders")}>
                       <span className="flex my-5 ">
                         <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 "/>
                       </span>
