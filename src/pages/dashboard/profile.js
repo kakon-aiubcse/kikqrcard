@@ -59,6 +59,9 @@ const Profile = () => {
 
     fetchUserAndHighlighted();
   }, [session]);
+  const delhighlightedcardName = Array.isArray(highlightedCards)
+    ? highlightedCards.map((hc) => hc.cardName)
+    : [];
 
   const handlehighlightedcardDelete = async (id) => {
     try {
@@ -68,7 +71,7 @@ const Profile = () => {
 
       if (res.ok) {
         setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
-        setMessage("Card deleted successfully");
+        setMessage(`Card deleted successfully: ${delhighlightedcardName}`);
         setTimeout(() => setMessage(""), 3000);
       } else {
         setMessage("Failed to delete card");
@@ -160,7 +163,7 @@ const Profile = () => {
           {message && (
             <p className="text-green-600 text-sm mt-2 relative left-48">
               {message}
-              {FormData.cardName}
+       
             </p>
           )}
           {highlightedCards?.length > 0 ? (

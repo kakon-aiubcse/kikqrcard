@@ -19,6 +19,8 @@ const Mycards = () => {
   const [lovedCards, setLovedCards] = useState({});
   const [savedCards, setSavedCards] = useState({});
   const [message, setMessage] = useState("");
+  const [message2, setMessage2] = useState("");
+  const [message3, setMessage3] = useState("");
 
   useEffect(() => {
     const useremail = session?.user?.email;
@@ -57,32 +59,75 @@ const Mycards = () => {
 
     return () => clearTimeout(timer);
   }, [session, status]);
-
-  const handleDelete = async (id) => {
+ const delfavcardName = Array.isArray(favouriteCards)
+    ? favouriteCards.map((fc) => fc.cardName)
+    : [];
+    const dellovecardName = Array.isArray(lovedCards)
+    ? lovedCards.map((lc) => lc.cardName)
+    : [];
+    const delsavcardName = Array.isArray(savedCards)
+    ? favouriteCards.map((sc) => sc.cardName)
+    : [];
+  const handlefavouriteDelete = async (id) => {
     try {
-      const favouritecardRes = await fetch(
-        `/api/deletecard/deletefavouritedcard/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const res = await fetch(`/api/deletecard/deletefavouritedcard/${id}`, {
+        method: "DELETE",
+      });
 
-      if (favouritecardRes.ok) {
-        setFavouriteCards((prev) =>
-          prev.filter((card) => card._id !== id)
-        );
-        setMessage("Card deleted successfully");
-        setTimeout(() => setMessage(""), 3000);
+      if (res.ok) {
+        setFavouriteCards((prev) => prev.filter((card) => card._id !== id));
+        setMessage(`Card deleted successfully : ${delfavcardName}`);
       } else {
         setMessage("Failed to delete card");
-        setTimeout(() => setMessage(""), 3000);
       }
     } catch (error) {
       console.error("Delete error:", error);
       setMessage("An error occurred");
+    } finally {
       setTimeout(() => setMessage(""), 3000);
     }
   };
+
+  const handlelovedDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/deletecard/deletelovedcard/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setLovedCards((prev) => prev.filter((card) => card._id !== id));
+        setMessage2(`Card deleted successfully : ${dellovecardName}`);
+      } else {
+        setMessage2("Failed to delete card");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage2("An error occurred");
+    } finally {
+      setTimeout(() => setMessage2(""), 3000);
+    }
+  };
+
+  const handlesavedDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/deletecard/deletesavedcard/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setSavedCards((prev) => prev.filter((card) => card._id !== id));
+        setMessage3(`Card deleted successfully : ${delsavcardName}`);
+      } else {
+        setMessage3("Failed to delete card");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage3("An error occurred");
+    } finally {
+      setTimeout(() => setMessage3(""), 3000);
+    }
+  };
+
   return (
     <>
       <div className="flex ml-[8%] xs:ml-[0%]  overflow-hidden xs:overflow-x-hidden ">
@@ -121,7 +166,6 @@ const Mycards = () => {
             {message && (
               <p className="text-green-600 text-sm mt-2 relative left-48">
                 {message}
-                {favouriteCards.cardName}
               </p>
             )}{" "}
             {favouriteCards.length > 0 ? (
@@ -156,7 +200,9 @@ const Mycards = () => {
                         </li>
                         <li>
                           <span
-                            onClick={() => handleDelete(favouriteCard._id)}
+                            onClick={() =>
+                              handlefavouriteDelete(favouriteCard._id)
+                            }
                             className="flex my-5  transition-transform duration-1000 ease-in-out"
                           >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -180,7 +226,9 @@ const Mycards = () => {
                         </li>
                         <li>
                           <span
-                            onClick={() => handleDelete(favouriteCard._id)}
+                            onClick={() =>
+                              handlefavouriteDelete(favouriteCard._id)
+                            }
                             className="flex my-5 "
                           >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
@@ -202,6 +250,11 @@ const Mycards = () => {
             Loved Cards
           </div>
           <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0 lp:right-[30px]">
+            {message2 && (
+              <p className="text-green-600 text-sm mt-2 relative left-48">
+                {message2} 
+              </p>
+            )}{" "}
             {lovedCards.length > 0 ? (
               lovedCards.map((lovedcard, index) => (
                 <div
@@ -233,7 +286,10 @@ const Mycards = () => {
                           </span>
                         </li>
                         <li>
-                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <span
+                            onClick={() => handlelovedDelete(lovedcard._id)}
+                            className="flex my-5  transition-transform duration-1000 ease-in-out"
+                          >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                           </span>
                         </li>
@@ -254,7 +310,10 @@ const Mycards = () => {
                           </span>
                         </li>
                         <li>
-                          <span className="flex my-5 ">
+                          <span
+                            className="flex my-5 "
+                            onClick={() => handlelovedDelete(lovedcard._id)}
+                          >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
                           </span>
                         </li>
@@ -274,6 +333,11 @@ const Mycards = () => {
             Created cards
           </div>
           <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0 lp:right-[30px]">
+            {message3 && (
+              <p className="text-green-600 text-sm mt-2 relative left-48">
+                {message3}
+              </p>
+            )}{" "}
             {savedCards.length > 0 ? (
               savedCards.map((savedcard, index) => (
                 <div
@@ -305,7 +369,10 @@ const Mycards = () => {
                           </span>
                         </li>
                         <li>
-                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                          <span
+                            onClick={() => handlesavedDelete(savedcard._id)}
+                            className="flex my-5  transition-transform duration-1000 ease-in-out"
+                          >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                           </span>
                         </li>
@@ -326,7 +393,10 @@ const Mycards = () => {
                           </span>
                         </li>
                         <li>
-                          <span className="flex my-5 ">
+                          <span
+                            onClick={() => handlesavedDelete(savedcard._id)}
+                            className="flex my-5 "
+                          >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
                           </span>
                         </li>
@@ -336,7 +406,7 @@ const Mycards = () => {
                 </div>
               ))
             ) : (
-              <p className="text-gray-500 relative">
+              <p className="text-gray-500  relative left-28">
                 All your selected cards as Loved will display here
               </p>
             )}
