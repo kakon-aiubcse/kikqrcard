@@ -1,6 +1,7 @@
 import React, { forwardRef, useState, useEffect } from "react";
 import Card from "./card";
 import { useRouter } from "next/router";
+import { Trash, HandHeart, ShoppingCart } from "lucide-react";
 
 const Allcards = forwardRef((props, ref) => {
   const router = useRouter();
@@ -52,6 +53,53 @@ const Allcards = forwardRef((props, ref) => {
                 bgGrad={card.bgGrad}
                 bgStyle={card.bgStyle}
               />
+              <div
+                className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+              >
+                <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                  <ul className="gap-3">
+                    <li>
+                      <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                        <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out "/>
+                      </span>
+                    </li>
+                    <li>
+                      <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                        <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                      </span>
+                    </li>
+                    <li>
+                      <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                        
+                        <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"/>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+              <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                  <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                    <li>
+                      <span className="flex my-5 ">
+                        <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 "/>
+                      </span>
+                    </li>
+                    <li>
+                      <span className="flex my-5 ">
+                        <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                      </span>
+                    </li>
+                    <li>
+                      <span className="flex my-5 ">
+                        
+                        <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 "/>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           ))
         ) : (
@@ -62,32 +110,31 @@ const Allcards = forwardRef((props, ref) => {
       </div>
 
       <div className="flex mr-72 gap-5 m-3 p-3 xs:mr-4">
-  {visibleCount < allcard.length && (
-    <span
-      onClick={handleShowMore}
-      className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
-    >
-      show more
-    </span>
-  )}
+        {visibleCount < allcard.length && (
+          <span
+            onClick={handleShowMore}
+            className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
+          >
+            show more
+          </span>
+        )}
 
-  {visibleCount > 3 && (
-    <span
-      onClick={() => setVisibleCount(3)}
-      className="p-3 text-brand font-cp hover:text-red-600 border border-brand mt-5 hover:border hover:border-red-500 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-red-400 duration-700 ease-in-out rounded-xl cursor-pointer"
-    >
-      collapse
-    </span>
-  )}
+        {visibleCount > 3 && (
+          <span
+            onClick={() => setVisibleCount(3)}
+            className="p-3 text-brand font-cp hover:text-red-600 border border-brand mt-5 hover:border hover:border-red-500 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-red-400 duration-700 ease-in-out rounded-xl cursor-pointer"
+          >
+            collapse
+          </span>
+        )}
 
-  <span
-    onClick={() => router.push("/cards/createcard")}
-    className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
-  >
-    create card?
-  </span>
-</div>
-
+        <span
+          onClick={() => router.push("/cards/createcard")}
+          className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
+        >
+          create card?
+        </span>
+      </div>
     </div>
   );
 });
