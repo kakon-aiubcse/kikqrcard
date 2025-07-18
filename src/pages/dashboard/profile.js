@@ -2,17 +2,21 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Card from "../cards/card";
-import { Trash, HandHeart, ShoppingCart } from "lucide-react";
+import { Trash,  ShoppingCart, Pencil } from "lucide-react";
+import { useRouter } from "next/router";
 
 const Profile = () => {
   const { data: session } = useSession();
+  const router = useRouter();
   const [userData, setUserData] = useState({
+    cardName: "",
     name: "",
     email: "",
     phone: "",
     profileImageBase64: "",
   });
   const [highlightedCards, setHighlightedCards] = useState({});
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const useremail = session?.user?.email;
@@ -32,6 +36,7 @@ const Profile = () => {
         const data = await res.json();
         if (res.ok) {
           setUserData({
+            cardName: data.cardName,
             name: data.name,
             email: data.email,
             phone: data.phone,
@@ -54,6 +59,27 @@ const Profile = () => {
 
     fetchUserAndHighlighted();
   }, [session]);
+
+  const handleDelete = async (highlightcardid) => {
+    try {
+      const res = await fetch(`/api/deletecard/${highlightcardid}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setHighlightedCards((prev) => prev.filter((card) => card._id !== highlightcardid));
+        setMessage("Card deleted successfully");
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        setMessage("Failed to delete card");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage("An error occurred");
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
 
   return (
     <>
@@ -131,12 +157,18 @@ const Profile = () => {
         </span>
 
         <div className="w-screen top-[20px] flex flex-col relative xs:right-[122px] tb:right-16 lp:right-40 xb:right-52 tb:pr-0">
-          {highlightedCards?.length > 0 ? (
+          {message && (
+                  <p className="text-green-600 text-sm mt-2 relative left-48">
+                    {message}
+                    {FormData.cardName}
+                  </p>
+                )}{highlightedCards?.length > 0 ? (
             highlightedCards.map((highlightedCard, index) => (
               <div
                 key={index}
                 className="flex flex-col relative tb:right-52 tb:w-[1000px] lp:right-[550px] lp:w-[2000px] xb:items-center xb:right-[280px]"
               >
+                
                 <Card
                   name={highlightedCard.name}
                   profession={highlightedCard.profession}
@@ -153,17 +185,20 @@ const Profile = () => {
                     <ul className="gap-3">
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
+                          <Pencil className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
                         </span>
                       </li>
-                      <li>
+                      <li onClick={() => router.push("../payment/orders")}>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                         </span>
                       </li>
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          <Trash
+                            onClick={() => handleDelete(highlightedCard._id)}
+                            className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"
+                          />
                         </span>
                       </li>
                     </ul>
@@ -174,17 +209,20 @@ const Profile = () => {
                     <ul className="gap-3 transition-transform duration-1000 ease-in-out">
                       <li>
                         <span className="flex my-5 ">
-                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                          <Pencil className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
                       </li>
-                      <li>
+                      <li onClick={() => router.push("../payment/orders")}>
                         <span className="flex my-5 ">
                           <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
                         </span>
                       </li>
                       <li>
                         <span className="flex my-5 ">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                          <Trash
+                            onClick={() => handleDelete(highlightedCard._id)}
+                            className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 "
+                          />
                         </span>
                       </li>
                     </ul>
@@ -193,7 +231,7 @@ const Profile = () => {
               </div>
             ))
           ) : (
-            <p className="text-gray-500">
+            <p className="text-gray-500 flex relative left-44">
               All Highlighted cards will display here
             </p>
           )}
