@@ -22,8 +22,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { email, cardName, name, profession, phone, quote, bgGrad, bgStyle, savedCard } =
-    req.body;
+  const {
+    email,
+    cardName,
+    name,
+    profession,
+    phone,
+    quote,
+    bgGrad,
+    bgStyle,
+    savedCard,
+  } = req.body;
 
   if (
     !email ||
@@ -43,19 +52,24 @@ export default async function handler(req, res) {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("myCard");
+
+    // Normalize cardName for consistent storage and lookup
+    const normalizedCardName = cardName.toLowerCase();
+
     const existingCard = await cards.findOne({
       email,
-      cardName: cardName.toLowerCase(),
+      cardName: normalizedCardName,
       bgGrad,
       bgStyle,
     });
+
     if (existingCard) {
       return res.status(409).json({ error: "Card already exists" });
     }
 
     const newCard = {
       email,
-      cardName,
+      cardName: normalizedCardName,
       name,
       profession,
       phone,

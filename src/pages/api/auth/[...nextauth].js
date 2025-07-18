@@ -1,31 +1,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { MongoClient } from "mongodb";
+import clientPromise from "/lib/mongodb/config";
 import bcrypt from "bcrypt";
-
-const uri = process.env.MONGODB_URI;
-
-let cachedClient = null;
-let cachedDb = null;
-
-async function connectToDatabase() {
-  if (cachedClient && cachedDb) {
-    return { client: cachedClient, db: cachedDb };
-  }
-
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
-  });
-
-  await client.connect();
-  const db = client.db("kikqrcard");
-
-  cachedClient = client;
-  cachedDb = db;
-
-  return { client, db };
-}
 
 export const authOptions = {
   providers: [
@@ -36,41 +12,30 @@ export const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        try {
-          const { db } = await connectToDatabase();
-          const email = credentials.email.toLowerCase().trim();
-          const user = await db.collection("users").findOne({ email });
+        const client = await clientPromise;
+        const db = client.db("kikqrcard");
+        const email = credentials.email.toLowerCase().trim();
+        const user = await db.collection("users").findOne({ email });
 
-          if (!user) {
-            console.log(" User not found");
-            throw new Error("User not found");
-          }
+        if (!user) return null;
 
-          const isValid = await bcrypt.compare(credentials.password, user.password);
-          if (!isValid) {
-            console.log(" Invalid password");
-            throw new Error("Invalid password");
-          }
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) return null;
 
-          console.log("Auth success for:", email);
-
-          return {
-            id: user._id.toString(),
-            name: user.name,
-            email: user.email,
-          };
-        } catch (err) {
-          console.error("Authorization error:", err);
-          throw new Error("Authentication failed");
-        }
+        return {
+          id: user._id.toString(),
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
 
   secret: process.env.NEXTAUTH_SECRET,
-
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // optional
+    updateAge: 24 * 60 * 60,
   },
 
   pages: {

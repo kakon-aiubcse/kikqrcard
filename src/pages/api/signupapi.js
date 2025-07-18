@@ -2,7 +2,6 @@ import { MongoClient } from "mongodb";
 import bcrypt from "bcrypt";
 
 const uri = process.env.MONGODB_URI;
-
 let cachedClient = null;
 
 async function connectToDatabase() {
@@ -34,24 +33,29 @@ export default async function handler(req, res) {
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
-    // Check for existing user
-    const existingUser = await users.findOne({ email: email.toLowerCase() });
+    // Normalize email for consistent checking
+    const normalizedEmail = email.toLowerCase();
+
+    // Check if user already exists
+    const existingUser = await users.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(409).json({ error: "Email already exists" });
     }
 
-    // Hash password
+    // Hash the password securely
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Prepare new user document
     const newUser = {
       name,
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       phone,
       password: hashedPassword,
       profileImageBase64: profileImageBase64 || null,
       createdAt: new Date(),
     };
 
+    // Insert new user
     const result = await users.insertOne(newUser);
 
     if (result.insertedId) {

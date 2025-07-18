@@ -52,9 +52,12 @@ export default async function handler(req, res) {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("mylovedCards");
+
+    const normalizedCardName = cardName.toLowerCase();
+
     const existingCard = await cards.findOne({
       email,
-      cardName: cardName.toLowerCase(),
+      cardName: normalizedCardName,
       bgGrad,
       bgStyle,
     });
@@ -64,7 +67,7 @@ export default async function handler(req, res) {
 
     const newCard = {
       email,
-      cardName,
+      cardName: normalizedCardName,
       name,
       profession,
       phone,

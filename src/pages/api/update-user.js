@@ -20,24 +20,30 @@ export default async function handler(req, res) {
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
-    const updateFields = {
-      name,
-      phone,
-      profileImageBase64,
-    };
+    // Build the updateFields object with only provided values
+    const updateFields = {};
+    if (name) updateFields.name = name;
+    if (phone) updateFields.phone = phone;
+    if (profileImageBase64) updateFields.profileImageBase64 = profileImageBase64;
 
     if (password && password.trim()) {
-      const hashed = await bcrypt.hash(password, 10);
-      updateFields.password = hashed;
+      updateFields.password = await bcrypt.hash(password, 10);
+    }
+
+    if (Object.keys(updateFields).length === 0) {
+      return res.status(400).json({ error: "No valid fields to update" });
     }
 
     const result = await users.updateOne(
-      { email },
+      { email: email.toLowerCase() },
       { $set: updateFields }
     );
 
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
     if (result.modifiedCount === 0) {
-      return res.status(404).json({ error: "User not found or nothing changed" });
+      return res.status(200).json({ message: "No changes applied" });
     }
 
     return res.status(200).json({ message: "Profile updated successfully" });

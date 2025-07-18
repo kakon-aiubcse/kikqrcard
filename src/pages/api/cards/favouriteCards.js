@@ -1,6 +1,7 @@
 import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI;
+const options = {};
 
 let cachedClient = null;
 
@@ -9,7 +10,9 @@ async function connectToDatabase() {
 
   const client = new MongoClient(uri, {
     serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
+    // Only use this if needed, otherwise remove:
+    // tlsAllowInvalidCertificates: true,
+    ...options,
   });
 
   await client.connect();
@@ -34,37 +37,51 @@ export default async function handler(req, res) {
     isfavourite,
   } = req.body;
 
+  // Basic validation + type checks
   if (
     !email ||
+    typeof email !== "string" ||
     !cardName ||
+    typeof cardName !== "string" ||
     !name ||
+    typeof name !== "string" ||
     !profession ||
+    typeof profession !== "string" ||
     !phone ||
+    typeof phone !== "string" ||
     !quote ||
+    typeof quote !== "string" ||
     !bgGrad ||
+    typeof bgGrad !== "string" ||
     !bgStyle ||
-    isfavourite === undefined
+    typeof bgStyle !== "string" ||
+    typeof isfavourite !== "boolean"
   ) {
-    return res.status(400).json({ error: "Missing required card fields" });
+    return res.status(400).json({ error: "Missing or invalid required card fields" });
   }
 
   try {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("myfavouritedCards");
+
+    const normalizedCardName = cardName.toLowerCase().trim();
+
+    // Check for duplicate card (same email + normalized cardName + bgGrad + bgStyle)
     const existingCard = await cards.findOne({
       email,
-      cardName: cardName.toLowerCase(),
+      cardName: normalizedCardName,
       bgGrad,
       bgStyle,
     });
+
     if (existingCard) {
       return res.status(409).json({ error: "Card already exists" });
     }
 
     const newCard = {
       email,
-      cardName,
+      cardName: normalizedCardName,
       name,
       profession,
       phone,
@@ -78,7 +95,10 @@ export default async function handler(req, res) {
     const result = await cards.insertOne(newCard);
 
     if (result.insertedId) {
-      return res.status(201).json({ message: "Card saved successfully" });
+      return res.status(201).json({
+        message: "Card saved successfully",
+        id: result.insertedId,
+      });
     } else {
       throw new Error("Insert failed");
     }

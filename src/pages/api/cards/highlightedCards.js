@@ -52,19 +52,24 @@ export default async function handler(req, res) {
     const client = await connectToDatabase();
     const db = client.db("kikqrcard");
     const cards = db.collection("myhighlightedCards");
+
+    // Normalize cardName to lowercase for duplicate check and saving
+    const normalizedCardName = cardName.toLowerCase();
+
     const existingCard = await cards.findOne({
       email,
-      cardName: cardName.toLowerCase(),
+      cardName: normalizedCardName,
       bgGrad,
       bgStyle,
     });
+
     if (existingCard) {
       return res.status(409).json({ error: "Card already exists" });
     }
 
     const newCard = {
       email,
-      cardName,
+      cardName: normalizedCardName,
       name,
       profession,
       phone,

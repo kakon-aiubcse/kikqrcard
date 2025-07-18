@@ -22,8 +22,9 @@ const handler = async (req, res) => {
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
+    // Lowercase email to ensure consistent querying
     const user = await users.findOne(
-      { email },
+      { email: email.toLowerCase() },
       { projection: { password: 0 } } // Exclude password
     );
 
