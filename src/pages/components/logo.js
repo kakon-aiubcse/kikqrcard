@@ -12,7 +12,7 @@ const Logo = () => {
         xmlns="http://www.w3.org/2000/svg"
         className="flex relative right-3"
       >
-   <rect width="200" height="80" rx="12" ry="12" fill="#8F87F1" />
+   <rect width="200" height="80" rx="12" ry="12" fill="transparent" />
   <text
     x="30"
     y="50"

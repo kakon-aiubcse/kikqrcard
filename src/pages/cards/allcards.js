@@ -5,13 +5,13 @@ import { useRouter } from "next/router";
 const Allcards = forwardRef((props, ref) => {
   const router = useRouter();
   const [allcard, setAllcard] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(3); // start with 3
 
   useEffect(() => {
     const fetchCards = async () => {
       try {
         const response = await fetch("/api/getCards/getallcards");
         const data = await response.json();
-        
         setAllcard(data.allcards || []);
       } catch (error) {
         console.error("Failed to fetch cards:", error);
@@ -20,6 +20,10 @@ const Allcards = forwardRef((props, ref) => {
 
     fetchCards();
   }, []);
+
+  const handleShowMore = () => {
+    setVisibleCount((prev) => prev + 2);
+  };
 
   return (
     <div
@@ -35,7 +39,7 @@ const Allcards = forwardRef((props, ref) => {
 
       <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:right-16 lp:right-12 xb:right-10 tb:pr-0">
         {allcard?.length > 0 ? (
-          allcard.map((card, index) => (
+          allcard.slice(0, visibleCount).map((card, index) => (
             <div
               key={index}
               className="flex flex-col relative tb:right-52 tb:w-[1000px] lp:right-[550px] lp:w-[2000px] xb:items-center xb:right-[280px]"
@@ -51,21 +55,39 @@ const Allcards = forwardRef((props, ref) => {
             </div>
           ))
         ) : (
-          <p className="text-gray-500 relative left-20">All public cards will display here</p>
+          <p className="text-gray-500 relative left-20">
+            All public cards will display here
+          </p>
         )}
       </div>
 
       <div className="flex mr-72 gap-5 m-3 p-3 xs:mr-4">
-        <span className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl">
-          show more
-        </span>
-        <span
-          onClick={() => router.push("/cards/createcard")}
-          className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl"
-        >
-          create card?
-        </span>
-      </div>
+  {visibleCount < allcard.length && (
+    <span
+      onClick={handleShowMore}
+      className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
+    >
+      show more
+    </span>
+  )}
+
+  {visibleCount > 3 && (
+    <span
+      onClick={() => setVisibleCount(3)}
+      className="p-3 text-brand font-cp hover:text-red-600 border border-brand mt-5 hover:border hover:border-red-500 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-red-400 duration-700 ease-in-out rounded-xl cursor-pointer"
+    >
+      collapse
+    </span>
+  )}
+
+  <span
+    onClick={() => router.push("/cards/createcard")}
+    className="p-3 text-brand font-cp hover:text-sky-700 border border-brand mt-5 hover:border hover:border-sky-600 hover:scale-110 transition-transform hover:shadow-lg hover:shadow-[#8F87F1] duration-700 ease-in-out rounded-xl cursor-pointer"
+  >
+    create card?
+  </span>
+</div>
+
     </div>
   );
 });
