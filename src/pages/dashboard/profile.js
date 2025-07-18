@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Card from "../cards/card";
-import { Trash,  ShoppingCart, Pencil } from "lucide-react";
+import { Trash, ShoppingCart, Pencil } from "lucide-react";
 import { useRouter } from "next/router";
 
 const Profile = () => {
@@ -60,14 +60,14 @@ const Profile = () => {
     fetchUserAndHighlighted();
   }, [session]);
 
-  const handleDelete = async (highlightcardid) => {
+  const handlehighlightedcardDelete = async (id) => {
     try {
-      const res = await fetch(`/api/deletecard/${highlightcardid}`, {
+      const res = await fetch(`/api/deletecard/deletehighlightedcard/${id}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
-        setHighlightedCards((prev) => prev.filter((card) => card._id !== highlightcardid));
+        setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
         setMessage("Card deleted successfully");
         setTimeout(() => setMessage(""), 3000);
       } else {
@@ -158,17 +158,17 @@ const Profile = () => {
 
         <div className="w-screen top-[20px] flex flex-col relative xs:right-[122px] tb:right-16 lp:right-40 xb:right-52 tb:pr-0">
           {message && (
-                  <p className="text-green-600 text-sm mt-2 relative left-48">
-                    {message}
-                    {FormData.cardName}
-                  </p>
-                )}{highlightedCards?.length > 0 ? (
+            <p className="text-green-600 text-sm mt-2 relative left-48">
+              {message}
+              {FormData.cardName}
+            </p>
+          )}
+          {highlightedCards?.length > 0 ? (
             highlightedCards.map((highlightedCard, index) => (
               <div
                 key={index}
                 className="flex flex-col relative tb:right-52 tb:w-[1000px] lp:right-[550px] lp:w-[2000px] xb:items-center xb:right-[280px]"
               >
-                
                 <Card
                   name={highlightedCard.name}
                   profession={highlightedCard.profession}
@@ -196,7 +196,9 @@ const Profile = () => {
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                           <Trash
-                            onClick={() => handleDelete(highlightedCard._id)}
+                            onClick={() =>
+                              handlehighlightedcardDelete(highlightedCard._id)
+                            }
                             className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"
                           />
                         </span>

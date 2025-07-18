@@ -2,8 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Sidebar from "../dashboard/sidebar"; 
-import { ArrowRightIcon,Trash, HandHeart, ShoppingCart } from "lucide-react";
+import Sidebar from "../dashboard/sidebar";
+import {
+  ArrowRightIcon,
+  Trash,
+  HandHeart,
+  ShoppingCart,
+  Pencil,
+} from "lucide-react";
 import Card from "./card";
 
 const Mycards = () => {
@@ -11,7 +17,8 @@ const Mycards = () => {
   const router = useRouter();
   const [favouriteCards, setFavouriteCards] = useState({});
   const [lovedCards, setLovedCards] = useState({});
-  const [savedCards, setSavedCards] = useState({})
+  const [savedCards, setSavedCards] = useState({});
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const useremail = session?.user?.email;
@@ -51,6 +58,31 @@ const Mycards = () => {
     return () => clearTimeout(timer);
   }, [session, status]);
 
+  const handleDelete = async (id) => {
+    try {
+      const favouritecardRes = await fetch(
+        `/api/deletecard/deletefavouritedcard/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (favouritecardRes.ok) {
+        setFavouriteCards((prev) =>
+          prev.filter((card) => card._id !== id)
+        );
+        setMessage("Card deleted successfully");
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        setMessage("Failed to delete card");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage("An error occurred");
+      setTimeout(() => setMessage(""), 3000);
+    }
+  };
   return (
     <>
       <div className="flex ml-[8%] xs:ml-[0%]  overflow-hidden xs:overflow-x-hidden ">
@@ -64,7 +96,9 @@ const Mycards = () => {
               My Cards
             </span>
           </div>
-          <span className="text-brand mx-2 mt-3 flex ml-8 xb:ml-12 xb:text-xl">No cards yet?</span>
+          <span className="text-brand mx-2 mt-3 flex ml-8 xb:ml-12 xb:text-xl">
+            No cards yet?
+          </span>
           <div
             className="bg-white border-2 border-black flex justify-center items-center mx-8 mt-5 
           hover:border-brand rounded-full shadow-[#8F87F1] shadow-xl hover:shadow-[#7063ff] tb:w-[70%] lp:w-[70%] xb:w-[70%]"
@@ -83,7 +117,13 @@ const Mycards = () => {
           >
             Favourite Cards
           </div>
-            <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0  lp:right-[30px]">
+          <div className="w-screen top-[-20px] flex flex-col relative xs:right-[108px] tb:pr-0  lp:right-[30px]">
+            {message && (
+              <p className="text-green-600 text-sm mt-2 relative left-48">
+                {message}
+                {favouriteCards.cardName}
+              </p>
+            )}{" "}
             {favouriteCards.length > 0 ? (
               favouriteCards.map((favouriteCard, index) => (
                 <div
@@ -98,51 +138,61 @@ const Mycards = () => {
                     bgGrad={favouriteCard.bgGrad}
                     bgStyle={favouriteCard.bgStyle}
                   />
-                 <div
-                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+                  <div
+                    className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
          xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
-                >
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                    <ul className="gap-3">
-                     
-                      <li onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                    </ul>
+                  >
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                      <ul className="gap-3">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li>
+                          <span
+                            onClick={() => handleDelete(favouriteCard._id)}
+                            className="flex my-5  transition-transform duration-1000 ease-in-out"
+                          >
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                      <li>
-                        <span className="flex my-5 ">
-                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li  onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5 ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5 ">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                    </ul>
+                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5 ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                        <li>
+                          <span
+                            onClick={() => handleDelete(favouriteCard._id)}
+                            className="flex my-5 "
+                          >
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">
+              <p className="text-gray-500 relative left-28">
                 All your selected cards as Favourite will display here
               </p>
             )}
@@ -166,51 +216,55 @@ const Mycards = () => {
                     bgGrad={lovedcard.bgGrad}
                     bgStyle={lovedcard.bgStyle}
                   />
-                 <div
-                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+                  <div
+                    className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
          xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
-                >
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                    <ul className="gap-3">
-                     
-                      <li  onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                    </ul>
+                  >
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                      <ul className="gap-3">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                      <li>
-                        <span className="flex my-5 ">
-                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li  onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5 ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5 ">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                    </ul>
+                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5 ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                        <li>
+                          <span className="flex my-5 ">
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">
+              <p className="text-gray-500 relative left-28">
                 All your selected cards as Loved will display here
               </p>
             )}
@@ -234,51 +288,55 @@ const Mycards = () => {
                     bgGrad={savedcard.bgGrad}
                     bgStyle={savedcard.bgStyle}
                   />
-                 <div
-                  className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
+                  <div
+                    className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
          xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
-                >
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                    <ul className="gap-3">
-                     
-                      <li  onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                        </span>
-                      </li>
-                    </ul>
+                  >
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
+                      <ul className="gap-3">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
-                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                      <li>
-                        <span className="flex my-5 ">
-                          <HandHeart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li  onClick={()=>router.push("../payment/orders")}>
-                        <span className="flex my-5 ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5 ">
-                          <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                    </ul>
+                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
+                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
+                        <li>
+                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
+                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          </span>
+                        </li>
+                        <li onClick={() => router.push("../payment/orders")}>
+                          <span className="flex my-5 ">
+                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                        <li>
+                          <span className="flex my-5 ">
+                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                </div>
                 </div>
               ))
             ) : (
-              <p className="text-gray-500">
+              <p className="text-gray-500 relative">
                 All your selected cards as Loved will display here
               </p>
             )}

@@ -1,12 +1,12 @@
 import { MongoClient, ObjectId } from "mongodb";
-import clientPromise from "../../../../lib/mongodb/config";
+import clientPromise from "../../../../../lib/mongodb/config";
 
 export default async function handler(req, res) {
   if (req.method !== "DELETE") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-const id = req.query.highlightcardid || req.body.highlightcardid;
+const id = req.query.id || req.body.id;
 
   if (!id || typeof id !== "string") {
     return res.status(400).json({ error: "Card ID must be a string" });
@@ -15,7 +15,7 @@ const id = req.query.highlightcardid || req.body.highlightcardid;
   try {
      const client = await clientPromise;
     const db = client.db("kikqrcard");
-    const cards = db.collection("myhighlightedCards");
+    const cards = db.collection("myfavouritedCards");
 
     const result = await cards.deleteOne({ _id: new ObjectId(id) });
 
