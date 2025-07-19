@@ -17,6 +17,9 @@ const Profile = () => {
   });
   const [highlightedCards, setHighlightedCards] = useState({});
   const [message, setMessage] = useState("");
+  const [favouriteCards, setFavouriteCards] = useState({});
+  const [lovedCards, setLovedCards] = useState({});
+  const [savedCards, setSavedCards] = useState({});
 
   useEffect(() => {
     const useremail = session?.user?.email;
@@ -45,6 +48,28 @@ const Profile = () => {
         } else {
           console.error("Error fetching user:", data.error);
         }
+        //fetching data
+        const fetchCards = async () => {
+          try {
+            const [favouriteRes, lovedRes, savedRes] = await Promise.all([
+              fetch(`/api/getCards/getfavouritecard?email=${useremail}`),
+              fetch(`/api/getCards/getlovedcard?email=${useremail}`),
+              fetch(`/api/getCards/getsavedcard?email=${useremail}`),
+            ]);
+
+            const favouriteData = await favouriteRes.json();
+            const lovedData = await lovedRes.json();
+            const savedcardData = await savedRes.json();
+
+            setFavouriteCards(favouriteData.favouriteCards || []);
+            setLovedCards(lovedData.lovedCards || []);
+            setSavedCards(savedcardData.savedCards || []);
+          } catch (error) {
+            console.error("Failed to fetch cards:", error);
+          }
+        };
+
+        fetchCards();
 
         // Fetch highlighted cards
         const highlightRes = await fetch(
@@ -59,28 +84,27 @@ const Profile = () => {
 
     fetchUserAndHighlighted();
   }, [session]);
- 
- const handlehighlightedcardDelete = async (id, cardName) => {
-  try {
-    const res = await fetch(`/api/deletecard/deletehighlightedcard/${id}`, {
-      method: "DELETE",
-    });
 
-    if (res.ok) {
-      setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
-      setMessage(`Card deleted successfully: ${cardName}`);
-      setTimeout(() => setMessage(""), 3000);
-    } else {
-      setMessage("Failed to delete card");
+  const handlehighlightedcardDelete = async (id, cardName) => {
+    try {
+      const res = await fetch(`/api/deletecard/deletehighlightedcard/${id}`, {
+        method: "DELETE",
+      });
+
+      if (res.ok) {
+        setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
+        setMessage(`Card deleted successfully: ${cardName}`);
+        setTimeout(() => setMessage(""), 3000);
+      } else {
+        setMessage("Failed to delete card");
+        setTimeout(() => setMessage(""), 3000);
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      setMessage("An error occurred");
       setTimeout(() => setMessage(""), 3000);
     }
-  } catch (error) {
-    console.error("Delete error:", error);
-    setMessage("An error occurred");
-    setTimeout(() => setMessage(""), 3000);
-  }
-};
-
+  };
 
   return (
     <>
@@ -132,31 +156,29 @@ const Profile = () => {
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-950 ">
             Liked Cards
           </p>{" "}
-          <span className="text-5xl text-sky-600 font-[1000] font-cp ">
-            18
-          </span>
+          <span className="text-5xl text-sky-600 font-[1000] font-cp ">{lovedCards.length}</span>
         </div>
         <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-red-600 rounded-2xl shadow-2xl border border-black">
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
             Favourited Card
           </p>{" "}
-          <span className="text-5xl text-white font-[1000] font-cp ">
-            24
-          </span>
+          <span className="text-5xl text-white font-[1000] font-cp ">{favouriteCards.length}</span>
         </div>
-           <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-teal-600 rounded-2xl shadow-2xl border border-black">
+        <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-teal-600 rounded-2xl shadow-2xl border border-black">
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
-           Card Created
+            Card Created
           </p>{" "}
           <span className="text-5xl text-yellow-300 font-[1000] font-cp ">
-            35
+            {savedCards.length}
           </span>
         </div>{" "}
         <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-black rounded-2xl shadow-2xl border border-brand">
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
             Total Orders
           </p>{" "}
-          <span className="text-5xl text-green-400 font-[1000] font-cp ">3</span>
+          <span className="text-5xl text-green-400 font-[1000] font-cp ">
+            3
+          </span>
         </div>
       </div>
 
@@ -169,7 +191,6 @@ const Profile = () => {
           {message && (
             <p className="text-green-600 text-sm mt-2 relative left-48">
               {message}
-       
             </p>
           )}
           {highlightedCards?.length > 0 ? (
@@ -185,7 +206,6 @@ const Profile = () => {
                   quote={highlightedCard.quote}
                   bgGrad={highlightedCard.bgGrad}
                   bgStyle={highlightedCard.bgStyle}
-                  
                 />
                 <div
                   className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
@@ -206,7 +226,12 @@ const Profile = () => {
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                           <Trash
-                           onClick={() => handlehighlightedcardDelete(highlightedCard._id, highlightedCard.cardName)}
+                            onClick={() =>
+                              handlehighlightedcardDelete(
+                                highlightedCard._id,
+                                highlightedCard.cardName
+                              )
+                            }
                             className="text-sky-950 size-10 xs:size-8 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"
                           />
                         </span>
@@ -214,7 +239,6 @@ const Profile = () => {
                     </ul>
                   </div>
                 </div>
-              
               </div>
             ))
           ) : (
