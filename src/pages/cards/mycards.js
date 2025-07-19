@@ -59,16 +59,8 @@ const Mycards = () => {
 
     return () => clearTimeout(timer);
   }, [session, status]);
- const delfavcardName = Array.isArray(favouriteCards)
-    ? favouriteCards.map((fc) => fc.cardName)
-    : [];
-    const dellovecardName = Array.isArray(lovedCards)
-    ? lovedCards.map((lc) => lc.cardName)
-    : [];
-    const delsavcardName = Array.isArray(savedCards)
-    ? favouriteCards.map((sc) => sc.cardName)
-    : [];
-  const handlefavouriteDelete = async (id) => {
+ 
+  const handlefavouriteDelete = async (id, cardName) => {
     try {
       const res = await fetch(`/api/deletecard/deletefavouritedcard/${id}`, {
         method: "DELETE",
@@ -76,7 +68,7 @@ const Mycards = () => {
 
       if (res.ok) {
         setFavouriteCards((prev) => prev.filter((card) => card._id !== id));
-        setMessage(`Card deleted successfully : ${delfavcardName}`);
+        setMessage(`Card deleted successfully : ${cardName}`);
       } else {
         setMessage("Failed to delete card");
       }
@@ -88,7 +80,7 @@ const Mycards = () => {
     }
   };
 
-  const handlelovedDelete = async (id) => {
+  const handlelovedDelete = async (id , cardName) => {
     try {
       const res = await fetch(`/api/deletecard/deletelovedcard/${id}`, {
         method: "DELETE",
@@ -96,7 +88,7 @@ const Mycards = () => {
 
       if (res.ok) {
         setLovedCards((prev) => prev.filter((card) => card._id !== id));
-        setMessage2(`Card deleted successfully : ${dellovecardName}`);
+        setMessage2(`Card deleted successfully : ${cardName}`);
       } else {
         setMessage2("Failed to delete card");
       }
@@ -108,7 +100,7 @@ const Mycards = () => {
     }
   };
 
-  const handlesavedDelete = async (id) => {
+  const handlesavedDelete = async (id, cardName) => {
     try {
       const res = await fetch(`/api/deletecard/deletesavedcard/${id}`, {
         method: "DELETE",
@@ -116,7 +108,7 @@ const Mycards = () => {
 
       if (res.ok) {
         setSavedCards((prev) => prev.filter((card) => card._id !== id));
-        setMessage3(`Card deleted successfully : ${delsavcardName}`);
+        setMessage3(`Card deleted successfully : ${cardName}`);
       } else {
         setMessage3("Failed to delete card");
       }
@@ -145,7 +137,7 @@ const Mycards = () => {
             No cards yet?
           </span>
           <div
-            className="bg-white border-2 border-black flex justify-center items-center mx-8 mt-5 
+            className="bg-white border-2 border-black flex justify-center items-center mx-8 mt-5 hover:scale-110 transition-transform duration-1000 relative tb:left-4 lP:left-20
           hover:border-brand rounded-full shadow-[#8F87F1] shadow-xl hover:shadow-[#7063ff] tb:w-[70%] lp:w-[70%] xb:w-[70%]"
             onClick={() => {
               router.push("/cards/createcard");
@@ -184,10 +176,11 @@ const Mycards = () => {
                   />
                   <div
                     className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
-         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+         xb:left-[87.5%] xb:top-[40px] xs:top-[500px] xs:left-[68%]
+          transition-transform duration-1000 ease-in-out cursor-pointer "
                   >
-                    <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                      <ul className="gap-3">
+                    <div className="flex p-2 m-2 items-center justify-center h-[200px]   transition-transform duration-1000 ease-in-out">
+                      <ul className="gap-3 xs:flex xs:flex-row ">
                         <li>
                           <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                             <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -201,7 +194,7 @@ const Mycards = () => {
                         <li>
                           <span
                             onClick={() =>
-                              handlefavouriteDelete(favouriteCard._id)
+                              handlefavouriteDelete(favouriteCard._id , favouriteCard.cardName)
                             }
                             className="flex my-5  transition-transform duration-1000 ease-in-out"
                           >
@@ -211,32 +204,7 @@ const Mycards = () => {
                       </ul>
                     </div>
                   </div>
-                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                        <li>
-                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                          </span>
-                        </li>
-                        <li onClick={() => router.push("../payment/orders")}>
-                          <span className="flex my-5 ">
-                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                        <li>
-                          <span
-                            onClick={() =>
-                              handlefavouriteDelete(favouriteCard._id)
-                            }
-                            className="flex my-5 "
-                          >
-                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+             
                 </div>
               ))
             ) : (
@@ -271,10 +239,10 @@ const Mycards = () => {
                   />
                   <div
                     className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
-         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+         xb:left-[87.5%] xb:top-[40px] xs:top-[500px] xs:left-[68%]  transition-transform duration-1000 ease-in-out cursor-pointer"
                   >
                     <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                      <ul className="gap-3">
+                      <ul className="gap-3 xs:flex xs:flex-row">
                         <li>
                           <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                             <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -287,7 +255,7 @@ const Mycards = () => {
                         </li>
                         <li>
                           <span
-                            onClick={() => handlelovedDelete(lovedcard._id)}
+                            onClick={() => handlelovedDelete(lovedcard._id , lovedcard.cardName)}
                             className="flex my-5  transition-transform duration-1000 ease-in-out"
                           >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -296,30 +264,7 @@ const Mycards = () => {
                       </ul>
                     </div>
                   </div>
-                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                        <li>
-                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                          </span>
-                        </li>
-                        <li onClick={() => router.push("../payment/orders")}>
-                          <span className="flex my-5 ">
-                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                        <li>
-                          <span
-                            className="flex my-5 "
-                            onClick={() => handlelovedDelete(lovedcard._id)}
-                          >
-                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                
                 </div>
               ))
             ) : (
@@ -357,7 +302,7 @@ const Mycards = () => {
          xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
                   >
                     <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                      <ul className="gap-3">
+                      <ul className="gap-3 xs:flex xs:flex-row">
                         <li>
                           <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                             <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -370,7 +315,7 @@ const Mycards = () => {
                         </li>
                         <li>
                           <span
-                            onClick={() => handlesavedDelete(savedcard._id)}
+                            onClick={() => handlesavedDelete(savedcard._id , savedcard.cardName)}
                             className="flex my-5  transition-transform duration-1000 ease-in-out"
                           >
                             <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
@@ -379,30 +324,7 @@ const Mycards = () => {
                       </ul>
                     </div>
                   </div>
-                  <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                    <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                      <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                        <li>
-                          <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                            <Pencil className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
-                          </span>
-                        </li>
-                        <li onClick={() => router.push("../payment/orders")}>
-                          <span className="flex my-5 ">
-                            <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                        <li>
-                          <span
-                            onClick={() => handlesavedDelete(savedcard._id)}
-                            className="flex my-5 "
-                          >
-                            <Trash className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 " />
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                 
                 </div>
               ))
             ) : (

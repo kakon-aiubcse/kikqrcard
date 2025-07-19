@@ -59,30 +59,28 @@ const Profile = () => {
 
     fetchUserAndHighlighted();
   }, [session]);
-  const delhighlightedcardName = Array.isArray(highlightedCards)
-    ? highlightedCards.map((hc) => hc.cardName)
-    : [];
+ 
+ const handlehighlightedcardDelete = async (id, cardName) => {
+  try {
+    const res = await fetch(`/api/deletecard/deletehighlightedcard/${id}`, {
+      method: "DELETE",
+    });
 
-  const handlehighlightedcardDelete = async (id) => {
-    try {
-      const res = await fetch(`/api/deletecard/deletehighlightedcard/${id}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
-        setMessage(`Card deleted successfully: ${delhighlightedcardName}`);
-        setTimeout(() => setMessage(""), 3000);
-      } else {
-        setMessage("Failed to delete card");
-        setTimeout(() => setMessage(""), 3000);
-      }
-    } catch (error) {
-      console.error("Delete error:", error);
-      setMessage("An error occurred");
+    if (res.ok) {
+      setHighlightedCards((prev) => prev.filter((card) => card._id !== id));
+      setMessage(`Card deleted successfully: ${cardName}`);
+      setTimeout(() => setMessage(""), 3000);
+    } else {
+      setMessage("Failed to delete card");
       setTimeout(() => setMessage(""), 3000);
     }
-  };
+  } catch (error) {
+    console.error("Delete error:", error);
+    setMessage("An error occurred");
+    setTimeout(() => setMessage(""), 3000);
+  }
+};
+
 
   return (
     <>
@@ -130,17 +128,25 @@ const Profile = () => {
         <span className="text-2xl ml-6 font-cp font-semibold underline">
           Activity
         </span>
-        <div className="flex flex-col items-center justify-center p-4 lp:p-8 lp:m-8 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-white rounded-2xl shadow-2xl border border-black">
+        <div className="flex flex-col items-center justify-center p-4 lp:p-8 lp:m-8 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-slate-200 rounded-2xl shadow-2xl border border-black">
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-950 ">
             Liked Cards
           </p>{" "}
-          <span className="text-5xl text-teal-600 font-[1000] font-cp ">
+          <span className="text-5xl text-sky-600 font-[1000] font-cp ">
             18
           </span>
         </div>
-        <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-brand rounded-2xl shadow-2xl border border-black">
+        <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-red-600 rounded-2xl shadow-2xl border border-black">
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
-            Profile Views
+            Favourited Card
+          </p>{" "}
+          <span className="text-5xl text-white font-[1000] font-cp ">
+            24
+          </span>
+        </div>
+           <div className="flex flex-col items-center justify-center lp:p-8 lp:m-8 p-4 w-full m-4 relative right-5 tb:w-1/2 lp:w-1/2 xb:w-1/2 bg-teal-600 rounded-2xl shadow-2xl border border-black">
+          <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
+           Card Created
           </p>{" "}
           <span className="text-5xl text-yellow-300 font-[1000] font-cp ">
             35
@@ -150,7 +156,7 @@ const Profile = () => {
           <p className=" p-2 mx-3 text-2xl font-ios font-bold text-slate-200 ">
             Total Orders
           </p>{" "}
-          <span className="text-5xl text-red-400 font-[1000] font-cp ">3</span>
+          <span className="text-5xl text-green-400 font-[1000] font-cp ">3</span>
         </div>
       </div>
 
@@ -179,60 +185,36 @@ const Profile = () => {
                   quote={highlightedCard.quote}
                   bgGrad={highlightedCard.bgGrad}
                   bgStyle={highlightedCard.bgStyle}
+                  
                 />
                 <div
                   className="absolute  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[35px] lp:top-[35px] left-[76%] lp:left-[81%] hover:scale-105
-         xb:left-[87.5%] xb:top-[40px]   transition-transform duration-1000 ease-in-out cursor-pointer"
+         xb:left-[87.5%] xb:top-[40px] xs:top-[480px] xs:left-[68%] xs:hover:border-none transition-transform duration-1000 ease-in-out cursor-pointer"
                 >
                   <div className="flex p-2 m-2 items-center justify-center h-[200px]  transition-transform duration-1000 ease-in-out">
-                    <ul className="gap-3">
+                    <ul className="gap-3 xs:flex xs:flex-row">
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
-                          <Pencil className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
+                          <Pencil className="text-sky-950  size-10 xs:size-8 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out " />
                         </span>
                       </li>
                       <li onClick={() => router.push("../payment/orders")}>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
+                          <ShoppingCart className="text-sky-950  size-10 xs:size-8 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out" />
                         </span>
                       </li>
                       <li>
                         <span className="flex my-5  transition-transform duration-1000 ease-in-out">
                           <Trash
-                            onClick={() =>
-                              handlehighlightedcardDelete(highlightedCard._id)
-                            }
-                            className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"
+                           onClick={() => handlehighlightedcardDelete(highlightedCard._id, highlightedCard.cardName)}
+                            className="text-sky-950 size-10 xs:size-8 hover:scale-110 hover:text-sky-400  transition-transform duration-1000 ease-in-out"
                           />
                         </span>
                       </li>
                     </ul>
                   </div>
                 </div>
-                <div className="absolute lp:hidden xb:hidden  w-[80px] h-[250px] hover:border hover:border-brand rounded-full  top-[355px] left-[76%]">
-                  <div className="flex p-2 m-2 items-center justify-center h-[200px] ">
-                    <ul className="gap-3 transition-transform duration-1000 ease-in-out">
-                      <li>
-                        <span className="flex my-5 ">
-                          <Pencil className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li onClick={() => router.push("../payment/orders")}>
-                        <span className="flex my-5 ">
-                          <ShoppingCart className="text-sky-950  size-10 hover:scale-110 hover:text-sky-400 " />
-                        </span>
-                      </li>
-                      <li>
-                        <span className="flex my-5 ">
-                          <Trash
-                            onClick={() => handleDelete(highlightedCard._id)}
-                            className="text-sky-950 size-10 hover:scale-110 hover:text-sky-400 "
-                          />
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+              
               </div>
             ))
           ) : (
