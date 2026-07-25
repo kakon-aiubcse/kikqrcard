@@ -1,334 +1,162 @@
-//pricing section
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
 import { useRouter } from "next/router";
+import { Check, X } from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 
-const Pricing = forwardRef((props, ref) => {
+const TIERS = [
+  {
+    name: "Discover",
+    price: "Free",
+    cadence: "/30 days",
+    description: "This is a free way to discover our digital cards.",
+    featured: false,
+    features: [
+      { label: "1 virtual card", included: true },
+      { label: "3 Social link", included: true },
+      { label: "1 Product", included: false },
+      { label: "1 gallery photo", included: true },
+      { label: "Daily Maintenance", included: false },
+      { label: "1 Premium card", included: false },
+      { label: "1 Google Map link", included: true },
+      { label: "Whatsapp enabled", included: false },
+      { label: "Free Set up", included: false },
+      { label: "Free Support", included: false },
+    ],
+    actions: [{ label: "Sign up", href: "/authentication/signup", variant: "default" }],
+  },
+  {
+    name: "Personal",
+    price: "$10",
+    cadence: "Forever",
+    description: "Designed to meet every individual's QR card needs.",
+    featured: true,
+    features: [
+      { label: "1 virtual card", included: true },
+      { label: "5 Social link", included: true },
+      { label: "2 Product", included: true },
+      { label: "5 gallery photo", included: true },
+      { label: "Daily Maintenance", included: false },
+      { label: "1 Premium card", included: true },
+      { label: "3 Google Map link", included: true },
+      { label: "Whatsapp enabled", included: true },
+      { label: "Free Set up", included: true },
+      { label: "Free Support", included: false },
+    ],
+    actions: [
+      { label: "Purchase", href: "/payment/billings", variant: "default" },
+      { label: "Sign up", href: "/authentication/signup", variant: "outline" },
+    ],
+  },
+  {
+    name: "Business",
+    price: "$110",
+    cadence: "/6 months",
+    description: "Implemented to meet company's QR card needs.",
+    featured: false,
+    features: [
+      { label: "10 virtual card", included: true },
+      { label: "5 Social link", included: true },
+      { label: "5 Product", included: true },
+      { label: "10 gallery photo", included: true },
+      { label: "Daily Maintenance", included: true },
+      { label: "10 Premium card", included: true },
+      { label: "5 Google Map link", included: true },
+      { label: "Whatsapp enabled", included: true },
+      { label: "Free Set up", included: true },
+      { label: "Free Support", included: true },
+    ],
+    actions: [
+      { label: "Purchase", href: "/payment/billings", variant: "default" },
+      { label: "Sign up", href: "/authentication/signup", variant: "outline" },
+    ],
+  },
+];
+
+function PricingCard({ tier }) {
   const router = useRouter();
+
   return (
-    <div
-      ref={ref}
-      id="pricing"
-      className=" min-h-screen flex flex-col mb-32 w-screen xs:w-screen "
-    >
-      <div className=" flex flex-col items-center justify-center pr-60 xs:pr-0">
-        <span className="text-2xl text-slate-400 font-cp font-medium xs:text-xl">
-          Smart investing. 10× returns.
-        </span>
-        <span className="text-5xl font-cp p-4 m-4 text-brand font-bold lp:text-4xl tb:text-3xl xs:text-2xl">
-          Explore Our QRcard Plans and Choose Yours
-        </span>
-      </div>
-      <div
-        className="grid grid-cols-3 items-start justify-evenly  pr-60  p-3 m-2 gap-16 
-       xs:pl-4 xs:grid-cols-1 lp:grid-cols-3 tb:grid-cols-2 xb:grid-cols-3 xb:gap-24 xb:p-10 xb:pr-[430px] xb:m-1"
+    <div className={cn("relative", tier.featured && "pt-3")}>
+      {tier.featured && (
+        <Badge className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          Most popular
+        </Badge>
+      )}
+      <Card
+        className={cn(
+          "relative flex flex-col border-border/60 transition-all duration-300 hover:-translate-y-1",
+          tier.featured && "border-primary shadow-lg ring-1 ring-primary/30",
+        )}
       >
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2  hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
-          <div className="flex flex-col items-start justify-start p-4">
-            <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
-              KIK QRcard
-            </span>
-            <span className="text-lg font-cp font-bold text-black">
-              {" "}
-              Discover
-            </span>
-            <span className="flex items-start justify-start text-black p-1 m-3 font-ios font-medium">
-              <span className="text-5xl p-1 ">Free </span>
-              <span className="relative top-7 ml-1">/30 days</span>
-            </span>
-            <span className="font-ios text-black font-medium my-4">
-              This is free way to discover our digital cards.
-            </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
-            <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
-              KIK QRcard features
-            </span>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 virtual card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                3 Social link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 Product
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 gallery photo
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Daily Maintenance
-              </span>
-            </div>
-            <span className=" text-brand rounded-lg relative top-6 py-2 font-cp font-semibold">
-              Additional features
-            </span>
-            <div className="flex px-2 mx-2 relative top-6">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 Premium card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 Google Map link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Whatsapp enabled
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Set up
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Support
-              </span>
-            </div>{" "}
-            <button
-              onClick={() => {
-                router.push("../authentication/signup");
-              }}
-              className="flex relative top-10 left-10 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-       lp:m-2 lp:p-1 shadow-xl "
-            >
-              Sign up
-            </button>{" "}
+        <CardHeader className="gap-3">
+          <Badge variant="secondary" className="w-fit">
+            KIK QRcard
+          </Badge>
+          <h3 className="text-lg font-bold text-foreground">{tier.name}</h3>
+          <div className="flex items-baseline gap-1">
+            <span className="text-4xl font-bold text-foreground">{tier.price}</span>
+            <span className="text-sm text-muted-foreground">{tier.cadence}</span>
           </div>
-        </div>
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
-          <div className="flex flex-col items-start justify-start p-4">
-            <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
-              KIK QRcard
-            </span>
-            <span className="text-lg font-cp font-bold text-black">
-              {" "}
-              Personal
-            </span>
-            <span className="flex items-start justify-start text-black p-1 m-3 font-ios font-medium">
-              <span className="text-5xl p-1 ">10$ </span>
-              <span className="relative top-7 ml-1">Forever</span>
-            </span>
-            <span className="font-ios text-black font-medium my-4">
-              Designed to meet every individual's QR card needs
-            </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
-            <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
-              KIK QRcard features
-            </span>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 virtual card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                5 Social link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                2 Product
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                5 gallery photo
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Daily Maintenance
-              </span>
-            </div>
-            <span className=" text-brand rounded-lg relative top-6 py-2 font-cp font-semibold">
-              Additional features
-            </span>
-            <div className="flex px-2 mx-2 relative top-6">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                1 Premium card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                3 Google Map link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Whatsapp enabled
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Set up
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="close.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Support
-              </span>
-            </div>{" "}
-            <div className="flex">
-              <button
-                onClick={() => {
-                  router.push("../payment/billings");
-                }}
-                className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-     tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  lp:m-2 lp:p-1 shadow-xl"
+          <p className="text-sm text-muted-foreground">{tier.description}</p>
+        </CardHeader>
+        <CardContent className="flex flex-1 flex-col gap-6">
+          <ul className="flex flex-col gap-2.5">
+            {tier.features.map((feature) => (
+              <li key={feature.label} className="flex items-center gap-2.5 text-sm">
+                {feature.included ? (
+                  <Check className="size-4 shrink-0 text-primary" />
+                ) : (
+                  <X className="size-4 shrink-0 text-muted-foreground/50" />
+                )}
+                <span className={cn(!feature.included && "text-muted-foreground/60")}>
+                  {feature.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-auto flex flex-col gap-2">
+            {tier.actions.map((action) => (
+              <Button
+                key={action.label}
+                variant={action.variant}
+                onClick={() => router.push(action.href)}
               >
-                Purchase
-              </button>
-              <button
-                onClick={() => {
-                  router.push("../authentication/signup");
-                }}
-                className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-    tb:w-[80px] tb:right-6 tb:m-1 tb:text-base  shadow-xl lp:m-2 lp:p-1"
-              >
-                Sign up
-              </button>{" "}
-            </div>
+                {action.label}
+              </Button>
+            ))}
           </div>
-        </div>
-        <div className="bg-violet-100 w-[300px] xb:w-[350px] rounded-lg shadow-xl border border-violet-700 relative hover:bottom-2 hover:border-2 transition-all duration-1000  h-[700px] text-sky-800 mx-2 tb:w-[260px] ">
-          <div className="flex flex-col items-start justify-start p-4">
-            <span className="bg-brand text-white rounded-lg p-2 font-cp font-semibold">
-              KIK QRcard
-            </span>
-            <span className="text-lg font-cp font-bold text-black">
-              {" "}
-              Business
-            </span>
-            <span className="flex items-start justify-start text-black p-1 m-3 font-ios font-medium">
-              <span className="text-5xl p-1 ">110$ </span>
-              <span className="relative top-7 ml-1">/6 months</span>
-            </span>
-            <span className="font-ios text-black font-medium my-4">
-              Implemented to meet company's QR card needs
-            </span>
-            <span className="bg-slate-500 my-[1px] w-[270px] h-[1px] tb:w-[220px]"></span>
-            <span className=" text-brand rounded-lg relative top-4 py-2 font-cp font-semibold">
-              KIK QRcard features
-            </span>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                10 virtual card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                5 Social link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                5 Product
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                10 gallery photo
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Daily Maintenance
-              </span>
-            </div>
-            <span className=" text-brand rounded-lg relative top-6 py-2 font-cp font-semibold">
-              Additional features
-            </span>
-            <div className="flex px-2 mx-2 relative top-6">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                10 Premium card
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                5 Google Map link
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Whatsapp enabled
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-5">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Set up
-              </span>
-            </div>
-            <div className="flex px-2 mx-2 relative top-4">
-              <img src="check.svg" />
-              <span className="relative mx-3 font-cp font-semibold ">
-                Free Support
-              </span>
-            </div>{" "}
-            <div className="flex">
-              <button
-                onClick={() => {
-                  router.push("../payment/billings");
-                }}
-                className="flex relative top-10 left-1 bg-black text-green-500 rounded-lg w-[120px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-      tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
-              >
-                Purchase
-              </button>
-              <button
-                onClick={() => {
-                  router.push("../authentication/signup");
-                }}
-                className="flex relative top-10 left-4 bg-black text-white rounded-lg w-[100px] h-[45px] m-2 p-1 font-ios text-xl font-semibold items-center justify-center
-      tb:w-[80px] tb:right-6 tb:m-1 tb:text-base lp:m-2 lp:p-1 shadow-xl"
-              >
-                Sign up
-              </button>{" "}
-            </div>
-          </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
+}
+
+const Pricing = forwardRef((props, ref) => {
+  return (
+    <section ref={ref} id="pricing" className="w-full py-20 sm:py-28">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-14 max-w-2xl text-center">
+          <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+            Smart investing. 10&times; returns.
+          </span>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            Explore Our QRcard Plans and Choose Yours
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {TIERS.map((tier) => (
+            <PricingCard key={tier.name} tier={tier} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 });
+
+Pricing.displayName = "Pricing";
 
 export default Pricing;
