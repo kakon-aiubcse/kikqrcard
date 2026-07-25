@@ -1,9 +1,13 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
-import { Eye, EyeClosed } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { X } from "lucide-react";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { Eye, EyeOff, X } from "lucide-react";
+import { toast } from "sonner";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 function Login() {
   const router = useRouter();
@@ -11,20 +15,18 @@ function Login() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
   const { data: session } = useSession();
-  
-    useEffect(() => {
-      if (session?.user?.email) {
-        router.push("/dashboard"); // 🔁 redirect if already logged in
-      }
-    }, [session, router]);
+
+  useEffect(() => {
+    if (session?.user?.email) {
+      router.push("/dashboard"); // redirect if already logged in
+    }
+  }, [session, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: "" }));
-    setMessage("");
   };
 
   const validate = () => {
@@ -45,169 +47,127 @@ function Login() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setMessage("");
+    e.preventDefault();
+    setLoading(true);
 
-  const validationErrors = validate();
-  if (Object.keys(validationErrors).length > 0) {
-    setErrors(validationErrors);
-    setLoading(false);
-    return;
-  }
-
-  try {
-    const result = await signIn("credentials", {
-      redirect: false,
-      email: formData.email,
-      password: formData.password,
-    });
-
-    if (!result || result.error) {
-      setMessage("Invalid email or password");
-    } else {
-      setMessage("Login successful!");
-
-      // Wait for session to sync before redirecting
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 300);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      setLoading(false);
+      return;
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    setMessage("Something went wrong. Please try again.");
-  } finally {
-    setLoading(false);
-  }
-};
 
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result || result.error) {
+        toast.error("Invalid email or password");
+      } else {
+        toast.success("Login successful!");
+
+        // Wait for session to sync before redirecting
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 300);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen flex xs:flex-col tb:flex-col items-center justify-center bg-gradient-to-tl from-sky-300 to-violet-400 p-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8 space-y-6 xs:order-2 tb:order-2 "
-      >
-        <span className="absolute" onClick={()=>{router.push("/")}}><X className="text-red-500"/></span>
-        <h2 className="text-3xl font-semibold text-center text-violet-600">
-          Login
-        </h2>
-
-        <div className="space-y-1">
-          <label htmlFor="email" className="block text-sm font-medium">
-            Email <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          />{" "}
-          {errors.email && (
-            <p className="text-red-500 text-sm">{errors.email}</p>
-          )}
-        </div>
-
-        <div className="space-y-1">
-          <label htmlFor="password" className="block text-sm font-medium">
-            Password <span className="text-red-500">*</span>
-          </label>
-          <input
-            id="password"
-            name="password"
-            type={viewpass ? "text" : "password"}
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-violet-400 outline-none"
-          />{" "}
-          {errors.password && (
-            <p className="text-red-500 text-sm">{errors.password}</p>
-          )}
-        </div>
-        <span className="flex relative bottom-[54px] overflow-hidden xs:w-[20px] xs:left-[280px] left-[340px] tb:w-[20px] lp:left-[340px] xb:left-[350px]">
-          {viewpass ? (
-            <Eye onClick={() => setViewpass(!viewpass)} />
-          ) : (
-            <EyeClosed onClick={() => setViewpass(!viewpass)} />
-          )}
-        </span>
-        {message && (
-          <p
-            className={`text-center font-medium ${
-              message.toLowerCase().includes("success")
-                ? "text-green-600"
-                : "text-red-600"
-            }`}
-          >
-            {message}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className={`w-full py-3 bg-violet-600 text-white rounded-lg font-semibold transition duration-200 ${
-            loading ? "opacity-50 cursor-not-allowed" : "hover:bg-violet-700"
-          }`}
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-primary/10 via-background to-background p-4">
+      <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="absolute top-4 right-4"
+          aria-label="Close and return home"
+          onClick={() => router.push("/")}
         >
-          {loading ? "Logging in..." : "Log In"}
-        </button>
+          <X className="size-4" />
+        </Button>
 
-        <div className="text-center text-sm text-gray-600">
-          Don&apos;t have an account?{" "}
-          <a
-            href="/authentication/signup"
-            className="text-violet-600 hover:text-violet-800 font-semibold cursor-pointer"
-          >
-            Sign Up
-          </a>
+        <div className="mb-6 flex flex-col items-center gap-6">
+          <Link href="/" className="flex items-center">
+            <Logo size="sm" />
+          </Link>
+          <h2 className="text-2xl font-semibold text-foreground">Log in</h2>
         </div>
-      </form>
-      <div
-        className="w-[30%] ml-32 xs:ml-0 xb:ml-48 xs:top-0 xs:order-1 tb:order-1 tb:mr-36 xs:p-4 xs:mr-44 xs:mb-14 "
-        onClick={() => {
-          router.push("/");
-        }}
-      >
-        <svg
-          width="250"
-          height="100"
-          viewBox="0 0 200 60"
-          fill="none"
-          fontStyle="italic"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <rect width="200" height="60" rx="12" ry="12" fill="#8F87F1" />
 
-          <text
-            x="20"
-            y="45"
-            fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-            fontSize={36}
-            fontWeight="700"
-            fill="white"
-          >
-            KIK
-          </text>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="space-y-1.5">
+            <Label htmlFor="email">
+              Email <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              aria-invalid={!!errors.email}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email}</p>
+            )}
+          </div>
 
-          <circle cx="140" cy="20" r="5" fill="teal" />
-          <rect x="160" y="15" width="10" height="10" fill="blue" />
-          <rect x="160" y="35" width="5" height="5" fill="black" />
-          <circle cx="185" cy="40" r="3" fill="red" />
+          <div className="space-y-1.5">
+            <Label htmlFor="password">
+              Password <span className="text-destructive">*</span>
+            </Label>
+            <div className="relative">
+              <Input
+                id="password"
+                name="password"
+                type={viewpass ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                aria-invalid={!!errors.password}
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setViewpass((v) => !v)}
+                className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                aria-label={viewpass ? "Hide password" : "Show password"}
+                tabIndex={-1}
+              >
+                {viewpass ? (
+                  <EyeOff className="size-4" />
+                ) : (
+                  <Eye className="size-4" />
+                )}
+              </button>
+            </div>
+            {errors.password && (
+              <p className="text-sm text-destructive">{errors.password}</p>
+            )}
+          </div>
 
-          <text
-            x="95"
-            y="45"
-            fontFamily="Segoe UI, Tahoma, Geneva, Verdana, sans-serif"
-            fontSize="24"
-            fill="white"
-            fontWeight="600"
-          >
-            QRcards
-          </text>
-        </svg>
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Logging in..." : "Log In"}
+          </Button>
+
+          <div className="text-center text-sm text-muted-foreground">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/authentication/signup"
+              className="font-semibold text-primary hover:underline"
+            >
+              Sign Up
+            </Link>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -1,9 +1,8 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Card from "./card";
-import Sidebar from "../dashboard/sidebar";
+import { toast } from "sonner";
 import {
   Heart,
   Save,
@@ -13,6 +12,25 @@ import {
   PinIcon,
 } from "lucide-react";
 import axios from "axios";
+import DashboardShell from "@/components/dashboard-shell";
+import Card from "./card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card as UICard,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const bgDirections = [
   "bg-gradient-to-r",
@@ -92,10 +110,18 @@ export default function CreateCard() {
     };
   }, [status, router, cardInfo.name, cardInfo.profession, error, message]);
 
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (message) toast.success(message);
+  }, [message]);
+
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg text-violet-600 font-semibold">
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-lg font-semibold text-primary">
           Checking session...
         </p>
       </div>
@@ -104,8 +130,8 @@ export default function CreateCard() {
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-2xl text-brand font-semibold">
+      <div className="flex h-screen items-center justify-center px-4 text-center">
+        <p className="text-2xl font-semibold text-primary">
           You are not logged in. Redirecting to login page...
         </p>
       </div>
@@ -372,223 +398,226 @@ export default function CreateCard() {
     }
   };
 
+  const actionButtons = [
+    { label: "Love", icon: Heart, onClick: handleLovedCard },
+    { label: "Favourite", icon: Star, onClick: handleFavouriteCard },
+    { label: "Highlight", icon: PinIcon, onClick: handleHighlightedCard },
+    { label: "Save", icon: Save, onClick: handleSaveCard },
+    { label: "Public", icon: BookOpenCheck, onClick: handlPuliccard },
+    { label: "QR Config", icon: Workflow, onClick: undefined },
+  ];
+
   return (
-    <>
-      <div className="flex ml-[8%] xs:ml-[0%]  overflow-y-hidden xs:overflow-x-hidden ">
-        <Sidebar />
-
-        <div className="flex flex-col items-center w-screen min-h-screen p-2 xs:p-0 xs:top-32 xs:relative xs:right-4 overflow-x-hidden bg-gray-100">
-          {/* Header */}
-          <h1 className="text-5xl font-bold text-brand flex "> Create Card</h1>
-
-          {/* Form */}
-          <span className="flex relative right-96 m-3 text-slate-400 font-cp xs:right-16 tb:right-0 xb:right-0">
-            Set up your card carefully:
-          </span>
-          <div className="grid md:grid-cols-2 gap-4 w-full max-w-6xl px-6 mb-8 ml-[10%]">
-            <input
-              value={cardInfo.name}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCardInfo({ ...cardInfo, name: val });
-                setErrors({ ...errors, name: validateName(val) });
-              }}
-              placeholder="Name"
-              className={`p-2 rounded border ${
-                errors.name ? "border-red-500" : "border-gray-300"
-              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
-            />
-
-            <input
-              value={cardInfo.profession}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCardInfo({ ...cardInfo, profession: val });
-                setErrors({ ...errors, profession: validateProfession(val) });
-              }}
-              placeholder="Profession"
-              className={`p-2 rounded border ${
-                errors.profession ? "border-red-500" : "border-gray-300"
-              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
-            />
-
-            <input
-              value={cardInfo.phone}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCardInfo({ ...cardInfo, phone: val });
-                setErrors({ ...errors, phone: validatePhone(val) });
-              }}
-              placeholder="Phone"
-              className={`p-2 rounded border ${
-                errors.phone ? "border-red-500" : "border-gray-300"
-              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
-            />
-
-            <input
-              value={cardInfo.quote}
-              onChange={(e) => {
-                const val = e.target.value;
-                setCardInfo({ ...cardInfo, quote: val });
-                setErrors({ ...errors, quote: validatequote(val) });
-              }}
-              placeholder="User's Quotes"
-              className={`p-2 rounded border ${
-                errors.quote ? "border-red-500" : "border-gray-300"
-              } hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400`}
-            />
-
-            {/* Direction Picker */}
-            <select
-              value={cardInfo.bgGrad}
-              onChange={(e) =>
-                setCardInfo({ ...cardInfo, bgGrad: e.target.value })
-              }
-              className="p-2 rounded border border-gray-300 hover:border-gray-400 focus:border-brand focus:outline-none w-full text-slate-600 placeholder-slate-400"
-            >
-              {bgDirections.map((dir, i) => (
-                <option key={i} value={dir}>
-                  {dir}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-col w-auto h-auto p-2">
-            {errors.name && (
-              <p className="text-red-500 text-sm mt-1">
-                Name error: {errors.name}
-              </p>
-            )}
-            {errors.profession && (
-              <p className="text-red-500 text-sm mt-1">
-                Profession error:{errors.profession}
-              </p>
-            )}
-            {errors.phone && (
-              <p className="text-red-500 text-sm mt-1">
-                Phone error: {errors.phone}
-              </p>
-            )}
-            {errors.quote && (
-              <p className="text-red-500 text-sm mt-1">
-                Quote errro: {errors.quote}
-              </p>
-            )}
+    <div className="md:pl-64">
+      <DashboardShell />
+      <main className="p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto max-w-6xl space-y-8">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              Create Card
+            </h1>
+            <p className="mt-1 text-muted-foreground">
+              Set up your card carefully.
+            </p>
           </div>
 
-          {/* Color Swatches (Optional Visual Picker) */}
-          <div className="flex flex-wrap gap-3 mb-6 ml-[10%] hover:scale-110 transition-transform duration-500 hover:border hover:border-brand rounded-2xl p-2">
-            {bgStyles.map((bg, i) => (
-              <div
-                key={i}
-                onClick={() => setCardInfo({ ...cardInfo, bgStyle: bg })}
-                className={`cursor-pointer w-16 h-10 rounded-md border-2 ${
-                  cardInfo.bgStyle === bg
-                    ? "border-brand scale-110 "
-                    : "border-gray-200"
-                } ${cardInfo.bgGrad} ${bg} transition-transform`}
-                title={bg}
-              ></div>
-            ))}
-          </div>
+          <div className="grid gap-8 md:grid-cols-2">
+            {/* left column: form */}
+            <UICard>
+              <CardHeader>
+                <CardTitle>Card details</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-1.5">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    value={cardInfo.name}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCardInfo({ ...cardInfo, name: val });
+                      setErrors({ ...errors, name: validateName(val) });
+                    }}
+                    placeholder="Name"
+                    aria-invalid={!!errors.name}
+                  />
+                  {errors.name && (
+                    <p className="text-sm text-destructive">
+                      Name error: {errors.name}
+                    </p>
+                  )}
+                </div>
 
-          {/* Card Display */}
-          <Card
-            name={cardInfo.name}
-            profession={cardInfo.profession}
-            phone={cardInfo.phone}
-            quote={cardInfo.quote}
-            bgGrad={cardInfo.bgGrad}
-            bgStyle={cardInfo.bgStyle}
-          />
+                <div className="space-y-1.5">
+                  <Label htmlFor="profession">Profession</Label>
+                  <Input
+                    id="profession"
+                    value={cardInfo.profession}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCardInfo({ ...cardInfo, profession: val });
+                      setErrors({
+                        ...errors,
+                        profession: validateProfession(val),
+                      });
+                    }}
+                    placeholder="Profession"
+                    aria-invalid={!!errors.profession}
+                  />
+                  {errors.profession && (
+                    <p className="text-sm text-destructive">
+                      Profession error: {errors.profession}
+                    </p>
+                  )}
+                </div>
 
-          {/* card preview section */}
-          <div className="flex flex-col lp:mr-[1%] p-4 m-4 xs:mr-[0%] tb:mr-[0%] xb:ml-44 tb:p-8 rounded-lg hover:scale-110 transition-transform duration-500">
-            <div className="bg-white rounded-xl shadow-md p-4 border border-brand tb:relative tb:left-5 ">
-              <h2 className="text-xl font-semibold text-brand mb-2">
-                Card Preview Info
-              </h2>
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone">Phone</Label>
+                  <Input
+                    id="phone"
+                    value={cardInfo.phone}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCardInfo({ ...cardInfo, phone: val });
+                      setErrors({ ...errors, phone: validatePhone(val) });
+                    }}
+                    placeholder="Phone"
+                    aria-invalid={!!errors.phone}
+                  />
+                  {errors.phone && (
+                    <p className="text-sm text-destructive">
+                      Phone error: {errors.phone}
+                    </p>
+                  )}
+                </div>
 
-              <p className="text-slate-700 text-base mb-1">
-                <span className="font-semibold text-slate-600">Card Name:</span>{" "}
-                <span className="text-brand font-medium">{cardName}</span>
-              </p>
+                <div className="space-y-1.5">
+                  <Label htmlFor="quote">Quote</Label>
+                  <Input
+                    id="quote"
+                    value={cardInfo.quote}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setCardInfo({ ...cardInfo, quote: val });
+                      setErrors({ ...errors, quote: validatequote(val) });
+                    }}
+                    placeholder="User's Quotes"
+                    aria-invalid={!!errors.quote}
+                  />
+                  {errors.quote && (
+                    <p className="text-sm text-destructive">
+                      Quote error: {errors.quote}
+                    </p>
+                  )}
+                </div>
 
-              <p className="text-slate-700 text-base leading-6">
-                <span className="font-semibold text-slate-600">
-                  Card Description:
-                </span>{" "}
-                Name: <span className="text-slate-500">{cardInfo.name}</span>,
-                Profession:{" "}
-                <span className="text-slate-500">{cardInfo.profession}</span>,
-                Quote: <span className="text-slate-500">{cardInfo.slogan}</span>
-                , Phone:{" "}
-                <span className="text-slate-500">{cardInfo.phone}</span>
-              </p>
+                <div className="space-y-1.5">
+                  <Label htmlFor="bgGrad">Gradient direction</Label>
+                  <Select
+                    value={cardInfo.bgGrad}
+                    onValueChange={(val) =>
+                      setCardInfo({ ...cardInfo, bgGrad: val })
+                    }
+                  >
+                    <SelectTrigger id="bgGrad" className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {bgDirections.map((dir) => (
+                        <SelectItem key={dir} value={dir}>
+                          {dir}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label>Color style</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {bgStyles.map((bg, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setCardInfo({ ...cardInfo, bgStyle: bg })}
+                        className={cn(
+                          "h-10 w-16 rounded-md border-2 transition-transform hover:scale-105",
+                          cardInfo.bgStyle === bg
+                            ? "border-primary"
+                            : "border-border",
+                          cardInfo.bgGrad,
+                          bg,
+                        )}
+                        title={bg}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </UICard>
+
+            {/* right column: preview */}
+            <div className="space-y-6 md:sticky md:top-8 md:self-start">
+              <div className="flex justify-center rounded-2xl border border-border bg-card p-4 shadow-sm">
+                <Card
+                  name={cardInfo.name}
+                  profession={cardInfo.profession}
+                  phone={cardInfo.phone}
+                  quote={cardInfo.quote}
+                  bgGrad={cardInfo.bgGrad}
+                  bgStyle={cardInfo.bgStyle}
+                />
+              </div>
+
+              <UICard>
+                <CardHeader>
+                  <CardTitle>Card Preview Info</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-1 text-sm">
+                  <p>
+                    <span className="font-semibold text-foreground">
+                      Card Name:
+                    </span>{" "}
+                    <span className="font-medium text-primary">{cardName}</span>
+                  </p>
+                  <p className="leading-6 text-muted-foreground">
+                    <span className="font-semibold text-foreground">
+                      Card Description:
+                    </span>{" "}
+                    Name: <span>{cardInfo.name}</span>, Profession:{" "}
+                    <span>{cardInfo.profession}</span>, Quote:{" "}
+                    <span>{cardInfo.quote}</span>, Phone:{" "}
+                    <span>{cardInfo.phone}</span>
+                  </p>
+                </CardContent>
+              </UICard>
             </div>
           </div>
+
           {/* Card functionalities */}
-          <div className="flex gap-10 p-6 m-4 relative top-16 mb-72 border tb:gap-3 tb:ml-20 xb:ml-44 tb:p-2 border-brand rounded-lg hover:scale-110 tb:hover:scale-105 transition-transform duration-500 xs:flex-col xs:items-start ">
-            <button
-              onClick={() => {
-                handleLovedCard();
-              }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
-            >
-              <Heart /> Love
-            </button>
-
-            <button
-              onClick={() => {
-                handleFavouriteCard();
-              }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
-            >
-              <Star /> Favourite
-            </button>
-            <button
-              onClick={() => {
-                handleHighlightedCard();
-              }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
-            >
-              <PinIcon /> Highlight
-            </button>
-            <button
-              onClick={() => {
-                handleSaveCard();
-              }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand"
-            >
-              <Save /> Save
-            </button>
-
-            <button
-              onClick={() => {
-                handlPuliccard();
-              }}
-              className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand "
-            >
-              <BookOpenCheck /> Public
-            </button>
-            <button className="flex justify-center items-center font-cp text-xl font-semibold tb:text-lg hover:text-brand ">
-              <Workflow /> QRcodeconfig
-            </button>
-          </div>
-          <div className="flex h-10 w-40 relative bottom-96 right-72 whitespace-nowrap tb:right-44 xs:right-16 xs:bottom-[720px]">
-            {error && (
-              <p className="text-red-600 mt-2 transition-all font-cp font-medium duration-500 ease-in">
-                {error}
-              </p>
-            )}
-            {message && (
-              <p className="text-green-600 mt-2 transition-all font-cp font-medium duration-500 ease-in">
-                {message}
-              </p>
-            )}
-          </div>
+          <UICard>
+            <CardHeader>
+              <CardTitle>Card actions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+                {actionButtons.map(({ label, icon: Icon, onClick }) => (
+                  <Button
+                    key={label}
+                    type="button"
+                    variant="outline"
+                    onClick={onClick}
+                    className="flex-col gap-1.5 py-4 h-auto"
+                  >
+                    <Icon className="size-5" />
+                    {label}
+                  </Button>
+                ))}
+              </div>
+            </CardContent>
+          </UICard>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }

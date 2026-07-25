@@ -1,11 +1,12 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import Sidebar from "./sidebar";
+import { Loader2 } from "lucide-react";
+import { DashboardShell } from "@/components/dashboard-shell";
 import Profile from "./profile";
 
 const Index = () => {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -16,34 +17,36 @@ const Index = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [status, router]); 
+  }, [status, router]);
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg text-violet-600 font-semibold">Checking session...</p>
+      <div className="flex h-screen flex-col items-center justify-center gap-3">
+        <Loader2 className="size-6 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">Checking session...</p>
       </div>
     );
   }
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-2xl text-brand font-semibold">
-          You are not logged in. Redirecting to login page...
+      <div className="flex h-screen flex-col items-center justify-center gap-2 text-center">
+        <p className="text-lg font-semibold text-foreground">
+          You are not logged in.
+        </p>
+        <p className="text-sm text-muted-foreground">
+          Redirecting to the login page...
         </p>
       </div>
     );
   }
 
   return (
-    <div className="flex overflow-hidden flex-col sm:flex-row">
-      <div>
-        <Sidebar />
-      </div>
-      <div className="flex flex-col relative">
+    <div className="md:pl-64">
+      <DashboardShell />
+      <main className="p-4 sm:p-6 lg:p-8">
         <Profile />
-      </div>
+      </main>
     </div>
   );
 };

@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../dashboard/sidebar";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Eye, EyeClosed } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { DashboardShell } from "@/components/dashboard-shell";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Editprofile = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
-  
-const [viewpass, setViewpass] = useState(false);
+
+  const [viewpass, setViewpass] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,7 +30,7 @@ const [viewpass, setViewpass] = useState(false);
   });
 
   const [errors, setErrors] = useState({});
-  const [message, setMessage] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   // Fetch user data when authenticated
   useEffect(() => {
@@ -124,6 +135,7 @@ const [viewpass, setViewpass] = useState(false);
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
   };
 
   // Handle image upload and convert to base64
@@ -148,6 +160,7 @@ const [viewpass, setViewpass] = useState(false);
       return; // stop submission if errors
     }
 
+    setSubmitting(true);
     try {
       const res = await fetch("/api/update-user", {
         method: "PUT",
@@ -158,26 +171,28 @@ const [viewpass, setViewpass] = useState(false);
       const result = await res.json();
 
       if (res.ok) {
-       
-        setMessage("Profile Updated");
+        toast.success("Profile Updated");
 
-      // Wait for session to sync before redirecting
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 300);
+        // Wait for session to sync before redirecting
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 300);
       } else {
-        
+        toast.error(result?.error || "Failed to update profile");
       }
     } catch (err) {
       console.error("Update error:", err);
-      setMessage("An unexpected error occurred.");
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   if (status === "loading") {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg text-violet-600 font-semibold">Checking session...</p>
+      <div className="flex h-screen flex-col items-center justify-center gap-3">
+        <Loader2 className="size-6 animate-spin text-primary" />
+        <p className="text-sm text-muted-foreground">Checking session...</p>
       </div>
     );
   }
@@ -186,111 +201,165 @@ const [viewpass, setViewpass] = useState(false);
     return null; // prevent flicker before redirect
   }
 
+  const initials = formData.name
+    ? formData.name
+        .split(" ")
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase())
+        .join("")
+    : "U";
+
   return (
-    <>
-      <Sidebar />
-      <div className="ml-[16.666667%] xs:ml-0 xs:relative xs:top-[110px] p-4">
-        <div className="flex flex-col items-center justify-center">
-          <h2 className="text-3xl font-bold mb-6">Edit Profile</h2>
+    <div className="md:pl-64">
+      <DashboardShell />
+      <main className="p-4 sm:p-6 lg:p-8">
+        <div className="mx-auto max-w-2xl">
+          <h1 className="mb-6 text-2xl font-bold text-foreground sm:text-3xl">
+            Edit Profile
+          </h1>
 
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-4 w-full max-w-md">
-            {/* Name */}
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              className={`border p-2 rounded ${errors.name ? "border-red-500" : ""}`}
-              required
-            />
-            {errors.name && <p className="text-red-600 text-sm">{errors.name}</p>}
+          <Card>
+            <CardHeader>
+              <CardTitle>Profile Information</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="flex items-center gap-4">
+                  <Avatar size="lg" className="size-16">
+                    <AvatarImage src={formData.profileImageBase64 || undefined} alt={formData.name} />
+                    <AvatarFallback className="text-lg">{initials}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 space-y-1.5">
+                    <Label htmlFor="profileImage">Profile photo</Label>
+                    <Input
+                      id="profileImage"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                    />
+                  </div>
+                </div>
 
-            {/* Email (read-only) */}
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              readOnly
-              className="border p-2 rounded bg-gray-100 cursor-not-allowed"
-            />
-            {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+                {/* Name */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="name">
+                    Full Name <span className="text-destructive">*</span>
+                  </Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    name="name"
+                    placeholder="Full Name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.name}
+                    required
+                  />
+                  {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
+                </div>
 
-            {/* Phone */}
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              className={`border p-2 rounded ${errors.phone ? "border-red-500" : ""}`}
-            />
-            {errors.phone && <p className="text-red-600 text-sm">{errors.phone}</p>}
+                {/* Email (read-only) */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    readOnly
+                    disabled
+                    className="bg-muted opacity-70"
+                  />
+                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                </div>
 
-            {/* Password */}
-            <input
-              type={viewpass ? "text" : "password"}
-              name="password"
-              placeholder="New Password (leave blank to keep unchanged)"
-              value={formData.password}
-              onChange={handleChange}
-              className={`border p-2 rounded ${errors.password ? "border-red-500" : ""}`}
-            />  <span className="w-[20%] relative bottom-[46px]  left-[290px] tb:left-[380px] lp:left-[380px] xb:left-[350px]">
-            {viewpass ? (
-              <Eye onClick={() => setViewpass(!viewpass)} />
-            ) : (
-              <EyeClosed onClick={() => setViewpass(!viewpass)} />
-            )}
-          </span>
-            {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
+                {/* Phone */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input
+                    id="phone"
+                    type="text"
+                    name="phone"
+                    placeholder="Phone Number"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.phone}
+                  />
+                  {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
+                </div>
 
-            {/* Confirm Password */}
-            <input
-             type={viewpass ? "text" : "password"}
-              name="conpass"
-              placeholder="Confirm New Password"
-              value={formData.conpass}
-              onChange={handleChange}
-              className={`border p-2 rounded ${errors.conpass ? "border-red-500" : ""}`}
-            />  <span className="w-[20%] relative bottom-[46px] left-[290px]  tb:left-[380px] lp:left-[380px] xb:left-[350px]">
-            {viewpass ? (
-              <Eye onClick={() => setViewpass(!viewpass)} />
-            ) : (
-              <EyeClosed onClick={() => setViewpass(!viewpass)} />
-            )}
-          </span>
-            {errors.conpass && <p className="text-red-600 text-sm">{errors.conpass}</p>}
-            <span className="text-brand font-ios ">Forget password? </span>
+                {/* Password */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="password">New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      type={viewpass ? "text" : "password"}
+                      name="password"
+                      placeholder="Leave blank to keep unchanged"
+                      value={formData.password}
+                      onChange={handleChange}
+                      aria-invalid={!!errors.password}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setViewpass((v) => !v)}
+                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                      aria-label={viewpass ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {viewpass ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                </div>
 
-            {/* Profile Image Upload */}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageUpload}
-              className="border p-2 rounded"
-            />
+                {/* Confirm Password */}
+                <div className="space-y-1.5">
+                  <Label htmlFor="conpass">Confirm New Password</Label>
+                  <div className="relative">
+                    <Input
+                      id="conpass"
+                      type={viewpass ? "text" : "password"}
+                      name="conpass"
+                      placeholder="Confirm New Password"
+                      value={formData.conpass}
+                      onChange={handleChange}
+                      aria-invalid={!!errors.conpass}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setViewpass((v) => !v)}
+                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                      aria-label={viewpass ? "Hide password" : "Show password"}
+                      tabIndex={-1}
+                    >
+                      {viewpass ? (
+                        <EyeOff className="size-4" />
+                      ) : (
+                        <Eye className="size-4" />
+                      )}
+                    </button>
+                  </div>
+                  {errors.conpass && <p className="text-sm text-destructive">{errors.conpass}</p>}
+                </div>
 
-            {formData.profileImageBase64 && (
-              <img
-                src={formData.profileImageBase64}
-                alt="Profile Preview"
-                className="w-24 h-24 object-cover rounded-full mx-auto"
-              />
-            )}
-            {message && <>
-            <span className="text-brand">{message}</span>
-            </>}
-
-            <button
-              type="submit"
-              className="bg-violet-600 text-white py-2 px-4 rounded hover:bg-violet-700"
-            >
-              Save Changes
-            </button>
-          </form>
+                <Button type="submit" disabled={submitting} className="w-full">
+                  {submitting ? "Saving..." : "Save Changes"}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 };
 
