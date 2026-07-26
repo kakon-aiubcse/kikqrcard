@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { Menu } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,8 @@ const NAV_ITEMS = [
 
 export function SiteHeader({ sectionref }) {
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const isAuthenticated = status === "authenticated" && !!session?.user;
   const [open, setOpen] = useState(false);
   const [activeSection, setActiveSection] = useState(null);
 
@@ -73,10 +76,16 @@ export function SiteHeader({ sectionref }) {
         </nav>
 
         <div className="hidden items-center gap-2 md:flex">
-          <Button variant="ghost" onClick={() => router.push("/authentication/login")}>
-            Log in
-          </Button>
-          <Button onClick={() => router.push("/dashboard")}>Dashboard</Button>
+          {isAuthenticated ? (
+            <Button onClick={() => router.push("/dashboard")}>Dashboard</Button>
+          ) : (
+            <>
+              <Button variant="ghost" onClick={() => router.push("/authentication/login")}>
+                Log in
+              </Button>
+              <Button onClick={() => router.push("/authentication/signup")}>Sign up</Button>
+            </>
+          )}
         </div>
 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -91,12 +100,20 @@ export function SiteHeader({ sectionref }) {
                 ))}
               </nav>
               <div className="flex flex-col gap-2">
-                <SheetClose render={<Button variant="outline" onClick={() => router.push("/authentication/login")} />}>
-                  Log in
-                </SheetClose>
-                <SheetClose render={<Button onClick={() => router.push("/dashboard")} />}>
-                  Dashboard
-                </SheetClose>
+                {isAuthenticated ? (
+                  <SheetClose render={<Button onClick={() => router.push("/dashboard")} />}>
+                    Dashboard
+                  </SheetClose>
+                ) : (
+                  <>
+                    <SheetClose render={<Button variant="outline" onClick={() => router.push("/authentication/login")} />}>
+                      Log in
+                    </SheetClose>
+                    <SheetClose render={<Button onClick={() => router.push("/authentication/signup")} />}>
+                      Sign up
+                    </SheetClose>
+                  </>
+                )}
               </div>
             </div>
           </SheetContent>

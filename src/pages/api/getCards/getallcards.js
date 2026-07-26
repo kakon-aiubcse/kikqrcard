@@ -1,20 +1,4 @@
-import { MongoClient } from "mongodb";
-
-const uri = process.env.MONGODB_URI;
-let cachedClient = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
-  });
-
-  await client.connect();
-  cachedClient = client;
-  return client;
-}
+import clientPromise from "../../../../lib/mongodb/config";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -22,13 +6,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db("kikqrcard");
     const cardsCollection = db.collection("allCards");
 
     const allcards = await cardsCollection
       .find({})
       .sort({ createdAt: -1 })
+      .limit(100)
       .toArray();
 
     return res.status(200).json({ allcards });

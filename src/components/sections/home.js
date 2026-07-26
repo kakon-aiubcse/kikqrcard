@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,15 @@ const Home = forwardRef((props, ref) => {
         aria-hidden
         className="pointer-events-none absolute -top-40 left-1/2 h-[36rem] w-[36rem] -translate-x-1/2 rounded-full bg-primary/20 blur-3xl"
       />
+      <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[55%] lg:block">
+        <Image
+          src="/uploads/new_hero.png"
+          alt="KIK QRcard preview"
+          fill
+          priority
+          className="object-contain object-right-bottom"
+        />
+      </div>
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 px-4 py-24 sm:px-6 lg:grid-cols-2 lg:py-32 lg:px-8">
         <div className="flex flex-col items-start gap-6 text-left">
           <span className="rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
@@ -44,12 +54,14 @@ const Home = forwardRef((props, ref) => {
             </Button>
           </div>
         </div>
-        <div className="relative flex items-center justify-center">
-          <div className="absolute inset-0 -z-10 rounded-3xl bg-primary/10 blur-2xl" />
-          <img
-            src="/intro.jpg"
+        <div className="hidden sm:block lg:hidden">
+          <Image
+            src="/uploads/new_hero.png"
             alt="KIK QRcard preview"
-            className="w-full max-w-md rounded-2xl shadow-2xl ring-1 ring-border"
+            width={1536}
+            height={1024}
+            priority
+            className="w-full max-w-md"
           />
         </div>
       </div>

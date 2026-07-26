@@ -4,6 +4,7 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { Eye, EyeOff, X } from "lucide-react";
 import { toast } from "sonner";
+import { Seo } from "@/components/seo";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +20,7 @@ function Login() {
 
   useEffect(() => {
     if (session?.user?.email) {
-      router.push("/dashboard"); // redirect if already logged in
+      router.push(session.user.isAdmin ? "/admin" : "/dashboard");
     }
   }, [session, router]);
 
@@ -70,8 +71,10 @@ function Login() {
         toast.success("Login successful!");
 
         // Wait for session to sync before redirecting
-        setTimeout(() => {
-          router.push("/dashboard");
+        setTimeout(async () => {
+          const res = await fetch("/api/auth/session");
+          const freshSession = await res.json();
+          router.push(freshSession?.user?.isAdmin ? "/admin" : "/dashboard");
         }, 300);
       }
     } catch (error) {
@@ -83,8 +86,36 @@ function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-primary/10 via-background to-background p-4">
-      <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
+    <div className="flex min-h-screen bg-background">
+      <Seo title="Log In" description="Log in to your KIK QRcard account." path="/authentication/login" />
+      {/* left branded panel */}
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-primary via-primary to-[color-mix(in_oklch,var(--primary),black_30%)] p-10 text-primary-foreground lg:flex">
+        <div className="pointer-events-none absolute inset-0 opacity-20">
+          <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/20 blur-3xl" />
+          <div className="absolute -bottom-32 -right-10 size-96 rounded-full bg-white/10 blur-3xl" />
+        </div>
+
+        <Link href="/" className="relative z-10 flex items-center">
+          <Logo size="sm" variant="on-dark" />
+        </Link>
+
+        <div className="relative z-10 max-w-md space-y-4">
+          <h1 className="text-3xl font-bold leading-tight">
+            Your digital identity, on one card.
+          </h1>
+          <p className="text-primary-foreground/80">
+            Log in to manage your QR business cards, track engagement, and
+            share your details anywhere in one tap.
+          </p>
+        </div>
+
+        <p className="relative z-10 text-sm text-primary-foreground/60">
+          &copy; {new Date().getFullYear()} KIK QRcard. All rights reserved.
+        </p>
+      </div>
+
+      {/* right form panel */}
+      <div className="relative flex w-full flex-col items-center justify-center p-4 lg:w-1/2">
         <Button
           type="button"
           variant="ghost"
@@ -96,78 +127,86 @@ function Login() {
           <X className="size-4" />
         </Button>
 
-        <div className="mb-6 flex flex-col items-center gap-6">
-          <Link href="/" className="flex items-center">
-            <Logo size="sm" />
-          </Link>
-          <h2 className="text-2xl font-semibold text-foreground">Log in</h2>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="space-y-1.5">
-            <Label htmlFor="email">
-              Email <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="email"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              aria-invalid={!!errors.email}
-            />
-            {errors.email && (
-              <p className="text-sm text-destructive">{errors.email}</p>
-            )}
-          </div>
-
-          <div className="space-y-1.5">
-            <Label htmlFor="password">
-              Password <span className="text-destructive">*</span>
-            </Label>
-            <div className="relative">
-              <Input
-                id="password"
-                name="password"
-                type={viewpass ? "text" : "password"}
-                value={formData.password}
-                onChange={handleChange}
-                aria-invalid={!!errors.password}
-                className="pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setViewpass((v) => !v)}
-                className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
-                aria-label={viewpass ? "Hide password" : "Show password"}
-                tabIndex={-1}
-              >
-                {viewpass ? (
-                  <EyeOff className="size-4" />
-                ) : (
-                  <Eye className="size-4" />
-                )}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="text-sm text-destructive">{errors.password}</p>
-            )}
-          </div>
-
-          <Button type="submit" disabled={loading} className="w-full">
-            {loading ? "Logging in..." : "Log In"}
-          </Button>
-
-          <div className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link
-              href="/authentication/signup"
-              className="font-semibold text-primary hover:underline"
-            >
-              Sign Up
+        <div className="w-full max-w-sm">
+          <div className="mb-8 flex flex-col gap-6 lg:hidden">
+            <Link href="/" className="flex items-center">
+              <Logo size="sm" />
             </Link>
           </div>
-        </form>
+
+          <div className="mb-8 space-y-1.5">
+            <h2 className="text-2xl font-bold text-foreground">Welcome back</h2>
+            <p className="text-sm text-muted-foreground">
+              Log in to your account to continue.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-1.5">
+              <Label htmlFor="email">
+                Email <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                value={formData.email}
+                onChange={handleChange}
+                aria-invalid={!!errors.email}
+              />
+              {errors.email && (
+                <p className="text-sm text-destructive">{errors.email}</p>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="password">
+                Password <span className="text-destructive">*</span>
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  name="password"
+                  type={viewpass ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  aria-invalid={!!errors.password}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setViewpass((v) => !v)}
+                  className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
+                  aria-label={viewpass ? "Hide password" : "Show password"}
+                  tabIndex={-1}
+                >
+                  {viewpass ? (
+                    <EyeOff className="size-4" />
+                  ) : (
+                    <Eye className="size-4" />
+                  )}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-sm text-destructive">{errors.password}</p>
+              )}
+            </div>
+
+            <Button type="submit" disabled={loading} className="w-full" size="lg">
+              {loading ? "Logging in..." : "Log In"}
+            </Button>
+
+            <div className="text-center text-sm text-muted-foreground">
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/authentication/signup"
+                className="font-semibold text-primary hover:underline"
+              >
+                Sign Up
+              </Link>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

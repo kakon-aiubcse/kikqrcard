@@ -6,16 +6,16 @@ const COLUMNS = [
   {
     title: "Getting started",
     links: [
-      { label: "How it works?", href: "/about/blog" },
-      { label: "Cards", href: "/cards/allcards" },
-      { label: "Features", href: "/about/features" },
-      { label: "Pricing", href: "/payment/pricing" },
+      { label: "How it works?", href: "/#blog" },
+      { label: "Cards", href: "/#cards" },
+      { label: "Features", href: "/#feature" },
+      { label: "Pricing", href: "/#pricing" },
     ],
   },
   {
     title: "Connect",
     links: [
-      { label: "Contact", href: "/about/contact" },
+      { label: "Contact", href: "/#contact" },
       { label: "Terms and Conditions", href: "/about/t&c" },
       { label: "FAQ", href: "/about/faq" },
     ],

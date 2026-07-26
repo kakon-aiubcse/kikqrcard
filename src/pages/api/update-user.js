@@ -1,5 +1,5 @@
-import { MongoClient } from "mongodb";
 import bcrypt from "bcrypt";
+import clientPromise from "../../../lib/mongodb/config";
 
 export default async function handler(req, res) {
   if (req.method !== "PUT") {
@@ -12,11 +12,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Email is required for update" });
   }
 
-  const uri = process.env.MONGODB_URI;
-  const client = new MongoClient(uri);
-
   try {
-    await client.connect();
+    const client = await clientPromise;
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
@@ -50,7 +47,5 @@ export default async function handler(req, res) {
   } catch (err) {
     console.error("Update failed:", err);
     return res.status(500).json({ error: "Internal Server Error" });
-  } finally {
-    await client.close();
   }
 }

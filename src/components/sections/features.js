@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const FEATURES = [
@@ -34,7 +35,7 @@ const Feature = forwardRef((props, ref) => {
             >
               <CardHeader>
                 <div className="mb-2 flex size-14 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/15">
-                  <img src={feature.icon} alt="" className="size-7" />
+                  <Image src={feature.icon} alt="" width={28} height={28} className="size-7" />
                 </div>
                 <CardTitle className="text-lg">{feature.title}</CardTitle>
               </CardHeader>

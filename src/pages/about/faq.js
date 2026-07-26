@@ -1,3 +1,4 @@
+import { Seo } from "@/components/seo";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import {
@@ -33,6 +34,11 @@ const FAQS = [
 const Faq = () => {
   return (
     <div className="flex min-h-screen flex-col">
+      <Seo
+        title="Frequently Asked Questions"
+        description="Answers to common questions about KIK QRcard's digital QR business cards."
+        path="/about/faq"
+      />
       <SiteHeader sectionref={[]} />
       <main className="flex-1 py-20 sm:py-28">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">

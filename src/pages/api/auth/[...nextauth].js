@@ -26,6 +26,7 @@ export const authOptions = {
           id: user._id.toString(),
           name: user.name,
           email: user.email,
+          isAdmin: !!user.isAdmin,
         };
       },
     }),
@@ -48,6 +49,7 @@ export const authOptions = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.isAdmin = user.isAdmin;
       }
       return token;
     },
@@ -56,6 +58,7 @@ export const authOptions = {
       session.user.id = token.id;
       session.user.name = token.name;
       session.user.email = token.email;
+      session.user.isAdmin = !!token.isAdmin;
       return session;
     },
   },

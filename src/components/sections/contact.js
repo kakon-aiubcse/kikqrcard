@@ -1,4 +1,5 @@
 import { forwardRef, useState } from "react";
+import Image from "next/image";
 import { toast } from "sonner";
 import { Phone, Mail, MapPin } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -96,7 +97,7 @@ const Contact = forwardRef((props, ref) => {
                   rel="noopener noreferrer"
                   className="flex size-10 items-center justify-center rounded-full border border-border transition-colors hover:border-primary hover:bg-primary/5"
                 >
-                  <img src={social.icon} className="size-5" alt={social.label} />
+                  <Image src={social.icon} width={20} height={20} className="size-5" alt={social.label} />
                 </a>
               ))}
             </div>
