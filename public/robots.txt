@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /cards/createcard
+Disallow: /cards/mycards
+Disallow: /payment/billings
+Disallow: /payment/orders
+Disallow: /api/
+
+Sitemap: https://kikqrcard.netlify.app/sitemap.xml

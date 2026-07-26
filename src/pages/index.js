@@ -1,12 +1,13 @@
 import { useRef } from "react";
-import Home from "./home";
-import Header from "./elements/header";
-import Allcards from "./cards/allcards";
-import Blog from "./about/blog";
-import Footer from "./elements/footer";
-import Feature from "./about/features";
-import Pricing from "./payment/pricing";
-import Contact from "./about/contact";
+import { Seo } from "@/components/seo";
+import Home from "@/components/sections/home";
+import SiteHeader from "@/components/site-header";
+import Allcards from "@/components/sections/allcards";
+import Blog from "@/components/sections/blog";
+import SiteFooter from "@/components/site-footer";
+import Feature from "@/components/sections/features";
+import Pricing from "@/components/sections/pricing";
+import Contact from "@/components/sections/contact";
 
 export default function index() {
   const homeref = useRef(null);
@@ -18,7 +19,12 @@ export default function index() {
 
   return (
     <div className="flex min-h-screen w-full flex-col">
-      <Header
+      <Seo
+        title="Digital QR Business Cards"
+        description="Grow your network with KIK QRcard's digital QR-based business cards. Share your contact, portfolio, and business info instantly — no apps or paper needed."
+        path="/"
+      />
+      <SiteHeader
         sectionref={[homeref, allcardsref, featuresref, pricingref, contactref, blogref]}
       />
       <main className="flex flex-1 flex-col">
@@ -29,7 +35,7 @@ export default function index() {
         <Contact id="contact" ref={contactref} />
         <Blog id="blog" ref={blogref} homeref={homeref} />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   );
 }

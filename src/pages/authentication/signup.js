@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { Eye, EyeOff, X } from "lucide-react";
 import { toast } from "sonner";
+import { Seo } from "@/components/seo";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -181,8 +182,36 @@ function Signup() {
   const errorList = Object.values(errors).filter(Boolean);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-primary/10 via-background to-background p-4 py-10">
-      <div className="relative w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-xl">
+    <div className="flex min-h-screen bg-background">
+      <Seo title="Sign Up" description="Create your free KIK QRcard digital business card." path="/authentication/signup" />
+      {/* left branded panel */}
+      <div className="relative hidden w-1/2 flex-col justify-between overflow-hidden bg-gradient-to-br from-primary via-primary to-[color-mix(in_oklch,var(--primary),black_30%)] p-10 text-primary-foreground lg:flex">
+        <div className="pointer-events-none absolute inset-0 opacity-20">
+          <div className="absolute -top-24 -left-24 size-96 rounded-full bg-white/20 blur-3xl" />
+          <div className="absolute -bottom-32 -right-10 size-96 rounded-full bg-white/10 blur-3xl" />
+        </div>
+
+        <Link href="/" className="relative z-10 flex items-center">
+          <Logo size="sm" variant="on-dark" />
+        </Link>
+
+        <div className="relative z-10 max-w-md space-y-4">
+          <h1 className="text-3xl font-bold leading-tight">
+            Create your card in minutes.
+          </h1>
+          <p className="text-primary-foreground/80">
+            Sign up to build a digital business card you can share instantly
+            with a scan or a tap &mdash; no printing required.
+          </p>
+        </div>
+
+        <p className="relative z-10 text-sm text-primary-foreground/60">
+          &copy; {new Date().getFullYear()} KIK QRcard. All rights reserved.
+        </p>
+      </div>
+
+      {/* right form panel */}
+      <div className="relative flex w-full flex-col items-center justify-center p-4 py-10 lg:w-1/2">
         <Button
           type="button"
           variant="ghost"
@@ -194,14 +223,21 @@ function Signup() {
           <X className="size-4" />
         </Button>
 
-        <div className="mb-6 flex flex-col items-center gap-6">
-          <Link href="/" className="flex items-center">
-            <Logo size="sm" />
-          </Link>
-          <h2 className="text-2xl font-semibold text-foreground">Sign up</h2>
-        </div>
+        <div className="w-full max-w-sm">
+          <div className="mb-8 flex flex-col gap-6 lg:hidden">
+            <Link href="/" className="flex items-center">
+              <Logo size="sm" />
+            </Link>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="mb-8 space-y-1.5">
+            <h2 className="text-2xl font-bold text-foreground">Create your account</h2>
+            <p className="text-sm text-muted-foreground">
+              Sign up to get started with your digital card.
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-5">
           <div className="space-y-1.5">
             <Label htmlFor="name">
               Full Name <span className="text-destructive">*</span>
@@ -350,7 +386,7 @@ function Signup() {
             </div>
           )}
 
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button type="submit" disabled={loading} className="w-full" size="lg">
             {loading ? "Creating account..." : "Create Account"}
           </Button>
 
@@ -363,7 +399,8 @@ function Signup() {
               Login
             </Link>
           </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

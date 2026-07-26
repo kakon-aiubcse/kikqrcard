@@ -2,15 +2,9 @@ import { forwardRef, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import { HandHeart, Share2, Copy, MoreVertical, Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { HandHeart, Share2, Copy, Plus, ChevronLeft, ChevronRight } from "lucide-react";
 import BusinessCard from "@/components/business-card";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 const Allcards = forwardRef((props, ref) => {
   const router = useRouter();
@@ -137,45 +131,36 @@ const Allcards = forwardRef((props, ref) => {
             {pagedCards.map((card, index) => (
               <div
                 key={`${page}-${index}`}
-                className="relative flex justify-center rounded-2xl border border-border bg-card p-4 shadow-sm"
+                className="group relative flex flex-col items-center overflow-hidden rounded-2xl border border-border bg-card p-4 shadow-sm"
               >
                 <BusinessCard
                   name={card.name}
                   profession={card.profession}
                   phone={card.phone}
                   quote={card.quote}
+                  email={card.contactEmail}
+                  website={card.website}
+                  address={card.address}
                   bgGrad={card.bgGrad}
                   bgStyle={card.bgStyle}
                   pattern={card.pattern}
                 />
-                <DropdownMenu>
-                  <DropdownMenuTrigger
-                    openOnHover
-                    render={
-                      <Button
-                        variant="secondary"
-                        size="icon"
-                        className="absolute right-3 top-3 size-6 rounded-full shadow"
-                      />
-                    }
-                  >
-                    <MoreVertical className="size-3" />
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleLove(card)}>
+                <div className="grid max-h-0 w-full grid-rows-[0fr] justify-items-center opacity-0 transition-all duration-300 ease-out group-hover:mt-3 group-hover:max-h-16 group-hover:grid-rows-[1fr] group-hover:opacity-100">
+                  <div className="flex min-h-0 items-center justify-center gap-2">
+                    <Button variant="outline" size="sm" onClick={() => handleLove(card)}>
                       <HandHeart className="size-4" />
                       Love
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleShare(card)}>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleShare(card)}>
                       <Share2 className="size-4" />
                       Share
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => handleCopyDesign(card)}>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => handleCopyDesign(card)}>
                       <Copy className="size-4" />
                       Copy design
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                    </Button>
+                  </div>
+                </div>
               </div>
             ))}
           </div>

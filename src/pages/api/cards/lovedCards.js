@@ -1,21 +1,4 @@
-import { MongoClient } from "mongodb";
-
-const uri = process.env.MONGODB_URI;
-
-let cachedClient = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
-  });
-
-  await client.connect();
-  cachedClient = client;
-  return client;
-}
+import clientPromise from "../../../../lib/mongodb/config";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -29,8 +12,12 @@ export default async function handler(req, res) {
     profession,
     phone,
     quote,
+    contactEmail,
+    website,
+    address,
     bgGrad,
     bgStyle,
+    pattern,
     isloved,
   } = req.body;
 
@@ -49,7 +36,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db("kikqrcard");
     const cards = db.collection("mylovedCards");
 
@@ -72,8 +59,12 @@ export default async function handler(req, res) {
       profession,
       phone,
       quote,
+      contactEmail: contactEmail || "",
+      website: website || "",
+      address: address || "",
       bgGrad,
       bgStyle,
+      pattern: pattern || "none",
       isloved,
       createdAt: new Date(),
     };

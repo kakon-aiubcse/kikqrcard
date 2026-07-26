@@ -223,6 +223,7 @@ const Profile = () => {
                   quote={highlightedCard.quote}
                   bgGrad={highlightedCard.bgGrad}
                   bgStyle={highlightedCard.bgStyle}
+                  pattern={highlightedCard.pattern}
                 />
                 <DropdownMenu>
                   <DropdownMenuTrigger

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
 import { Trash, ShoppingCart, Pencil, MoreVertical, Plus } from "lucide-react";
+import { Seo } from "@/components/seo";
 import DashboardShell from "@/components/dashboard-shell";
 import Card from "./card";
 import { Button } from "@/components/ui/button";
@@ -14,7 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-function CardSection({ title, cards, emptyMessage, onDelete, router }) {
+function CardSection({ title, cards, emptyMessage, onDelete, router, editable }) {
   return (
     <section>
       <h2 className="text-xl font-semibold text-foreground">{title}</h2>
@@ -33,6 +34,7 @@ function CardSection({ title, cards, emptyMessage, onDelete, router }) {
                   quote={card.quote}
                   bgGrad={card.bgGrad}
                   bgStyle={card.bgStyle}
+                  pattern={card.pattern}
                 />
                 <DropdownMenu>
                   <DropdownMenuTrigger
@@ -47,10 +49,16 @@ function CardSection({ title, cards, emptyMessage, onDelete, router }) {
                     <MoreVertical className="size-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem>
-                      <Pencil className="size-4" />
-                      Edit
-                    </DropdownMenuItem>
+                    {editable && (
+                      <DropdownMenuItem
+                        onClick={() =>
+                          router.push(`/cards/createcard?id=${card._id}`)
+                        }
+                      >
+                        <Pencil className="size-4" />
+                        Edit
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onClick={() => router.push("/payment/orders")}>
                       <ShoppingCart className="size-4" />
                       Order
@@ -176,6 +184,7 @@ const Mycards = () => {
 
   return (
     <div className="md:pl-64">
+      <Seo title="My Cards" path="/cards/mycards" noIndex />
       <DashboardShell />
       <main className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto max-w-7xl space-y-10">
@@ -216,6 +225,7 @@ const Mycards = () => {
             emptyMessage="All your selected cards as Created will display here"
             onDelete={handlesavedDelete}
             router={router}
+            editable
           />
         </div>
       </main>

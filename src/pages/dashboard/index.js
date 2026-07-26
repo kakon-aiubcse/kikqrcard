@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Loader2 } from "lucide-react";
+import { Seo } from "@/components/seo";
 import { DashboardShell } from "@/components/dashboard-shell";
 import Profile from "./profile";
 
@@ -43,6 +44,7 @@ const Index = () => {
 
   return (
     <div className="md:pl-64">
+      <Seo title="Dashboard" path="/dashboard" noIndex />
       <DashboardShell />
       <main className="p-4 sm:p-6 lg:p-8">
         <Profile />

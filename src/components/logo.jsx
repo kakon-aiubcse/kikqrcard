@@ -1,8 +1,10 @@
 import { cn } from "@/lib/utils";
 
 const SIZES = {
-  sm: { mark: 32, gap: 8, textSize: 20, subSize: 10 },
-  lg: { mark: 52, gap: 12, textSize: 32, subSize: 15 },
+  xxs: { mark: 16, gap: 3, textSize: 8, subSize: 4 },
+  xs: { mark: 26, gap: 5, textSize: 13, subSize: 6 },
+  sm: { mark: 40, gap: 8, textSize: 20, subSize: 8 },
+  lg: { mark: 64, gap: 12, textSize: 32, subSize: 12 },
 };
 
 // QR finder-pattern glyph: three corner squares + center dot, echoes a scanned QR code.
@@ -43,15 +45,15 @@ export function Logo({ size = "lg", variant = "filled", className }) {
 
   const textClass =
     variant === "on-dark"
-      ? "text-white"
+      ? "bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent"
       : variant === "mono"
         ? "text-current"
-        : "text-foreground";
+        : "bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent";
   const subClass =
     variant === "on-dark"
-      ? "text-white/70"
+      ? "text-gray-300/70"
       : variant === "mono"
-        ? "text-current/70"
+        ? "text-current/60"
         : "text-muted-foreground";
   const markClass = variant === "mono" ? "[&_.fill-primary]:fill-current" : "";
 
@@ -65,7 +67,7 @@ export function Logo({ size = "lg", variant = "filled", className }) {
       <QrMark size={mark} className={markClass} />
       <div className="flex flex-col justify-center leading-none">
         <span
-          className={cn("font-sans font-extrabold italic tracking-tight", textClass)}
+          className={cn("font-sans font-extrabold italic tracking-wider", textClass)}
           style={{ fontSize: textSize, lineHeight: 1 }}
         >
           KIK

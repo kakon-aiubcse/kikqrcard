@@ -1,21 +1,5 @@
-import { MongoClient } from "mongodb";
-
-const uri = process.env.MONGODB_URI;
-
-let cachedClient = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
-  });
-
-  await client.connect();
-  cachedClient = client;
-  return client;
-}
+import clientPromise from "../../../../lib/mongodb/config";
+import { getPlan, FREE_TIER } from "../../../../lib/bkash/plans";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -29,8 +13,12 @@ export default async function handler(req, res) {
     profession,
     phone,
     quote,
+    contactEmail,
+    website,
+    address,
     bgGrad,
     bgStyle,
+    pattern,
     savedCard,
   } = req.body;
 
@@ -49,9 +37,10 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db("kikqrcard");
     const cards = db.collection("myCard");
+    const users = db.collection("users");
 
     // Normalize cardName for consistent storage and lookup
     const normalizedCardName = cardName.toLowerCase();
@@ -67,6 +56,17 @@ export default async function handler(req, res) {
       return res.status(409).json({ error: "Card already exists" });
     }
 
+    const user = await users.findOne({ email });
+    const plan = getPlan(user?.plan);
+    const virtualCardLimit = plan ? plan.virtualCardLimit : FREE_TIER.virtualCardLimit;
+
+    const currentCardCount = await cards.countDocuments({ email });
+    if (currentCardCount >= virtualCardLimit) {
+      return res.status(403).json({
+        error: `You have reached your virtual card limit of ${virtualCardLimit}. Upgrade your plan to create more cards.`,
+      });
+    }
+
     const newCard = {
       email,
       cardName: normalizedCardName,
@@ -74,8 +74,12 @@ export default async function handler(req, res) {
       profession,
       phone,
       quote,
+      contactEmail: contactEmail || "",
+      website: website || "",
+      address: address || "",
       bgGrad,
       bgStyle,
+      pattern: pattern || "none",
       savedCard,
       createdAt: new Date(),
     };

@@ -1,21 +1,5 @@
-import { MongoClient } from "mongodb";
 import bcrypt from "bcrypt";
-
-const uri = process.env.MONGODB_URI;
-let cachedClient = null;
-
-async function connectToDatabase() {
-  if (cachedClient) return cachedClient;
-
-  const client = new MongoClient(uri, {
-    serverSelectionTimeoutMS: 5000,
-    tlsAllowInvalidCertificates: true,
-  });
-
-  await client.connect();
-  cachedClient = client;
-  return client;
-}
+import clientPromise from "../../../lib/mongodb/config";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -29,7 +13,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = await connectToDatabase();
+    const client = await clientPromise;
     const db = client.db("kikqrcard");
     const users = db.collection("users");
 
