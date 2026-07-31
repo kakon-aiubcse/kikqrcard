@@ -112,7 +112,7 @@ export function BusinessCard({
   );
 
   return (
-    <div className="mx-auto flex w-full flex-row gap-4">
+    <div className="mx-auto flex w-full flex-col gap-4 sm:flex-row">
       {/* back: QR + quote */}
       <div className={faceClass}>
         {PatternOverlay}
@@ -150,9 +150,9 @@ export function BusinessCard({
           <p className="text-xl font-bold italic tracking-wide text-white">{name}</p>
           <p className="mt-2 text-[10px] font-normal text-white/60">{profession}</p>
         </div>
-        <div className="mt-12 flex items-center justify-center gap-x-4 text-gray-300/80">
+        <div className="mt-12 flex items-center justify-center gap-x-2 text-gray-300/80">
           <Phone className="size-3 shrink-0" />
-          <span className="font-mono text-sm font-normal tracking-[0.6em]">{phone}</span>
+          <span className="whitespace-nowrap font-mono text-xs font-normal tracking-[0.3em]">{phone}</span>
         </div>
       </div>
     </div>

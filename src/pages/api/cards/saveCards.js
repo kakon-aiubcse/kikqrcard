@@ -87,7 +87,10 @@ export default async function handler(req, res) {
     const result = await cards.insertOne(newCard);
 
     if (result.insertedId) {
-      return res.status(201).json({ message: "Card saved successfully" });
+      return res.status(201).json({
+        message: "Card saved successfully",
+        id: result.insertedId.toString(),
+      });
     } else {
       throw new Error("Insert failed");
     }

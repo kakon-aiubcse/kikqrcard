@@ -2,18 +2,33 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, CreditCard, Receipt, UserCog, LogOut, Menu } from "lucide-react";
+import { LayoutDashboard, CreditCard, Star, Heart, Receipt, UserCog, LogOut, Menu } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/cards/mycards", label: "My Cards", icon: CreditCard },
-  { href: "/payment/orders", label: "Orders", icon: Receipt },
-  { href: "/payment/billings", label: "Payment", icon: Receipt },
-  { href: "/dashboard/editprofile", label: "Edit Profile", icon: UserCog },
+const NAV_SECTIONS = [
+  {
+    label: "Overview",
+    items: [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }],
+  },
+  {
+    label: "Cards",
+    items: [
+      { href: "/cards/mycards", label: "My Cards", icon: CreditCard },
+      { href: "/cards/favourites", label: "Favourites", icon: Star },
+      { href: "/cards/loved", label: "Loved", icon: Heart },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { href: "/payment/orders", label: "Orders", icon: Receipt },
+      { href: "/payment/billings", label: "Payment", icon: Receipt },
+      { href: "/dashboard/editprofile", label: "Edit Profile", icon: UserCog },
+    ],
+  },
 ];
 
 const checkUrlExists = async (url, timeout = 3000) => {
@@ -41,23 +56,36 @@ function NavList({ path, onNavigate }) {
 
   return (
     <div className="flex h-full flex-col justify-between">
-      <nav className="flex flex-col gap-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-          <button
-            key={href}
-            type="button"
-            onClick={() => {
-              router.push(href);
-              onNavigate?.();
-            }}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-              path === href && "bg-primary/10 text-primary",
-            )}
-          >
-            <Icon className="size-4" />
-            {label}
-          </button>
+      <nav className="flex flex-col gap-5">
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.label} className="flex flex-col gap-1">
+            <p className="px-3 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/70">
+              {section.label}
+            </p>
+            {section.items.map(({ href, label, icon: Icon }) => {
+              const active = path === href;
+              return (
+                <button
+                  key={href}
+                  type="button"
+                  onClick={() => {
+                    router.push(href);
+                    onNavigate?.();
+                  }}
+                  className={cn(
+                    "relative flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                    active && "bg-primary/10 text-primary",
+                  )}
+                >
+                  {active && (
+                    <span className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
+                  )}
+                  <Icon className="size-4" />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
         ))}
       </nav>
 

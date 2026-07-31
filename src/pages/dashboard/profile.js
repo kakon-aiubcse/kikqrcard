@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
-import { HandHeart, Heart, CreditCard, ShoppingBag, Pencil, ShoppingCart, Trash, MoreVertical } from "lucide-react";
+import { HandHeart, Heart, CreditCard, ShoppingBag, Pencil, ShoppingCart, Trash, MoreVertical, Sparkles, ArrowUpRight } from "lucide-react";
 import Card from "../cards/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,6 +19,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { PLANS } from "@/../lib/bkash/plans";
 
 const STAT_CARDS = [
   { key: "loved", label: "Liked Cards", icon: HandHeart },
@@ -36,11 +38,13 @@ const Profile = () => {
     email: "",
     phone: "",
     profileImageBase64: "",
+    plan: "",
   });
   const [highlightedCards, setHighlightedCards] = useState([]);
   const [favouriteCards, setFavouriteCards] = useState([]);
   const [lovedCards, setLovedCards] = useState([]);
   const [savedCards, setSavedCards] = useState([]);
+  const [ordersThisMonth, setOrdersThisMonth] = useState(0);
 
   useEffect(() => {
     const useremail = session?.user?.email;
@@ -65,6 +69,7 @@ const Profile = () => {
             email: data.email,
             phone: data.phone,
             profileImageBase64: data.profileImageBase64,
+            plan: data.plan || "",
           });
         } else {
           console.error("Error fetching user:", data.error);
@@ -98,6 +103,19 @@ const Profile = () => {
         );
         const highlightData = await highlightRes.json();
         setHighlightedCards(highlightData.highlightedCards || []);
+
+        // Fetch orders (for monthly quota usage)
+        const ordersRes = await fetch(`/api/payment/orders/history?email=${useremail}`);
+        const ordersData = await ordersRes.json();
+        const startOfMonth = new Date();
+        startOfMonth.setDate(1);
+        startOfMonth.setHours(0, 0, 0, 0);
+        const monthCount = (ordersData.orders || []).filter(
+          (order) =>
+            ["initiated", "completed"].includes(order.status) &&
+            new Date(order.createdAt) >= startOfMonth,
+        ).length;
+        setOrdersThisMonth(monthCount);
       } catch (err) {
         console.error("Error fetching data:", err);
       }
@@ -128,8 +146,19 @@ const Profile = () => {
     loved: lovedCards.length,
     favourite: favouriteCards.length,
     saved: savedCards.length,
-    orders: 3,
+    orders: ordersThisMonth,
   };
+
+  const plan = PLANS[userData.plan] || null;
+  const virtualCardLimit = plan ? plan.virtualCardLimit : 1;
+  const cardOrderQuota = plan ? plan.cardOrderQuota : 0;
+  const cardUsagePct = Math.min(
+    100,
+    Math.round((savedCards.length / virtualCardLimit) * 100),
+  );
+  const orderUsagePct = cardOrderQuota
+    ? Math.min(100, Math.round((ordersThisMonth / cardOrderQuota) * 100))
+    : 0;
 
   const initials = userData.name
     ? userData.name
@@ -182,6 +211,54 @@ const Profile = () => {
               </dd>
             </div>
           </dl>
+        </CardContent>
+      </UICard>
+
+      {/* Plan & usage */}
+      <UICard>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0">
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-primary" />
+            <CardTitle>{plan ? plan.name : "Free"} Plan</CardTitle>
+            <Badge variant={plan ? "default" : "outline"}>
+              {plan ? plan.billingCycle : "no active plan"}
+            </Badge>
+          </div>
+          <Button size="sm" variant="outline" onClick={() => router.push("/payment/billings")}>
+            {plan ? "Manage plan" : "Upgrade"}
+            <ArrowUpRight className="size-4" />
+          </Button>
+        </CardHeader>
+        <CardContent className="grid gap-5 sm:grid-cols-2">
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium text-foreground">Virtual cards</span>
+              <span className="text-muted-foreground">
+                {savedCards.length} / {virtualCardLimit}
+              </span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${cardUsagePct}%` }}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-medium text-foreground">Physical card orders (this month)</span>
+              <span className="text-muted-foreground">
+                {plan ? `${ordersThisMonth} / ${cardOrderQuota}` : "Requires plan"}
+              </span>
+            </div>
+            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
+              <div
+                className="h-full rounded-full bg-primary transition-all"
+                style={{ width: `${orderUsagePct}%` }}
+              />
+            </div>
+          </div>
         </CardContent>
       </UICard>
 

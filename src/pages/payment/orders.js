@@ -1,7 +1,15 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { History, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import {
+  History,
+  Loader2,
+  CheckCircle2,
+  XCircle,
+  Truck,
+  MapPin,
+  Receipt as ReceiptIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 import DashboardShell from "@/components/dashboard-shell";
@@ -25,11 +33,11 @@ const VAT_RATE = 0.03;
 const DELIVERY_INSIDE = 50;
 const DELIVERY_OUTSIDE = 100;
 
-const STATUS_VARIANT = {
-  completed: "default",
-  initiated: "outline",
-  failed: "destructive",
-  cancelled: "destructive",
+const STATUS_META = {
+  completed: { variant: "default", icon: CheckCircle2 },
+  initiated: { variant: "outline", icon: Loader2 },
+  failed: { variant: "destructive", icon: XCircle },
+  cancelled: { variant: "destructive", icon: XCircle },
 };
 
 const Order = () => {
@@ -90,10 +98,11 @@ const Order = () => {
   const vat = Math.round(CARD_PRICE * VAT_RATE * 100) / 100;
   const deliveryCharge = insideDhaka ? DELIVERY_INSIDE : DELIVERY_OUTSIDE;
   const total = isFirstOrder ? 0 : CARD_PRICE + deliveryCharge + vat;
+  const formComplete = !!(form.name && form.phone && form.address && form.city);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.address || !form.city) {
+    if (!formComplete) {
       toast.error("Please fill in all delivery details.");
       return;
     }
@@ -124,7 +133,7 @@ const Order = () => {
   if (status === "loading") {
     return (
       <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        Loading...
+        <Loader2 className="size-5 animate-spin" />
       </div>
     );
   }
@@ -135,43 +144,55 @@ const Order = () => {
       <main className="p-4 sm:p-6 lg:p-8">
         <div className="mx-auto flex max-w-5xl flex-col gap-8">
           <div>
-            <h1 className="mb-6 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Order a Physical Card
             </h1>
+            <p className="mt-1 text-muted-foreground">
+              Get a printed QR card shipped to your door.
+            </p>
+          </div>
 
-            {paymentStatus === "success" && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-700 dark:text-green-400">
-                <CheckCircle2 className="size-5 shrink-0" />
-                <span>
-                  Payment successful{trxID ? ` — Transaction ID: ${trxID}` : ""}. Your card is on its way.
-                </span>
-              </div>
-            )}
-            {(paymentStatus === "failed" || paymentStatus === "error") && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-                <XCircle className="size-5 shrink-0" />
-                <span>Payment failed. Please try again.</span>
-              </div>
-            )}
-            {paymentStatus === "cancelled" && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
-                <XCircle className="size-5 shrink-0" />
-                <span>Order payment was cancelled.</span>
-              </div>
-            )}
+          {paymentStatus === "success" && (
+            <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-700 dark:text-green-400">
+              <CheckCircle2 className="size-5 shrink-0" />
+              <span>
+                Payment successful{trxID ? ` — Transaction ID: ${trxID}` : ""}. Your card is on its way.
+              </span>
+            </div>
+          )}
+          {(paymentStatus === "failed" || paymentStatus === "error") && (
+            <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+              <XCircle className="size-5 shrink-0" />
+              <span>Payment failed. Please try again.</span>
+            </div>
+          )}
+          {paymentStatus === "cancelled" && (
+            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
+              <XCircle className="size-5 shrink-0" />
+              <span>Order payment was cancelled.</span>
+            </div>
+          )}
 
-            <Card>
+          <div className="grid gap-6 lg:grid-cols-5">
+            {/* delivery form */}
+            <Card className="lg:col-span-3">
               <CardHeader>
-                <CardTitle>Delivery details</CardTitle>
+                <div className="flex items-center gap-2">
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                    <MapPin className="size-4" />
+                  </div>
+                  <CardTitle>Delivery details</CardTitle>
+                </div>
               </CardHeader>
               <CardContent>
                 {isFirstOrder && !loadingHistory && (
-                  <div className="mb-4 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-400">
+                  <div className="mb-4 flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-400">
+                    <Truck className="size-4 shrink-0" />
                     Your first card is free! No payment needed for this order.
                   </div>
                 )}
-                <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     <div className="space-y-1.5">
                       <Label htmlFor="name">Full name</Label>
                       <Input
@@ -190,97 +211,129 @@ const Order = () => {
                         placeholder="01XXXXXXXXX"
                       />
                     </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="address">Address</Label>
-                      <Input
-                        id="address"
-                        value={form.address}
-                        onChange={(e) => setForm({ ...form, address: e.target.value })}
-                        placeholder="House, road, area"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        value={form.city}
-                        onChange={(e) => setForm({ ...form, city: e.target.value })}
-                        placeholder="City"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label>Delivery location</Label>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setInsideDhaka(true)}
-                          className={cn(
-                            "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
-                            insideDhaka
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border text-muted-foreground",
-                          )}
-                        >
-                          Inside Dhaka (৳{DELIVERY_INSIDE})
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setInsideDhaka(false)}
-                          className={cn(
-                            "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
-                            !insideDhaka
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border text-muted-foreground",
-                          )}
-                        >
-                          Outside Dhaka (৳{DELIVERY_OUTSIDE})
-                        </button>
-                      </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="address">Address</Label>
+                    <Input
+                      id="address"
+                      value={form.address}
+                      onChange={(e) => setForm({ ...form, address: e.target.value })}
+                      placeholder="House, road, area"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={form.city}
+                      onChange={(e) => setForm({ ...form, city: e.target.value })}
+                      placeholder="City"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Delivery location</Label>
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setInsideDhaka(true)}
+                        className={cn(
+                          "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
+                          insideDhaka
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground",
+                        )}
+                      >
+                        Inside Dhaka (৳{DELIVERY_INSIDE})
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setInsideDhaka(false)}
+                        className={cn(
+                          "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
+                          !insideDhaka
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border text-muted-foreground",
+                        )}
+                      >
+                        Outside Dhaka (৳{DELIVERY_OUTSIDE})
+                      </button>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-4">
-                    <div className="rounded-lg border border-border p-4">
-                      <h3 className="mb-3 font-semibold text-foreground">Price breakdown</h3>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Card price</span>
-                          <span>{isFirstOrder ? "Free" : `৳${CARD_PRICE}`}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Delivery charge</span>
-                          <span>{isFirstOrder ? "Free" : `৳${deliveryCharge}`}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">VAT (3%)</span>
-                          <span>{isFirstOrder ? "Free" : `৳${vat}`}</span>
-                        </div>
-                        <div className="mt-2 flex justify-between border-t border-border pt-2 font-semibold text-foreground">
-                          <span>Total</span>
-                          <span>৳{total}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-[#e2136e] text-white hover:bg-[#c10f5e]"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="size-4 animate-spin" /> Placing order...
-                        </>
-                      ) : isFirstOrder ? (
-                        "Confirm free order"
-                      ) : (
-                        "Confirm & Pay with bKash"
-                      )}
-                    </Button>
-                  </div>
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-[#e2136e] text-white hover:bg-[#c10f5e] lg:hidden"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" /> Placing order...
+                      </>
+                    ) : isFirstOrder ? (
+                      "Confirm free order"
+                    ) : (
+                      "Confirm & Pay with bKash"
+                    )}
+                  </Button>
                 </form>
               </CardContent>
             </Card>
+
+            {/* price summary */}
+            <div className="lg:col-span-2 lg:sticky lg:top-8 lg:self-start">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-2">
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                      <ReceiptIcon className="size-4" />
+                    </div>
+                    <CardTitle>Order summary</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Card price</span>
+                      <span>{isFirstOrder ? "Free" : `৳${CARD_PRICE}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">Delivery charge</span>
+                      <span>{isFirstOrder ? "Free" : `৳${deliveryCharge}`}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">VAT (3%)</span>
+                      <span>{isFirstOrder ? "Free" : `৳${vat}`}</span>
+                    </div>
+                    <div className="mt-2 flex justify-between border-t border-border pt-2 text-base font-semibold text-foreground">
+                      <span>Total</span>
+                      <span>৳{total}</span>
+                    </div>
+                  </div>
+
+                  <Button
+                    type="button"
+                    disabled={loading || !formComplete}
+                    onClick={handleSubmit}
+                    className="hidden w-full bg-[#e2136e] text-white hover:bg-[#c10f5e] lg:flex"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="size-4 animate-spin" /> Placing order...
+                      </>
+                    ) : isFirstOrder ? (
+                      "Confirm free order"
+                    ) : (
+                      "Confirm & Pay with bKash"
+                    )}
+                  </Button>
+                  {!formComplete && (
+                    <p className="hidden text-xs text-muted-foreground lg:block">
+                      Fill in delivery details to continue.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           <div>
@@ -304,42 +357,51 @@ const Order = () => {
                     </p>
                   </div>
                 ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Invoice</TableHead>
-                        <TableHead>Address</TableHead>
-                        <TableHead>Total</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {orders.map((o) => (
-                        <TableRow key={o._id}>
-                          <TableCell className="font-mono text-xs">
-                            {o.invoiceNumber}
-                          </TableCell>
-                          <TableCell className="max-w-[200px] truncate">
-                            {o.address}, {o.city}
-                          </TableCell>
-                          <TableCell>
-                            {o.total} {o.currency}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={STATUS_VARIANT[o.status] || "outline"}>
-                              {o.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {o.createdAt
-                              ? new Date(o.createdAt).toLocaleDateString()
-                              : "-"}
-                          </TableCell>
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Invoice</TableHead>
+                          <TableHead>Address</TableHead>
+                          <TableHead>Total</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {orders.map((o) => {
+                          const meta = STATUS_META[o.status] || { variant: "outline", icon: ReceiptIcon };
+                          const StatusIcon = meta.icon;
+                          return (
+                            <TableRow key={o._id}>
+                              <TableCell className="font-mono text-xs">
+                                {o.invoiceNumber}
+                              </TableCell>
+                              <TableCell className="max-w-[200px] truncate">
+                                {o.address}, {o.city}
+                              </TableCell>
+                              <TableCell>
+                                {o.total} {o.currency}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={meta.variant} className="gap-1">
+                                  <StatusIcon
+                                    className={cn("size-3", o.status === "initiated" && "animate-spin")}
+                                  />
+                                  {o.status}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-muted-foreground">
+                                {o.createdAt
+                                  ? new Date(o.createdAt).toLocaleDateString()
+                                  : "-"}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
                 )}
               </CardContent>
             </Card>

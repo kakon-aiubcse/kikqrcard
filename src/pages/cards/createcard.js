@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { toast } from "sonner";
-import QRCode from "react-qr-code";
 import {
   Heart,
   Save,
@@ -11,14 +10,13 @@ import {
   Workflow,
   BookOpenCheck,
   PinIcon,
-  Download,
   Check,
 } from "lucide-react";
 import axios from "axios";
 import { Seo } from "@/components/seo";
 import DashboardShell from "@/components/dashboard-shell";
 import Card from "./card";
-import { buildVCard, CARD_PATTERNS } from "@/components/business-card";
+import { CARD_PATTERNS } from "@/components/business-card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -36,13 +34,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 const bgDirections = [
@@ -106,7 +97,6 @@ export default function CreateCard() {
   const [isAlreadyLoved, setIsAlreadyLoved] = useState(false);
   const [isAlreadyFavourite, setIsAlreadyFavourite] = useState(false);
   const [isAlreadyHighlighted, setIsAlreadyHighlighted] = useState(false);
-  const [qrDialogOpen, setQrDialogOpen] = useState(false);
 
   const router = useRouter();
   const editId = router.query.id;
@@ -665,34 +655,18 @@ export default function CreateCard() {
       activeClass:
         "border-green-500 bg-green-50 text-green-600 dark:bg-green-950/40",
     },
-    { label: "QR Config", icon: Workflow, onClick: () => setQrDialogOpen(true) },
+    {
+      label: "QR Config",
+      icon: Workflow,
+      onClick: () => {
+        if (!isEditMode) {
+          setError("Save your card first, then configure its QR code.");
+          return;
+        }
+        router.push(`/cards/qrconfig?id=${editId}`);
+      },
+    },
   ];
-
-  const downloadQrCode = () => {
-    const svg = document.getElementById("card-qr-preview");
-    if (!svg) return;
-
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const canvas = document.createElement("canvas");
-    const size = 256;
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext("2d");
-
-    const img = new Image();
-    img.onload = () => {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, size, size);
-      ctx.drawImage(img, 0, 0, size, size);
-      const pngUrl = canvas.toDataURL("image/png");
-
-      const link = document.createElement("a");
-      link.href = pngUrl;
-      link.download = `${cardName}-qr.png`;
-      link.click();
-    };
-    img.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(svgData)))}`;
-  };
 
   return (
     <div className="md:pl-64">
@@ -966,93 +940,6 @@ export default function CreateCard() {
           </UICard>
         </div>
       </main>
-
-      <Dialog open={qrDialogOpen} onOpenChange={setQrDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>QR Code Config</DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col items-center gap-4 py-2">
-            <div className="rounded-md bg-white p-4 shadow-sm">
-              <QRCode
-                id="card-qr-preview"
-                value={buildVCard(cardInfo)}
-                size={180}
-              />
-            </div>
-            <p className="text-center text-sm text-muted-foreground">
-              Scan to save {cardInfo.name}&apos;s contact card.
-            </p>
-          </div>
-
-          <div className="space-y-3 border-t border-border pt-4">
-            <p className="text-sm font-medium text-foreground">
-              Extra contact details (optional)
-            </p>
-            <div className="space-y-1.5">
-              <Label htmlFor="qr-email">Email</Label>
-              <Input
-                id="qr-email"
-                type="email"
-                value={cardInfo.email}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setCardInfo({ ...cardInfo, email: val });
-                  setErrors({ ...errors, email: validateEmail(val) });
-                }}
-                placeholder="name@example.com"
-                aria-invalid={!!errors.email}
-              />
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="qr-website">Website</Label>
-              <Input
-                id="qr-website"
-                value={cardInfo.website}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setCardInfo({ ...cardInfo, website: val });
-                  setErrors({ ...errors, website: validateWebsite(val) });
-                }}
-                placeholder="https://example.com"
-                aria-invalid={!!errors.website}
-              />
-              {errors.website && (
-                <p className="text-sm text-destructive">{errors.website}</p>
-              )}
-            </div>
-
-            <div className="space-y-1.5">
-              <Label htmlFor="qr-address">Address</Label>
-              <Input
-                id="qr-address"
-                value={cardInfo.address}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  setCardInfo({ ...cardInfo, address: val });
-                  setErrors({ ...errors, address: validateAddress(val) });
-                }}
-                placeholder="Street, City"
-                aria-invalid={!!errors.address}
-              />
-              {errors.address && (
-                <p className="text-sm text-destructive">{errors.address}</p>
-              )}
-            </div>
-          </div>
-
-          <DialogFooter>
-            <Button type="button" onClick={downloadQrCode}>
-              <Download className="size-4" />
-              Download PNG
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
