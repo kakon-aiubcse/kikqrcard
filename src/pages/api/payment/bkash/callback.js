@@ -13,9 +13,18 @@ const handler = async (req, res) => {
   const db = client.db("kikqrcard");
   const payments = db.collection("payments");
 
+  const existing = await payments.findOne({ paymentID });
+  if (!existing) {
+    return res.redirect("/payment/billings?status=error");
+  }
+  // Callback replay: never re-execute or downgrade a settled payment.
+  if (existing.status === "completed") {
+    return res.redirect(`/payment/billings?status=success&trxID=${existing.trxID}`);
+  }
+
   if (status !== "success") {
     await payments.updateOne(
-      { paymentID },
+      { paymentID, status: "initiated" },
       { $set: { status: status === "cancel" ? "cancelled" : "failed", updatedAt: new Date() } },
     );
     return res.redirect(`/payment/billings?status=${status === "cancel" ? "cancelled" : "failed"}`);
@@ -29,15 +38,19 @@ const handler = async (req, res) => {
       { headers },
     );
 
-    if (data?.statusCode !== "0000" || data?.transactionStatus !== "Completed") {
+    if (
+      data?.statusCode !== "0000" ||
+      data?.transactionStatus !== "Completed" ||
+      Number(data?.amount) !== Number(existing.amount)
+    ) {
       await payments.updateOne(
-        { paymentID },
+        { paymentID, status: "initiated" },
         { $set: { status: "failed", executeResponse: data, updatedAt: new Date() } },
       );
       return res.redirect("/payment/billings?status=failed");
     }
 
-    const paymentDoc = await payments.findOneAndUpdate(
+    await payments.updateOne(
       { paymentID },
       {
         $set: {
@@ -48,11 +61,9 @@ const handler = async (req, res) => {
           updatedAt: new Date(),
         },
       },
-      { returnDocument: "after" },
     );
 
-    const email = paymentDoc.value?.email;
-    const planId = paymentDoc.value?.planId;
+    const { email, planId } = existing;
 
     if (email) {
       await db.collection("users").updateOne(
@@ -70,7 +81,7 @@ const handler = async (req, res) => {
   } catch (error) {
     console.error("bKash execute error:", error.response?.data || error.message);
     await payments.updateOne(
-      { paymentID },
+      { paymentID, status: "initiated" },
       { $set: { status: "failed", updatedAt: new Date() } },
     );
     return res.redirect("/payment/billings?status=failed");

@@ -1,9 +1,11 @@
-import axios from "axios";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/pages/api/auth/[...nextauth]";
 import clientPromise from "/lib/mongodb/config";
-import { bkashHeaders, bkashUrl } from "@/../lib/bkash/client";
 import { getPlan, calculateOrderPrice } from "@/../lib/bkash/plans";
+import { sendOrderEmail } from "@/../lib/mailer";
+
+// "initiated" / "completed" are legacy statuses from the old bKash order flow.
+const COUNTED_STATUSES = ["placed", "initiated", "completed"];
 
 const handler = async (req, res) => {
   if (req.method !== "POST") {
@@ -29,7 +31,7 @@ const handler = async (req, res) => {
 
     const priorOrderCount = await orders.countDocuments({
       email,
-      status: { $in: ["initiated", "completed"] },
+      status: { $in: COUNTED_STATUSES },
     });
     const isFirstOrder = priorOrderCount === 0;
 
@@ -48,7 +50,7 @@ const handler = async (req, res) => {
 
       const ordersThisMonth = await orders.countDocuments({
         email,
-        status: { $in: ["initiated", "completed"] },
+        status: { $in: COUNTED_STATUSES },
         createdAt: { $gte: startOfMonth },
       });
 
@@ -65,10 +67,10 @@ const handler = async (req, res) => {
     const orderDoc = {
       invoiceNumber,
       email,
-      name,
-      phone,
-      address,
-      city,
+      name: String(name).trim(),
+      phone: String(phone).trim(),
+      address: String(address).trim(),
+      city: String(city).trim(),
       insideDhaka: !!insideDhaka,
       isFirstOrder,
       cardPrice: pricing.cardPrice,
@@ -76,45 +78,30 @@ const handler = async (req, res) => {
       vat: pricing.vat,
       total: pricing.total,
       currency: "BDT",
-      status: pricing.total === 0 ? "completed" : "initiated",
+      status: "placed",
       createdAt: new Date(),
     };
 
-    if (pricing.total === 0) {
-      const result = await orders.insertOne(orderDoc);
-      return res.status(200).json({
-        free: true,
-        orderId: result.insertedId,
-        invoiceNumber,
-        pricing,
-      });
+    const result = await orders.insertOne(orderDoc);
+
+    try {
+      await sendOrderEmail(orderDoc);
+    } catch (mailError) {
+      // Owner is notified by email only, so an unsent email means a lost order. Roll back.
+      console.error("Order email error:", mailError.message);
+      await orders.deleteOne({ _id: result.insertedId });
+      return res.status(502).json({ error: "Could not send your order. Please try again." });
     }
 
-    const headers = await bkashHeaders();
-    const { data } = await axios.post(
-      bkashUrl("/tokenized/checkout/create"),
-      {
-        mode: "0011",
-        payerReference: email,
-        callbackURL: process.env.BKASH_ORDER_CALLBACK_URL,
-        amount: String(pricing.total),
-        currency: "BDT",
-        intent: "sale",
-        merchantInvoiceNumber: invoiceNumber,
-      },
-      { headers },
-    );
+    await orders.updateOne({ _id: result.insertedId }, { $set: { emailSent: true } });
 
-    if (!data?.paymentID) {
-      return res.status(502).json({ error: data?.statusMessage || "Failed to create payment" });
-    }
-
-    orderDoc.paymentID = data.paymentID;
-    await orders.insertOne(orderDoc);
-
-    return res.status(200).json({ free: false, bkashURL: data.bkashURL, paymentID: data.paymentID });
+    return res.status(200).json({
+      orderId: result.insertedId,
+      invoiceNumber,
+      pricing,
+    });
   } catch (error) {
-    console.error("Order create error:", error.response?.data || error.message);
+    console.error("Order create error:", error.message);
     return res.status(500).json({ error: "Failed to create order" });
   }
 };

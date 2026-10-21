@@ -2,18 +2,18 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
-import {
-  MessageCircle,
-  Phone,
-  Mail,
-  MapPin,
-  Globe,
-  Download,
-} from "lucide-react";
+import { ChevronRight, Download } from "lucide-react";
 import { Seo } from "@/components/seo";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { buildVCard } from "@/components/business-card";
 import { Logo } from "@/components/logo";
+import { QR_LINK_ICONS } from "@/components/qr-link-icons";
+import {
+  getLinkHref,
+  getLinkSubtitle,
+  getLinkTitle,
+  normalizeQrConfig,
+} from "@/lib/qrConfigTypes";
 import { cn } from "@/lib/utils";
 
 function downloadVCardFile(card) {
@@ -31,8 +31,10 @@ function downloadVCardFile(card) {
   const link = document.createElement("a");
   link.href = url;
   link.download = `${card.name || "contact"}.vcf`;
+  document.body.appendChild(link);
   link.click();
-  URL.revokeObjectURL(url);
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 export default function PublicCardLanding() {
@@ -79,83 +81,13 @@ export default function PublicCardLanding() {
     );
   }
 
-  const qrConfig = card.qrConfig || { type: "vcard", value: "" };
+  const { links } = normalizeQrConfig(card.qrConfig);
   const faceClass = cn(
     "relative flex aspect-[1.586/1] w-full flex-col overflow-hidden rounded-[6%] p-[6%] text-white shadow-lg",
     "bg-black",
     card.bgGrad,
     card.bgStyle,
   );
-
-  const linkClass = (extra) =>
-    cn(buttonVariants({ size: "lg" }), "w-full gap-2", extra);
-
-  const renderAction = () => {
-    switch (qrConfig.type) {
-      case "whatsapp":
-        return (
-          <a
-            href={`https://wa.me/${qrConfig.value}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass("bg-green-600 text-white hover:bg-green-700")}
-          >
-            <MessageCircle className="size-5" />
-            Chat on WhatsApp
-          </a>
-        );
-      case "phone":
-        return (
-          <a href={`tel:${qrConfig.value}`} className={linkClass()}>
-            <Phone className="size-5" />
-            Call {qrConfig.value}
-          </a>
-        );
-      case "email":
-        return (
-          <a href={`mailto:${qrConfig.value}`} className={linkClass()}>
-            <Mail className="size-5" />
-            Email {qrConfig.value}
-          </a>
-        );
-      case "link":
-        return (
-          <a
-            href={qrConfig.value}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass()}
-          >
-            <Globe className="size-5" />
-            Visit Link
-          </a>
-        );
-      case "address":
-        return (
-          <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(qrConfig.value)}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClass()}
-          >
-            <MapPin className="size-5" />
-            Open in Maps
-          </a>
-        );
-      case "vcard":
-      default:
-        return (
-          <Button
-            size="lg"
-            className="w-full gap-2"
-            onClick={() => downloadVCardFile(card)}
-          >
-            <Download className="size-5" />
-            Save Contact
-          </Button>
-        );
-    }
-  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted p-4">
@@ -178,7 +110,45 @@ export default function PublicCardLanding() {
             &copy; 2025, KIK QRcards. All rights reserved.
           </p>
         </div>
-        {renderAction()}
+        <Button
+          size="lg"
+          className="w-full gap-2"
+          onClick={() => downloadVCardFile(card)}
+        >
+          <Download className="size-5" />
+          Save Contact
+        </Button>
+
+        {links.length > 0 && (
+          <ul className="space-y-3">
+            {links.map((link, i) => {
+              const Icon = QR_LINK_ICONS[link.type];
+              const isWeb = /^https?:/i.test(getLinkHref(link));
+              return (
+                <li key={`${link.type}-${i}`}>
+                  <a
+                    href={getLinkHref(link)}
+                    {...(isWeb ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="flex items-center gap-3 rounded-xl bg-card p-3 text-card-foreground shadow-sm ring-1 ring-border transition-colors hover:bg-accent"
+                  >
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                      <Icon className="size-5" />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">
+                        {getLinkTitle(link)}
+                      </span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {getLinkSubtitle(link)}
+                      </span>
+                    </span>
+                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </div>
     </div>
   );

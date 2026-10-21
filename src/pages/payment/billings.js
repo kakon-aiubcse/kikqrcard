@@ -1,38 +1,34 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import {
-  Receipt,
-  CheckCircle2,
-  XCircle,
-  Loader2,
-  Check,
-  Sparkles,
-  Building2,
-} from "lucide-react";
+import { Receipt, Loader2, Check, Sparkles, Building2 } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
-import { Seo } from "@/components/seo";
-import DashboardShell from "@/components/dashboard-shell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { DashboardLayout } from "@/components/dashboard-shell";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+  Banner,
+  EmptyState,
+  FullscreenStatus,
+  HistoryList,
+  HistoryRow,
+  IconTile,
+  ListSkeleton,
+  PageHeader,
+  SectionHeading,
+  Surface,
+  useDashboardUser,
+} from "@/components/dashboard-ui";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { PLANS } from "@/../lib/bkash/plans";
 
 const PLAN_DISPLAY = {
   personal: {
     id: "personal",
     name: "Personal",
     icon: Sparkles,
-    price: "৳350",
+    tone: "indigo",
+    price: `৳${Number(PLANS.personal.amount).toLocaleString("en-US")}`,
     cycle: "/month",
     tagline: "For individuals building their network.",
     features: [
@@ -46,7 +42,8 @@ const PLAN_DISPLAY = {
     id: "business",
     name: "Business",
     icon: Building2,
-    price: "৳1,200",
+    tone: "blue",
+    price: `৳${Number(PLANS.business.amount).toLocaleString("en-US")}`,
     cycle: "/year",
     tagline: "For teams issuing cards at scale.",
     features: [
@@ -59,16 +56,15 @@ const PLAN_DISPLAY = {
   },
 };
 
-const STATUS_META = {
-  completed: { variant: "default", icon: CheckCircle2 },
-  initiated: { variant: "outline", icon: Loader2 },
-  failed: { variant: "destructive", icon: XCircle },
-  cancelled: { variant: "destructive", icon: XCircle },
-};
+const formatDate = (value) =>
+  value
+    ? new Date(value).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })
+    : "—";
 
 const Billings = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const user = useDashboardUser();
   const [loading, setLoading] = useState(false);
   const [payingPlan, setPayingPlan] = useState(null);
   const [payments, setPayments] = useState([]);
@@ -149,224 +145,168 @@ const Billings = () => {
   };
 
   if (status === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        <Loader2 className="size-5 animate-spin" />
-      </div>
-    );
+    return <FullscreenStatus title="Loading…" />;
   }
 
   const activePlan = selectedPlan ? PLAN_DISPLAY[selectedPlan] : null;
+  const currentPlanId = PLAN_DISPLAY[user?.plan] ? user.plan : null;
 
   return (
-    <div className="md:pl-64">
-      <Seo title="Billing" path="/payment/billings" noIndex />
-      <DashboardShell />
-      <main className="p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-5xl space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Plans &amp; Billing
-            </h1>
-            <p className="mt-1 text-muted-foreground">
-              Choose a plan to unlock more virtual cards and physical card orders.
-            </p>
-          </div>
+    <DashboardLayout title="Billing" path="/payment/billings" width="max-w-5xl">
+      <div className="space-y-8 sm:space-y-10">
+        <PageHeader
+          title="Plans & billing"
+          description="Choose a plan to unlock more virtual cards and physical card orders."
+        />
 
-          {paymentStatus === "success" && (
-            <div className="flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-700 dark:text-green-400">
-              <CheckCircle2 className="size-5 shrink-0" />
-              <span>
-                Payment successful{trxID ? ` — Transaction ID: ${trxID}` : ""}. Your plan is now active.
-              </span>
-            </div>
-          )}
-          {(paymentStatus === "failed" || paymentStatus === "error") && (
-            <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-              <XCircle className="size-5 shrink-0" />
-              <span>Payment failed. Please try again.</span>
-            </div>
-          )}
-          {paymentStatus === "cancelled" && (
-            <div className="flex items-center gap-3 rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
-              <XCircle className="size-5 shrink-0" />
-              <span>Payment was cancelled.</span>
-            </div>
-          )}
+        {paymentStatus === "success" && (
+          <Banner tone="success">
+            Payment successful{trxID ? ` — Transaction ID: ${trxID}` : ""}. Your plan is now active.
+          </Banner>
+        )}
+        {(paymentStatus === "failed" || paymentStatus === "error") && (
+          <Banner tone="danger">Payment failed. Please try again.</Banner>
+        )}
+        {paymentStatus === "cancelled" && <Banner tone="neutral">Payment was cancelled.</Banner>}
 
-          {/* plan picker */}
-          <div className="grid gap-6 md:grid-cols-2">
-            {Object.values(PLAN_DISPLAY).map((p) => {
-              const Icon = p.icon;
-              const isSelected = selectedPlan === p.id;
-              return (
-                <Card
-                  key={p.id}
-                  role="button"
-                  tabIndex={0}
-                  onClick={() => setSelectedPlan(p.id)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") setSelectedPlan(p.id);
-                  }}
-                  className={cn(
-                    "cursor-pointer ring-2 ring-transparent transition-all hover:ring-primary/40",
-                    isSelected && "ring-primary",
-                  )}
-                >
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={cn(
-                            "flex size-9 items-center justify-center rounded-lg",
-                            p.highlight
-                              ? "bg-primary/15 text-primary"
-                              : "bg-muted text-muted-foreground",
-                          )}
-                        >
-                          <Icon className="size-4" />
-                        </div>
-                        <CardTitle className="text-lg">{p.name}</CardTitle>
-                      </div>
-                      {p.highlight && <Badge>Most popular</Badge>}
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground">{p.tagline}</p>
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-bold text-foreground">{p.price}</span>
-                      <span className="text-sm text-muted-foreground">BDT{p.cycle}</span>
-                    </div>
-                    <ul className="space-y-2">
-                      {p.features.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-foreground">
-                          <Check className="mt-0.5 size-4 shrink-0 text-primary" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <div
-                      className={cn(
-                        "flex items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition-colors",
-                        isSelected
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border text-muted-foreground",
-                      )}
-                    >
-                      <span
-                        className={cn(
-                          "flex size-4 items-center justify-center rounded-full border",
-                          isSelected ? "border-primary bg-primary text-primary-foreground" : "border-border",
-                        )}
-                      >
-                        {isSelected && <Check className="size-3" />}
-                      </span>
-                      {isSelected ? "Selected" : "Select this plan"}
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-
-          {/* sticky checkout bar */}
-          {activePlan && (
-            <Card className="border-primary/30 bg-primary/5">
-              <CardContent className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                <div>
-                  <p className="text-sm text-muted-foreground">Checking out</p>
-                  <p className="text-lg font-semibold text-foreground">
-                    {activePlan.name} Plan — {activePlan.price}
-                    <span className="text-sm font-normal text-muted-foreground"> BDT{activePlan.cycle}</span>
-                  </p>
-                </div>
-                <Button
-                  onClick={handlePay}
-                  disabled={loading}
-                  className="w-full bg-[#e2136e] text-white hover:bg-[#c10f5e] sm:w-fit"
-                >
-                  {loading && payingPlan === activePlan.id ? (
-                    <>
-                      <Loader2 className="size-4 animate-spin" /> Redirecting to bKash...
-                    </>
-                  ) : (
-                    "Pay with bKash"
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* transaction history */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Transactions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loadingHistory ? (
-                <div className="flex flex-col items-center justify-center gap-3 py-16 text-center text-muted-foreground">
-                  <Loader2 className="size-5 animate-spin" />
-                  Loading payment history...
-                </div>
-              ) : payments.length === 0 ? (
-                <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-                  <div className="flex size-14 items-center justify-center rounded-full bg-muted">
-                    <Receipt className="size-6 text-muted-foreground" />
+        {/* plan picker */}
+        <div role="radiogroup" aria-label="Choose a plan" className="grid gap-4 md:grid-cols-2 md:gap-6">
+          {Object.values(PLAN_DISPLAY).map((p) => {
+            const isSelected = selectedPlan === p.id;
+            const isCurrent = currentPlanId === p.id;
+            return (
+              <Surface
+                key={p.id}
+                role="radio"
+                aria-checked={isSelected}
+                tabIndex={0}
+                onClick={() => setSelectedPlan(p.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelectedPlan(p.id);
+                  }
+                }}
+                className={cn(
+                  "cursor-pointer p-6 outline-none ring-2 ring-transparent transition-all duration-300 ease-apple focus-visible:ring-ring/60 sm:p-7",
+                  isSelected ? "ring-primary shadow-lift" : "hover:shadow-lift",
+                )}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <IconTile icon={p.icon} tone={p.tone} />
+                    <h2 className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+                      {p.name}
+                    </h2>
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    All your payment details will display here.
-                  </p>
+                  <div className="flex flex-wrap justify-end gap-1.5">
+                    {isCurrent && (
+                      <span className="rounded-full bg-ios-green/15 px-2.5 py-1 text-xs font-medium text-success">
+                        Current plan
+                      </span>
+                    )}
+                    {p.highlight && (
+                      <span className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+                        Most popular
+                      </span>
+                    )}
+                  </div>
                 </div>
-              ) : (
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Invoice</TableHead>
-                        <TableHead>Plan</TableHead>
-                        <TableHead>Amount</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {payments.map((p) => {
-                        const meta = STATUS_META[p.status] || { variant: "outline", icon: Receipt };
-                        const StatusIcon = meta.icon;
-                        return (
-                          <TableRow key={p.paymentID}>
-                            <TableCell className="font-mono text-xs">
-                              {p.invoiceNumber}
-                            </TableCell>
-                            <TableCell>{p.planName}</TableCell>
-                            <TableCell>
-                              {p.amount} {p.currency}
-                            </TableCell>
-                            <TableCell>
-                              <Badge variant={meta.variant} className="gap-1">
-                                <StatusIcon
-                                  className={cn("size-3", p.status === "initiated" && "animate-spin")}
-                                />
-                                {p.status}
-                              </Badge>
-                            </TableCell>
-                            <TableCell className="text-muted-foreground">
-                              {p.createdAt
-                                ? new Date(p.createdAt).toLocaleDateString()
-                                : "-"}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
+
+                <p className="mt-4 text-sm text-muted-foreground">{p.tagline}</p>
+                <p className="mt-4 flex items-baseline gap-1.5">
+                  <span className="text-4xl font-semibold tracking-[-0.035em] text-foreground">
+                    {p.price}
+                  </span>
+                  <span className="text-sm text-muted-foreground">BDT{p.cycle}</span>
+                </p>
+
+                <ul className="mt-6 space-y-3">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm text-foreground">
+                      <Check className="mt-0.5 size-4 shrink-0 text-primary" strokeWidth={2.5} />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
+
+                <div
+                  className={cn(
+                    "mt-7 flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition-colors",
+                    isSelected
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-black/[0.06] text-foreground",
+                  )}
+                >
+                  {isSelected && <Check className="size-4" strokeWidth={2.5} />}
+                  {isSelected ? "Selected" : "Select plan"}
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </Surface>
+            );
+          })}
         </div>
-      </main>
-    </div>
+
+        {/* checkout bar */}
+        {activePlan && (
+          <div className="sticky bottom-24 z-20 md:bottom-6">
+            <Surface className="flex flex-col items-start justify-between gap-4 bg-card/85 p-4 shadow-lift backdrop-blur-2xl sm:flex-row sm:items-center sm:px-6">
+              <div>
+                <p className="text-xs font-medium text-muted-foreground">Checking out</p>
+                <p className="text-base font-semibold tracking-[-0.015em] text-foreground">
+                  {activePlan.name} plan · {activePlan.price}
+                  <span className="text-sm font-normal text-muted-foreground"> BDT{activePlan.cycle}</span>
+                </p>
+              </div>
+              <Button
+                size="lg"
+                onClick={handlePay}
+                disabled={loading}
+                className="w-full bg-[#e2136e] text-white hover:bg-[#c10f5e] sm:w-auto"
+              >
+                {loading && payingPlan === activePlan.id ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" /> Redirecting to bKash…
+                  </>
+                ) : (
+                  "Pay with bKash"
+                )}
+              </Button>
+            </Surface>
+          </div>
+        )}
+
+        {/* transaction history */}
+        <section className="space-y-4">
+          <SectionHeading title="Transactions" />
+          {loadingHistory ? (
+            <Surface>
+              <ListSkeleton />
+            </Surface>
+          ) : payments.length === 0 ? (
+            <EmptyState
+              icon={Receipt}
+              title="No transactions yet"
+              message="All your payment details will display here."
+            />
+          ) : (
+            <Surface className="overflow-hidden">
+              <HistoryList>
+                {payments.map((p) => (
+                  <HistoryRow
+                    key={p.paymentID}
+                    icon={Receipt}
+                    title={`${p.planName} plan`}
+                    subtitle={`${p.invoiceNumber} · ${formatDate(p.createdAt)}`}
+                    amount={`${p.amount} ${p.currency}`}
+                    status={p.status}
+                  />
+                ))}
+              </HistoryList>
+            </Surface>
+          )}
+        </section>
+      </div>
+    </DashboardLayout>
   );
 };
 

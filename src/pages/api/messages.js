@@ -1,5 +1,6 @@
 import { ObjectId } from "mongodb";
 import clientPromise from "../../../lib/mongodb/config";
+import { requireAdmin } from "../../../lib/adminAuth";
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -34,6 +35,9 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: "Internal Server Error" });
     }
   } else if (req.method === "GET") {
+    const session = await requireAdmin(req, res);
+    if (!session) return;
+
     try {
       const allMessages = await messages.find().sort({ createdAt: -1 }).toArray();
       return res.status(200).json(allMessages);

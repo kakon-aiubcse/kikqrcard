@@ -1,9 +1,16 @@
 import Head from "next/head";
-import { Manrope, Noto_Sans, Roboto } from "next/font/google";
+import { Inter, Manrope, Noto_Sans, Roboto } from "next/font/google";
 import "@/styles/globals.css";
 import { SessionProvider } from "next-auth/react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+
+// Dashboard body font (see .dashboard in globals.css). Exposed on :root below so portals can use it too.
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  preload: false, // only fetched when a page actually renders with it (the dashboard)
+});
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -33,6 +40,11 @@ function App({ Component, pageProps: { session, ...pageProps } }) {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      <style jsx global>{`
+        :root {
+          --font-inter: ${inter.style.fontFamily};
+        }
+      `}</style>
       <div className={`${manrope.variable} ${notoSans.variable} ${roboto.variable}`}>
         <TooltipProvider>
           <Component {...pageProps} />

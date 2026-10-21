@@ -13,8 +13,7 @@ import {
   Check,
 } from "lucide-react";
 import axios from "axios";
-import { Seo } from "@/components/seo";
-import DashboardShell from "@/components/dashboard-shell";
+import { DashboardLayout } from "@/components/dashboard-shell";
 import Card from "./card";
 import { CARD_PATTERNS } from "@/components/business-card";
 import { Button } from "@/components/ui/button";
@@ -669,17 +668,14 @@ export default function CreateCard() {
   ];
 
   return (
-    <div className="md:pl-64">
-      <Seo title="Create Card" path="/cards/createcard" noIndex />
-      <DashboardShell />
-      <main className="p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-6xl space-y-8">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <DashboardLayout title="Create Card" path="/cards/createcard">
+        <div className="space-y-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                {isEditMode ? "Edit Card" : "Create Card"}
+              <h1 className="text-[1.75rem] font-semibold leading-tight tracking-[-0.025em] text-foreground sm:text-[2.125rem]">
+                {isEditMode ? "Edit card" : "Create card"}
               </h1>
-              <p className="mt-1 text-muted-foreground">
+              <p className="mt-1 text-[0.9375rem] text-muted-foreground">
                 {isEditMode
                   ? "Update your saved card details."
                   : "Set up your card carefully."}
@@ -877,6 +873,7 @@ export default function CreateCard() {
                   bgGrad={cardInfo.bgGrad}
                   bgStyle={cardInfo.bgStyle}
                   pattern={cardInfo.pattern}
+                  cardId={isEditMode ? editId : undefined}
                 />
               </div>
 
@@ -939,7 +936,6 @@ export default function CreateCard() {
             </CardContent>
           </UICard>
         </div>
-      </main>
-    </div>
+    </DashboardLayout>
   );
 }

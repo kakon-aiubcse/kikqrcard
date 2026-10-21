@@ -1,23 +1,51 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Camera, Eye, EyeOff, Loader2, Lock } from "lucide-react";
 import { toast } from "sonner";
-import { DashboardShell } from "@/components/dashboard-shell";
+import { DashboardLayout } from "@/components/dashboard-shell";
 import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Field,
+  FullscreenStatus,
+  PageHeader,
+  Surface,
+  getInitials,
+  invalidateDashboardUser,
+} from "@/components/dashboard-ui";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+function PasswordInput({ id, name, value, onChange, placeholder, invalid, visible, onToggle, autoComplete }) {
+  return (
+    <div className="relative">
+      <Input
+        id={id}
+        type={visible ? "text" : "password"}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        aria-invalid={invalid}
+        autoComplete={autoComplete}
+        className="pr-11"
+      />
+      <button
+        type="button"
+        onClick={onToggle}
+        className="absolute inset-y-0 right-1.5 my-auto flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-black/[0.06] hover:text-foreground"
+        aria-label={visible ? "Hide password" : "Show password"}
+      >
+        {visible ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+      </button>
+    </div>
+  );
+}
 
 const Editprofile = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
+  const fileInput = useRef(null);
 
   const [viewpass, setViewpass] = useState(false);
   const [formData, setFormData] = useState({
@@ -28,6 +56,8 @@ const Editprofile = () => {
     conpass: "",
     profileImageBase64: "",
   });
+  // values as last loaded/saved, used to tell whether there is anything to save
+  const [saved, setSaved] = useState(null);
 
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -47,13 +77,14 @@ const Editprofile = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setFormData((prev) => ({
-            ...prev,
+          const loaded = {
             name: data.name || "",
             email: data.email || "",
             phone: data.phone || "",
             profileImageBase64: data.profileImageBase64 || "",
-          }));
+          };
+          setSaved(loaded);
+          setFormData((prev) => ({ ...prev, ...loaded }));
         })
         .catch((err) => console.error("Fetch user error:", err));
     }
@@ -172,6 +203,7 @@ const Editprofile = () => {
 
       if (res.ok) {
         toast.success("Profile Updated");
+        invalidateDashboardUser(formData.email);
 
         // Wait for session to sync before redirecting
         setTimeout(() => {
@@ -189,177 +221,175 @@ const Editprofile = () => {
   };
 
   if (status === "loading") {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-3">
-        <Loader2 className="size-6 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Checking session...</p>
-      </div>
-    );
+    return <FullscreenStatus title="Checking session…" />;
   }
 
   if (status === "unauthenticated") {
     return null; // prevent flicker before redirect
   }
 
-  const initials = formData.name
-    ? formData.name
-        .split(" ")
-        .filter(Boolean)
-        .slice(0, 2)
-        .map((part) => part[0]?.toUpperCase())
-        .join("")
-    : "U";
+  const dirty =
+    !!saved &&
+    (formData.name !== saved.name ||
+      formData.phone !== saved.phone ||
+      formData.profileImageBase64 !== saved.profileImageBase64 ||
+      !!formData.password ||
+      !!formData.conpass);
 
   return (
-    <div className="md:pl-64">
-      <DashboardShell />
-      <main className="p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="mb-6 text-2xl font-bold text-foreground sm:text-3xl">
-            Edit Profile
-          </h1>
+    <DashboardLayout title="Profile" path="/dashboard/editprofile" width="max-w-2xl">
+      <form onSubmit={handleSubmit} noValidate className="space-y-8">
+        <PageHeader
+          title="Profile"
+          description="Manage your personal information and password."
+          backHref="/dashboard"
+        />
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile Information</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="flex items-center gap-4">
-                  <Avatar size="lg" className="size-16">
-                    <AvatarImage src={formData.profileImageBase64 || undefined} alt={formData.name} />
-                    <AvatarFallback className="text-lg">{initials}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-1.5">
-                    <Label htmlFor="profileImage">Profile photo</Label>
-                    <Input
-                      id="profileImage"
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageUpload}
-                    />
-                  </div>
-                </div>
+        {/* photo */}
+        <Surface className="flex flex-col items-center gap-4 p-6 text-center sm:flex-row sm:p-7 sm:text-left">
+          <Avatar className="size-24 text-2xl">
+            <AvatarImage src={formData.profileImageBase64 || undefined} alt={formData.name} />
+            <AvatarFallback className="bg-ios-indigo/15 text-2xl font-semibold text-primary">
+              {getInitials(formData.name)}
+            </AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1">
+            <p className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+              {formData.name || "Your name"}
+            </p>
+            <p className="truncate text-sm text-muted-foreground">{formData.email}</p>
+            <input
+              ref={fileInput}
+              id="profileImage"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              className="sr-only"
+              tabIndex={-1}
+            />
+            <Button
+              type="button"
+              variant="secondary"
+              className="mt-3"
+              onClick={() => fileInput.current?.click()}
+            >
+              <Camera className="size-4" />
+              Change photo
+            </Button>
+          </div>
+        </Surface>
 
-                {/* Name */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="name">
-                    Full Name <span className="text-destructive">*</span>
-                  </Label>
-                  <Input
-                    id="name"
-                    type="text"
-                    name="name"
-                    placeholder="Full Name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    aria-invalid={!!errors.name}
-                    required
-                  />
-                  {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-                </div>
+        {/* personal info */}
+        <section className="space-y-3">
+          <h2 className="px-1 text-sm font-semibold text-muted-foreground">Personal information</h2>
+          <Surface className="space-y-5 p-5 sm:p-7">
+            <Field label="Full name" htmlFor="name" required error={errors.name}>
+              <Input
+                id="name"
+                type="text"
+                name="name"
+                autoComplete="name"
+                placeholder="Full Name"
+                value={formData.name}
+                onChange={handleChange}
+                aria-invalid={!!errors.name}
+              />
+            </Field>
 
-                {/* Email (read-only) */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    readOnly
-                    disabled
-                    className="bg-muted opacity-70"
-                  />
-                  {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
-                </div>
+            <Field
+              label="Email"
+              htmlFor="email"
+              error={errors.email}
+              hint="Your email is your sign-in and can't be changed."
+            >
+              <div className="relative">
+                <Input
+                  id="email"
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  readOnly
+                  disabled
+                  className="pr-10 opacity-70"
+                />
+                <Lock className="pointer-events-none absolute right-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
+            </Field>
 
-                {/* Phone */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input
-                    id="phone"
-                    type="text"
-                    name="phone"
-                    placeholder="Phone Number"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    aria-invalid={!!errors.phone}
-                  />
-                  {errors.phone && <p className="text-sm text-destructive">{errors.phone}</p>}
-                </div>
+            <Field label="Phone number" htmlFor="phone" error={errors.phone}>
+              <Input
+                id="phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                name="phone"
+                placeholder="01XXXXXXXXX"
+                value={formData.phone}
+                onChange={handleChange}
+                aria-invalid={!!errors.phone}
+              />
+            </Field>
+          </Surface>
+        </section>
 
-                {/* Password */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="password">New Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="password"
-                      type={viewpass ? "text" : "password"}
-                      name="password"
-                      placeholder="Leave blank to keep unchanged"
-                      value={formData.password}
-                      onChange={handleChange}
-                      aria-invalid={!!errors.password}
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setViewpass((v) => !v)}
-                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
-                      aria-label={viewpass ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {viewpass ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-                </div>
+        {/* password */}
+        <section className="space-y-3">
+          <h2 className="px-1 text-sm font-semibold text-muted-foreground">Password</h2>
+          <Surface className="space-y-5 p-5 sm:p-7">
+            <Field
+              label="New password"
+              htmlFor="password"
+              error={errors.password}
+              hint="Leave blank to keep your current password. Use 6–16 characters with upper and lower case, a number and a symbol."
+            >
+              <PasswordInput
+                id="password"
+                name="password"
+                autoComplete="new-password"
+                placeholder="New password"
+                value={formData.password}
+                onChange={handleChange}
+                invalid={!!errors.password}
+                visible={viewpass}
+                onToggle={() => setViewpass((v) => !v)}
+              />
+            </Field>
 
-                {/* Confirm Password */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="conpass">Confirm New Password</Label>
-                  <div className="relative">
-                    <Input
-                      id="conpass"
-                      type={viewpass ? "text" : "password"}
-                      name="conpass"
-                      placeholder="Confirm New Password"
-                      value={formData.conpass}
-                      onChange={handleChange}
-                      aria-invalid={!!errors.conpass}
-                      className="pr-10"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setViewpass((v) => !v)}
-                      className="absolute inset-y-0 right-3 flex items-center text-muted-foreground hover:text-foreground"
-                      aria-label={viewpass ? "Hide password" : "Show password"}
-                      tabIndex={-1}
-                    >
-                      {viewpass ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.conpass && <p className="text-sm text-destructive">{errors.conpass}</p>}
-                </div>
+            <Field label="Confirm new password" htmlFor="conpass" error={errors.conpass}>
+              <PasswordInput
+                id="conpass"
+                name="conpass"
+                autoComplete="new-password"
+                placeholder="Confirm new password"
+                value={formData.conpass}
+                onChange={handleChange}
+                invalid={!!errors.conpass}
+                visible={viewpass}
+                onToggle={() => setViewpass((v) => !v)}
+              />
+            </Field>
+          </Surface>
+        </section>
 
-                <Button type="submit" disabled={submitting} className="w-full">
-                  {submitting ? "Saving..." : "Save Changes"}
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
+        {/* save bar */}
+        <div className="sticky bottom-24 z-20 md:bottom-6">
+          <Surface className="flex items-center justify-between gap-4 bg-card/85 p-3 pl-5 shadow-lift backdrop-blur-2xl">
+            <p className="text-sm text-muted-foreground">
+              {dirty ? "You have unsaved changes." : "All changes saved."}
+            </p>
+            <Button type="submit" size="lg" disabled={submitting || !dirty}>
+              {submitting ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Saving…
+                </>
+              ) : (
+                "Save changes"
+              )}
+            </Button>
+          </Surface>
         </div>
-      </main>
-    </div>
+      </form>
+    </DashboardLayout>
   );
 };
 

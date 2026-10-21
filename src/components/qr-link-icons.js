@@ -1,0 +1,33 @@
+import {
+  Facebook,
+  Github,
+  Globe,
+  Instagram,
+  Link2,
+  Linkedin,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Music2,
+  Phone,
+  Send,
+  Twitter,
+  Youtube,
+} from "lucide-react";
+
+export const QR_LINK_ICONS = {
+  whatsapp: MessageCircle,
+  phone: Phone,
+  email: Mail,
+  address: MapPin,
+  website: Globe,
+  facebook: Facebook,
+  instagram: Instagram,
+  linkedin: Linkedin,
+  youtube: Youtube,
+  x: Twitter,
+  tiktok: Music2,
+  telegram: Send,
+  github: Github,
+  custom: Link2,
+};
