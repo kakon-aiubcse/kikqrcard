@@ -5,44 +5,41 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { FREE_TIER, PLANS } from "@/../lib/bkash/plans";
+
+const formatBdt = (amount) => `৳${Number(amount).toLocaleString("en-US")}`;
+const CYCLE_LABEL = { monthly: "/ month", yearly: "/ year" };
+const { personal, business } = PLANS;
 
 const TIERS = [
   {
     name: "Discover",
     price: "Free",
-    cadence: "1 card",
+    cadence: "forever",
     description: "Try a digital QR card with no cost, no time limit.",
     featured: false,
     features: [
-      { label: "1 virtual card", included: true },
-      { label: "3 Social links", included: true },
-      { label: "0 Products", included: false },
-      { label: "1 gallery photo", included: true },
+      { label: `${FREE_TIER.virtualCardLimit} virtual card`, included: true },
+      { label: "QR contact sharing", included: true },
       { label: "Basic QR config", included: true },
-      { label: "1 Premium card design", included: false },
-      { label: "1 Google Map link", included: true },
-      { label: "Whatsapp enabled", included: false },
-      { label: "Guided setup", included: false },
+      { label: "First physical card free", included: true },
+      { label: "Monthly physical card orders", included: false },
       { label: "Priority support", included: false },
     ],
     actions: [{ label: "Sign up", href: "/authentication/signup", variant: "default" }],
   },
   {
-    name: "Personal",
-    price: "$19",
-    cadence: "one-time / card",
-    description: "One card, fully configured, yours to keep forever.",
+    name: personal.name,
+    price: formatBdt(personal.amount),
+    cadence: CYCLE_LABEL[personal.billingCycle],
+    description: "For individuals building their network.",
     featured: true,
     features: [
-      { label: "1 virtual card", included: true },
-      { label: "5 Social links", included: true },
-      { label: "2 Products", included: true },
-      { label: "5 gallery photos", included: true },
+      { label: `Up to ${personal.virtualCardLimit} virtual cards`, included: true },
+      { label: "QR contact sharing", included: true },
       { label: "Custom QR config", included: true },
-      { label: "1 Premium card design", included: true },
-      { label: "3 Google Map links", included: true },
-      { label: "Whatsapp enabled", included: true },
-      { label: "Guided setup", included: true },
+      { label: "First physical card free", included: true },
+      { label: `${personal.cardOrderQuota} physical card orders / month`, included: true },
       { label: "Priority support", included: false },
     ],
     actions: [
@@ -51,21 +48,17 @@ const TIERS = [
     ],
   },
   {
-    name: "Business",
-    price: "$149",
-    cadence: "one-time / 10 cards",
-    description: "Bulk cards for teams, each with its own QR config.",
+    name: business.name,
+    price: formatBdt(business.amount),
+    cadence: CYCLE_LABEL[business.billingCycle],
+    description: "For teams issuing cards at scale.",
     featured: false,
     features: [
-      { label: "10 virtual cards", included: true },
-      { label: "5 Social links / card", included: true },
-      { label: "5 Products / card", included: true },
-      { label: "10 gallery photos / card", included: true },
+      { label: `Up to ${business.virtualCardLimit} virtual cards`, included: true },
+      { label: "QR contact sharing", included: true },
       { label: "Custom QR config / card", included: true },
-      { label: "10 Premium card designs", included: true },
-      { label: "5 Google Map links / card", included: true },
-      { label: "Whatsapp enabled", included: true },
-      { label: "Guided setup", included: true },
+      { label: "First physical card free", included: true },
+      { label: `10–${business.cardOrderQuota} physical card orders / month`, included: true },
       { label: "Priority support", included: true },
     ],
     actions: [
@@ -140,7 +133,7 @@ const Pricing = forwardRef((props, ref) => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-14 max-w-2xl text-center">
           <span className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-            Simple, one-time pricing
+            Simple pricing in BDT
           </span>
           <h2 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
             Explore Our QRcard Plans and Choose Yours

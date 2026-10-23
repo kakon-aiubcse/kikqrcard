@@ -1,20 +1,68 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
-import { LayoutDashboard, CreditCard, Receipt, UserCog, LogOut, Menu } from "lucide-react";
+import {
+  House,
+  WalletCards,
+  Star,
+  Heart,
+  Package,
+  CreditCard,
+  UserRound,
+  LogOut,
+  Plus,
+  Menu,
+} from "lucide-react";
 import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Seo } from "@/components/seo";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { getInitials, useDashboardUser } from "@/components/dashboard-ui";
+import { PLANS } from "@/../lib/bkash/plans";
 import { cn } from "@/lib/utils";
 
-const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/cards/mycards", label: "My Cards", icon: CreditCard },
-  { href: "/payment/orders", label: "Orders", icon: Receipt },
-  { href: "/payment/billings", label: "Payment", icon: Receipt },
-  { href: "/dashboard/editprofile", label: "Edit Profile", icon: UserCog },
+// `match` lists extra routes that belong to an item (e.g. editing a card keeps "My Cards" lit).
+const NAV_SECTIONS = [
+  {
+    label: "Overview",
+    items: [{ href: "/dashboard", label: "Home", icon: House }],
+  },
+  {
+    label: "Cards",
+    items: [
+      {
+        href: "/cards/mycards",
+        label: "My Cards",
+        icon: WalletCards,
+        match: ["/cards/createcard", "/cards/qrconfig"],
+      },
+      { href: "/cards/favourites", label: "Favourites", icon: Star },
+      { href: "/cards/loved", label: "Loved", icon: Heart },
+    ],
+  },
+  {
+    label: "Account",
+    items: [
+      { href: "/payment/orders", label: "Orders", icon: Package },
+      { href: "/payment/billings", label: "Plans & Billing", icon: CreditCard },
+      { href: "/dashboard/editprofile", label: "Profile", icon: UserRound },
+    ],
+  },
 ];
+
+// Bottom tab bar on phones: the five things people reach for most.
+const TAB_ITEMS = [
+  { href: "/dashboard", label: "Home", icon: House },
+  { href: "/cards/mycards", label: "Cards", icon: WalletCards, match: ["/cards/createcard", "/cards/qrconfig"] },
+  { href: "/cards/createcard", label: "Create", icon: Plus, primary: true },
+  { href: "/payment/orders", label: "Orders", icon: Package },
+  { href: "/dashboard/editprofile", label: "Profile", icon: UserRound },
+];
+
+const isActive = (pathname, { href, match = [] }) =>
+  pathname === href || match.includes(pathname);
 
 const checkUrlExists = async (url, timeout = 3000) => {
   try {
@@ -28,89 +76,205 @@ const checkUrlExists = async (url, timeout = 3000) => {
   }
 };
 
-function NavList({ path, onNavigate }) {
-  const router = useRouter();
+const handleLogout = async () => {
+  await signOut({ redirect: false });
+  const url1 = "https://kikqrcard.netlify.app/authentication/login";
+  const url2 = "http://localhost:7000/authentication/login";
+  const exists = await checkUrlExists(url1);
+  window.location.href = exists ? url1 : url2;
+};
 
-  const handleLogout = async () => {
-    await signOut({ redirect: false });
-    const url1 = "https://kikqrcard.netlify.app/authentication/login";
-    const url2 = "http://localhost:7000/authentication/login";
-    const exists = await checkUrlExists(url1);
-    window.location.href = exists ? url1 : url2;
-  };
+function NavList({ pathname, onNavigate }) {
+  const user = useDashboardUser();
+  const plan = PLANS[user?.plan];
 
   return (
-    <div className="flex h-full flex-col justify-between">
-      <nav className="flex flex-col gap-1">
-        {NAV_ITEMS.map(({ href, label, icon: Icon }) => (
-          <button
-            key={href}
-            type="button"
-            onClick={() => {
-              router.push(href);
-              onNavigate?.();
-            }}
-            className={cn(
-              "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-              path === href && "bg-primary/10 text-primary",
-            )}
-          >
-            <Icon className="size-4" />
-            {label}
-          </button>
+    <div className="flex min-h-0 flex-1 flex-col gap-6">
+      <Link
+        href="/cards/createcard"
+        onClick={onNavigate}
+        className={cn(buttonVariants({ size: "lg" }), "w-full")}
+      >
+        <Plus className="size-4" />
+        New card
+      </Link>
+
+      <nav aria-label="Dashboard" className="flex flex-1 flex-col gap-6 overflow-y-auto">
+        {NAV_SECTIONS.map((section) => (
+          <div key={section.label} className="flex flex-col gap-0.5">
+            <p className="px-3 pb-1 text-xs font-semibold tracking-wide text-muted-foreground/80">
+              {section.label}
+            </p>
+            {section.items.map((item) => {
+              const active = isActive(pathname, item);
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 text-[0.9375rem] font-medium outline-none transition-colors duration-150 focus-visible:ring-3 focus-visible:ring-ring/40",
+                    active
+                      ? "bg-black/[0.07] text-foreground"
+                      : "text-foreground/70 hover:bg-black/[0.045] hover:text-foreground",
+                  )}
+                >
+                  <Icon
+                    className={cn("size-[1.15rem]", active ? "text-primary" : "text-muted-foreground")}
+                    strokeWidth={active ? 2.25 : 2}
+                  />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
         ))}
       </nav>
 
-      <Button
-        variant="destructive"
-        className="justify-start gap-3"
-        onClick={handleLogout}
-      >
-        <LogOut className="size-4" />
-        Logout
-      </Button>
+      <div className="space-y-1 border-t border-black/[0.07] pt-4">
+        <Link
+          href="/dashboard/editprofile"
+          onClick={onNavigate}
+          className="flex items-center gap-3 rounded-xl px-2 py-2 outline-none transition-colors hover:bg-black/[0.045] focus-visible:ring-3 focus-visible:ring-ring/40"
+        >
+          <Avatar size="lg">
+            <AvatarImage src={user?.profileImageBase64 || undefined} alt="" />
+            <AvatarFallback className="bg-ios-indigo/15 text-sm font-semibold text-primary">
+              {getInitials(user?.name)}
+            </AvatarFallback>
+          </Avatar>
+          {user ? (
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-foreground">{user.name || "Your account"}</p>
+              <p className="truncate text-xs text-muted-foreground">{plan ? `${plan.name} plan` : "Free plan"}</p>
+            </div>
+          ) : (
+            <div className="space-y-2" aria-hidden="true">
+              <div className="h-3 w-24 animate-pulse rounded-full bg-black/[0.07]" />
+              <div className="h-2.5 w-16 animate-pulse rounded-full bg-black/[0.07]" />
+            </div>
+          )}
+        </Link>
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-muted-foreground outline-none transition-colors hover:bg-black/[0.045] hover:text-destructive focus-visible:ring-3 focus-visible:ring-ring/40"
+        >
+          <LogOut className="size-4" />
+          Sign out
+        </button>
+      </div>
     </div>
   );
 }
 
+function TabBar({ pathname }) {
+  return (
+    <nav
+      aria-label="Primary"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-black/[0.07] bg-card/80 pb-[env(safe-area-inset-bottom)] backdrop-blur-2xl backdrop-saturate-150 md:hidden"
+    >
+      <ul className="mx-auto grid max-w-md grid-cols-5 items-end px-2 pt-1.5 pb-1.5">
+        {TAB_ITEMS.map((item) => {
+          const Icon = item.icon;
+          const active = !item.primary && isActive(pathname, item);
+          return (
+            <li key={item.href} className="flex justify-center">
+              <Link
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                aria-label={item.label}
+                className="group flex min-w-14 flex-col items-center gap-0.5 rounded-xl px-2 py-1 outline-none focus-visible:ring-3 focus-visible:ring-ring/40"
+              >
+                {item.primary ? (
+                  <span className="flex size-11 -translate-y-2 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lift transition-transform duration-200 ease-apple group-active:scale-90">
+                    <Icon className="size-5" strokeWidth={2.5} />
+                  </span>
+                ) : (
+                  <>
+                    <Icon
+                      className={cn("size-6 transition-colors", active ? "text-primary" : "text-muted-foreground")}
+                      strokeWidth={active ? 2.25 : 1.85}
+                    />
+                    <span
+                      className={cn(
+                        "text-[0.6875rem] font-medium",
+                        active ? "text-primary" : "text-muted-foreground",
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </>
+                )}
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
 export function DashboardShell() {
-  const path = usePathname();
-  const router = useRouter();
+  const pathname = usePathname();
+  const user = useDashboardUser();
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      {/* mobile top bar */}
-      <div className="sticky top-0 z-40 flex h-16 items-center justify-between border-b border-border bg-background px-4 md:hidden">
-        <button type="button" onClick={() => router.push("/")} className="flex items-center">
-          <Logo size="sm" />
-        </button>
+      {/* phone: translucent top bar + bottom tab bar */}
+      <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-black/[0.06] bg-background/80 px-4 backdrop-blur-xl backdrop-saturate-150 md:hidden">
+        <Link href="/" aria-label="KIK QRcard home" className="flex items-center">
+          <Logo size="xs" />
+        </Link>
         <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger render={<Button variant="ghost" size="icon" aria-label="Open menu" />}>
+          <SheetTrigger
+            render={<Button variant="ghost" size="icon" aria-label="Open menu" className="rounded-full" />}
+          >
             <Menu className="size-5" />
           </SheetTrigger>
-          <SheetContent side="left" className="w-72">
-            <div className="mt-10 flex h-[calc(100%-2.5rem)] flex-col px-4">
-              <NavList path={path} onNavigate={() => setOpen(false)} />
+          <SheetContent side="left" className="bg-background p-5">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
+            <div className="mb-2 mt-1">
+              <Logo size="sm" />
             </div>
+            <NavList pathname={pathname} onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
       </div>
+      <TabBar pathname={pathname} />
 
-      {/* desktop sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-background p-4 md:flex">
-        <button
-          type="button"
-          onClick={() => router.push("/")}
-          className="mb-8 flex items-center px-2"
-        >
+      {/* desktop: frosted sidebar */}
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col border-r border-sidebar-border bg-sidebar p-5 backdrop-blur-2xl backdrop-saturate-150 md:flex">
+        <Link href="/" aria-label="KIK QRcard home" className="mb-7 flex items-center px-2 pt-1">
           <Logo size="sm" />
-        </button>
-        <div className="flex-1">
-          <NavList path={path} />
-        </div>
+        </Link>
+        <NavList pathname={pathname} />
       </aside>
     </>
+  );
+}
+
+// Page frame shared by every dashboard screen: applies the dashboard theme, SEO, sidebar and content width.
+export function DashboardLayout({ title, path, width = "max-w-6xl", children }) {
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add("dashboard");
+    return () => root.classList.remove("dashboard");
+  }, []);
+
+  return (
+    <div className="dashboard min-h-screen bg-background text-foreground">
+      {title && <Seo title={title} path={path} noIndex />}
+      <DashboardShell />
+      <main className="md:pl-72">
+        <div className={cn("mx-auto w-full px-4 pb-32 pt-6 sm:px-6 md:pb-14 lg:px-10 lg:pt-10", width)}>
+          {children}
+        </div>
+      </main>
+    </div>
   );
 }
 

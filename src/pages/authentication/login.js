@@ -9,6 +9,7 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { GoogleButton } from "@/components/google-button";
 
 function Login() {
   const router = useRouter();
@@ -23,6 +24,16 @@ function Login() {
       router.push(session.user.isAdmin ? "/admin" : "/dashboard");
     }
   }, [session, router]);
+
+  useEffect(() => {
+    if (router.query.error) {
+      toast.error(
+        router.query.error === "AccessDenied"
+          ? "Google sign-in was denied or the email is not verified"
+          : "Google sign-in failed. Please try again."
+      );
+    }
+  }, [router.query.error]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -140,6 +151,8 @@ function Login() {
               Log in to your account to continue.
             </p>
           </div>
+
+          <GoogleButton label="Log in with Google" />
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-1.5">

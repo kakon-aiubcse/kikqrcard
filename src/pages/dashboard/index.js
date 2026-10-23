@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { Loader2 } from "lucide-react";
-import { Seo } from "@/components/seo";
-import { DashboardShell } from "@/components/dashboard-shell";
-import Profile from "./profile";
+import { Lock } from "lucide-react";
+import { DashboardLayout } from "@/components/dashboard-shell";
+import { DashboardHome } from "@/components/dashboard-home";
+import { FullscreenStatus } from "@/components/dashboard-ui";
 
 const Index = () => {
   const { status } = useSession();
@@ -21,35 +21,24 @@ const Index = () => {
   }, [status, router]);
 
   if (status === "loading") {
-    return (
-      <div className="flex h-screen flex-col items-center justify-center gap-3">
-        <Loader2 className="size-6 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground">Checking session...</p>
-      </div>
-    );
+    return <FullscreenStatus title="Checking session…" />;
   }
 
   if (status === "unauthenticated") {
     return (
-      <div className="flex h-screen flex-col items-center justify-center gap-2 text-center">
-        <p className="text-lg font-semibold text-foreground">
-          You are not logged in.
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Redirecting to the login page...
-        </p>
-      </div>
+      <FullscreenStatus
+        icon={Lock}
+        spin={false}
+        title="You are not logged in"
+        message="Redirecting to the login page…"
+      />
     );
   }
 
   return (
-    <div className="md:pl-64">
-      <Seo title="Dashboard" path="/dashboard" noIndex />
-      <DashboardShell />
-      <main className="p-4 sm:p-6 lg:p-8">
-        <Profile />
-      </main>
-    </div>
+    <DashboardLayout title="Dashboard" path="/dashboard">
+      <DashboardHome />
+    </DashboardLayout>
   );
 };
 

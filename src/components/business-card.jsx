@@ -2,6 +2,7 @@ import QRCode from "react-qr-code";
 import { Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
+import { getPublicCardUrl, usePublicOrigin } from "@/lib/publicUrl";
 
 export function buildVCard({ name, profession, phone, quote, email, website, address }) {
   return [
@@ -86,8 +87,14 @@ export function BusinessCard({
   bgGrad = "",
   bgStyle = "",
   pattern = "none",
+  cardId,
 }) {
-  const vCard = buildVCard({ name, profession, phone, quote, email, website, address });
+  const origin = usePublicOrigin();
+  // Saved cards point at their public page so links can change without reprinting.
+  // Unsaved previews and showcase cards fall back to a plain contact vCard.
+  const qrValue =
+    getPublicCardUrl(origin, cardId) ||
+    buildVCard({ name, profession, phone, quote, email, website, address });
   const faceClass = cn(
     "group relative flex aspect-[1.586/1] w-full flex-col justify-between overflow-hidden rounded-[6%] p-[5%] text-white shadow-[0_8px_24px_-8px_rgba(0,0,0,0.45)] ring-1 ring-white/10 transition-transform duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_32px_-12px_rgba(0,0,0,0.55)]",
     "bg-black",
@@ -112,7 +119,7 @@ export function BusinessCard({
   );
 
   return (
-    <div className="mx-auto flex w-full flex-row gap-4">
+    <div className="mx-auto flex w-full flex-col gap-4 sm:flex-row">
       {/* back: QR + quote */}
       <div className={faceClass}>
         {PatternOverlay}
@@ -124,7 +131,7 @@ export function BusinessCard({
         </div>
         <div className="flex flex-1 items-center justify-center gap-4">
           <div className="shrink-0 rounded-md bg-white p-2 shadow-sm">
-            <QRCode value={vCard} size={64} className="size-16" />
+            <QRCode value={qrValue} size={64} className="size-16" />
           </div>
           <p className="line-clamp-3 flex-1 text-center text-sm italic leading-snug text-white/80">
             {quote}
@@ -150,9 +157,9 @@ export function BusinessCard({
           <p className="text-xl font-bold italic tracking-wide text-white">{name}</p>
           <p className="mt-2 text-[10px] font-normal text-white/60">{profession}</p>
         </div>
-        <div className="mt-12 flex items-center justify-center gap-x-4 text-gray-300/80">
+        <div className="mt-12 flex items-center justify-center gap-x-2 text-gray-300/80">
           <Phone className="size-3 shrink-0" />
-          <span className="font-mono text-sm font-normal tracking-[0.6em]">{phone}</span>
+          <span className="whitespace-nowrap font-mono text-xs font-normal tracking-[0.3em]">{phone}</span>
         </div>
       </div>
     </div>

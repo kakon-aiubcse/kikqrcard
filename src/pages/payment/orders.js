@@ -1,41 +1,40 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
-import { History, Loader2, CheckCircle2, XCircle } from "lucide-react";
+import { History, Loader2, Package, Truck, MapPin, Receipt as ReceiptIcon } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
-import DashboardShell from "@/components/dashboard-shell";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DashboardLayout } from "@/components/dashboard-shell";
+import {
+  Banner,
+  EmptyState,
+  Field,
+  FullscreenStatus,
+  HistoryList,
+  HistoryRow,
+  IconTile,
+  ListSkeleton,
+  PageHeader,
+  Segmented,
+  SectionHeading,
+  Surface,
+} from "@/components/dashboard-ui";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
 
 const CARD_PRICE = 400;
 const VAT_RATE = 0.03;
 const DELIVERY_INSIDE = 50;
 const DELIVERY_OUTSIDE = 100;
 
-const STATUS_VARIANT = {
-  completed: "default",
-  initiated: "outline",
-  failed: "destructive",
-  cancelled: "destructive",
-};
+const formatDate = (value) =>
+  value
+    ? new Date(value).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" })
+    : "—";
 
 const Order = () => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const { status: paymentStatus, trxID } = router.query;
 
   const [form, setForm] = useState({ name: "", phone: "", address: "", city: "" });
   const [insideDhaka, setInsideDhaka] = useState(true);
@@ -59,7 +58,7 @@ const Order = () => {
       const list = data.orders || [];
       setOrders(list);
       setIsFirstOrder(
-        !list.some((o) => o.status === "initiated" || o.status === "completed"),
+        !list.some((o) => ["placed", "initiated", "completed"].includes(o.status)),
       );
     } catch (err) {
       console.error("Error fetching order history:", err.message);
@@ -74,26 +73,14 @@ const Order = () => {
     fetchHistory(email);
   }, [session, fetchHistory]);
 
-  useEffect(() => {
-    if (!paymentStatus) return;
-    if (paymentStatus === "success") {
-      toast.success(trxID ? `Order paid. Transaction ID: ${trxID}` : "Order confirmed.");
-    } else if (paymentStatus === "cancelled") {
-      toast.info("Order payment was cancelled.");
-    } else if (paymentStatus === "failed" || paymentStatus === "error") {
-      toast.error("Order payment failed. Please try again.");
-    }
-    const email = session?.user?.email;
-    if (email) fetchHistory(email);
-  }, [paymentStatus, trxID]);
-
   const vat = Math.round(CARD_PRICE * VAT_RATE * 100) / 100;
   const deliveryCharge = insideDhaka ? DELIVERY_INSIDE : DELIVERY_OUTSIDE;
   const total = isFirstOrder ? 0 : CARD_PRICE + deliveryCharge + vat;
+  const formComplete = !!(form.name && form.phone && form.address && form.city);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.phone || !form.address || !form.city) {
+    if (!formComplete) {
       toast.error("Please fill in all delivery details.");
       return;
     }
@@ -105,15 +92,10 @@ const Order = () => {
         insideDhaka,
       });
 
-      if (data.free) {
-        toast.success("Your first card is free! Order confirmed.");
-        setForm({ name: "", phone: "", address: "", city: "" });
-        const email = session?.user?.email;
-        if (email) fetchHistory(email);
-      } else if (data.bkashURL) {
-        window.location.href = data.bkashURL;
-        return;
-      }
+      toast.success(`Order placed! Invoice: ${data.invoiceNumber}`);
+      setForm({ name: "", phone: "", address: "", city: "" });
+      const email = session?.user?.email;
+      if (email) fetchHistory(email);
     } catch (err) {
       toast.error(err.response?.data?.error || "Failed to place order.");
     } finally {
@@ -122,231 +104,181 @@ const Order = () => {
   };
 
   if (status === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center text-muted-foreground">
-        Loading...
-      </div>
-    );
+    return <FullscreenStatus title="Loading…" />;
   }
 
+  const submitLabel = loading ? (
+    <>
+      <Loader2 className="size-4 animate-spin" /> Placing order…
+    </>
+  ) : (
+    "Place order"
+  );
+
+  const summaryRows = [
+    { label: "Card price", value: isFirstOrder ? "Free" : `৳${CARD_PRICE}` },
+    { label: "Delivery", value: isFirstOrder ? "Free" : `৳${deliveryCharge}` },
+    { label: "VAT (3%)", value: isFirstOrder ? "Free" : `৳${vat}` },
+  ];
+
   return (
-    <div className="md:pl-64">
-      <DashboardShell />
-      <main className="p-4 sm:p-6 lg:p-8">
-        <div className="mx-auto flex max-w-5xl flex-col gap-8">
-          <div>
-            <h1 className="mb-6 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Order a Physical Card
-            </h1>
+    <DashboardLayout title="Orders" path="/payment/orders" width="max-w-5xl">
+      <div className="space-y-8 sm:space-y-10">
+        <PageHeader
+          title="Order a physical card"
+          description="A printed QR card, delivered to your door."
+        />
 
-            {paymentStatus === "success" && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-700 dark:text-green-400">
-                <CheckCircle2 className="size-5 shrink-0" />
-                <span>
-                  Payment successful{trxID ? ` — Transaction ID: ${trxID}` : ""}. Your card is on its way.
-                </span>
-              </div>
-            )}
-            {(paymentStatus === "failed" || paymentStatus === "error") && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
-                <XCircle className="size-5 shrink-0" />
-                <span>Payment failed. Please try again.</span>
-              </div>
-            )}
-            {paymentStatus === "cancelled" && (
-              <div className="mb-6 flex items-center gap-3 rounded-lg border border-border bg-muted p-4 text-sm text-muted-foreground">
-                <XCircle className="size-5 shrink-0" />
-                <span>Order payment was cancelled.</span>
-              </div>
+        <div className="grid gap-6 lg:grid-cols-5">
+          {/* delivery form */}
+          <Surface className="p-5 sm:p-7 lg:col-span-3">
+            <div className="mb-6 flex items-center gap-3">
+              <IconTile icon={MapPin} tone="blue" />
+              <h2 className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+                Delivery details
+              </h2>
+            </div>
+
+            {isFirstOrder && !loadingHistory && (
+              <Banner tone="success" icon={Truck} className="mb-5">
+                Your first card is free — no payment needed for this order.
+              </Banner>
             )}
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Delivery details</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isFirstOrder && !loadingHistory && (
-                  <div className="mb-4 rounded-lg border border-green-500/30 bg-green-500/10 p-3 text-sm text-green-700 dark:text-green-400">
-                    Your first card is free! No payment needed for this order.
-                  </div>
-                )}
-                <form onSubmit={handleSubmit} className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-4">
-                    <div className="space-y-1.5">
-                      <Label htmlFor="name">Full name</Label>
-                      <Input
-                        id="name"
-                        value={form.name}
-                        onChange={(e) => setForm({ ...form, name: e.target.value })}
-                        placeholder="Recipient name"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        placeholder="01XXXXXXXXX"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="address">Address</Label>
-                      <Input
-                        id="address"
-                        value={form.address}
-                        onChange={(e) => setForm({ ...form, address: e.target.value })}
-                        placeholder="House, road, area"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label htmlFor="city">City</Label>
-                      <Input
-                        id="city"
-                        value={form.city}
-                        onChange={(e) => setForm({ ...form, city: e.target.value })}
-                        placeholder="City"
-                      />
-                    </div>
-                    <div className="space-y-1.5">
-                      <Label>Delivery location</Label>
-                      <div className="flex gap-2">
-                        <button
-                          type="button"
-                          onClick={() => setInsideDhaka(true)}
-                          className={cn(
-                            "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
-                            insideDhaka
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border text-muted-foreground",
-                          )}
-                        >
-                          Inside Dhaka (৳{DELIVERY_INSIDE})
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setInsideDhaka(false)}
-                          className={cn(
-                            "flex-1 rounded-lg border-2 px-3 py-2 text-sm font-medium transition-colors",
-                            !insideDhaka
-                              ? "border-primary bg-primary/10 text-foreground"
-                              : "border-border text-muted-foreground",
-                          )}
-                        >
-                          Outside Dhaka (৳{DELIVERY_OUTSIDE})
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div className="grid gap-5 sm:grid-cols-2">
+                <Field label="Full name" htmlFor="name">
+                  <Input
+                    id="name"
+                    autoComplete="name"
+                    value={form.name}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
+                    placeholder="Recipient name"
+                  />
+                </Field>
+                <Field label="Phone" htmlFor="phone">
+                  <Input
+                    id="phone"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={form.phone}
+                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                    placeholder="01XXXXXXXXX"
+                  />
+                </Field>
+              </div>
+              <Field label="Address" htmlFor="address">
+                <Input
+                  id="address"
+                  autoComplete="street-address"
+                  value={form.address}
+                  onChange={(e) => setForm({ ...form, address: e.target.value })}
+                  placeholder="House, road, area"
+                />
+              </Field>
+              <Field label="City" htmlFor="city">
+                <Input
+                  id="city"
+                  autoComplete="address-level2"
+                  value={form.city}
+                  onChange={(e) => setForm({ ...form, city: e.target.value })}
+                  placeholder="City"
+                />
+              </Field>
+              <Field label="Delivery location">
+                <Segmented
+                  label="Delivery location"
+                  value={insideDhaka}
+                  onChange={setInsideDhaka}
+                  options={[
+                    { value: true, label: `Inside Dhaka · ৳${DELIVERY_INSIDE}` },
+                    { value: false, label: `Outside Dhaka · ৳${DELIVERY_OUTSIDE}` },
+                  ]}
+                />
+              </Field>
 
-                  <div className="flex flex-col gap-4">
-                    <div className="rounded-lg border border-border p-4">
-                      <h3 className="mb-3 font-semibold text-foreground">Price breakdown</h3>
-                      <div className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Card price</span>
-                          <span>{isFirstOrder ? "Free" : `৳${CARD_PRICE}`}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">Delivery charge</span>
-                          <span>{isFirstOrder ? "Free" : `৳${deliveryCharge}`}</span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span className="text-muted-foreground">VAT (3%)</span>
-                          <span>{isFirstOrder ? "Free" : `৳${vat}`}</span>
-                        </div>
-                        <div className="mt-2 flex justify-between border-t border-border pt-2 font-semibold text-foreground">
-                          <span>Total</span>
-                          <span>৳{total}</span>
-                        </div>
-                      </div>
-                    </div>
+              <Button type="submit" size="lg" disabled={loading} className="w-full lg:hidden">
+                {submitLabel}
+              </Button>
+            </form>
+          </Surface>
 
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full bg-[#e2136e] text-white hover:bg-[#c10f5e]"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="size-4 animate-spin" /> Placing order...
-                        </>
-                      ) : isFirstOrder ? (
-                        "Confirm free order"
-                      ) : (
-                        "Confirm & Pay with bKash"
-                      )}
-                    </Button>
-                  </div>
-                </form>
-              </CardContent>
-            </Card>
-          </div>
+          {/* price summary */}
+          <div className="lg:col-span-2 lg:sticky lg:top-10 lg:self-start">
+            <Surface className="p-5 sm:p-7">
+              <div className="mb-5 flex items-center gap-3">
+                <IconTile icon={ReceiptIcon} tone="muted" />
+                <h2 className="text-lg font-semibold tracking-[-0.02em] text-foreground">
+                  Order summary
+                </h2>
+              </div>
 
-          <div>
-            <h2 className="mb-6 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Order History
-            </h2>
-            <Card>
-              <CardContent>
-                {loadingHistory ? (
-                  <div className="flex flex-col items-center justify-center gap-3 py-16 text-center text-muted-foreground">
-                    <Loader2 className="size-5 animate-spin" />
-                    Loading order history...
+              <dl className="space-y-3 text-sm">
+                {summaryRows.map((row) => (
+                  <div key={row.label} className="flex justify-between">
+                    <dt className="text-muted-foreground">{row.label}</dt>
+                    <dd className="font-medium tabular-nums text-foreground">{row.value}</dd>
                   </div>
-                ) : orders.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
-                    <div className="flex size-14 items-center justify-center rounded-full bg-muted">
-                      <History className="size-6 text-muted-foreground" />
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      All your order history will display here.
-                    </p>
-                  </div>
-                ) : (
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Invoice</TableHead>
-                        <TableHead>Address</TableHead>
-                        <TableHead>Total</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Date</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {orders.map((o) => (
-                        <TableRow key={o._id}>
-                          <TableCell className="font-mono text-xs">
-                            {o.invoiceNumber}
-                          </TableCell>
-                          <TableCell className="max-w-[200px] truncate">
-                            {o.address}, {o.city}
-                          </TableCell>
-                          <TableCell>
-                            {o.total} {o.currency}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={STATUS_VARIANT[o.status] || "outline"}>
-                              {o.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="text-muted-foreground">
-                            {o.createdAt
-                              ? new Date(o.createdAt).toLocaleDateString()
-                              : "-"}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                )}
-              </CardContent>
-            </Card>
+                ))}
+                <div className="flex items-baseline justify-between border-t border-black/[0.07] pt-4">
+                  <dt className="text-base font-semibold text-foreground">Total</dt>
+                  <dd className="text-2xl font-semibold tabular-nums tracking-[-0.025em] text-foreground">
+                    ৳{total}
+                  </dd>
+                </div>
+              </dl>
+
+              <Button
+                type="button"
+                size="lg"
+                disabled={loading || !formComplete}
+                onClick={handleSubmit}
+                className="mt-6 hidden w-full lg:flex"
+              >
+                {submitLabel}
+              </Button>
+              <p className="mt-3 hidden text-center text-xs text-muted-foreground lg:block">
+                {formComplete
+                  ? "No online payment. We will contact you to confirm your order."
+                  : "Fill in delivery details to continue."}
+              </p>
+            </Surface>
           </div>
         </div>
-      </main>
-    </div>
+
+        {/* history */}
+        <section className="space-y-4">
+          <SectionHeading title="Order history" />
+          {loadingHistory ? (
+            <Surface>
+              <ListSkeleton />
+            </Surface>
+          ) : orders.length === 0 ? (
+            <EmptyState
+              icon={History}
+              title="No orders yet"
+              message="All your order history will display here."
+            />
+          ) : (
+            <Surface className="overflow-hidden">
+              <HistoryList>
+                {orders.map((o) => (
+                  <HistoryRow
+                    key={o._id}
+                    icon={Package}
+                    title={`${o.address}, ${o.city}`}
+                    subtitle={`${o.invoiceNumber} · ${formatDate(o.createdAt)}`}
+                    amount={`${o.total} ${o.currency}`}
+                    status={o.status}
+                  />
+                ))}
+              </HistoryList>
+            </Surface>
+          )}
+        </section>
+      </div>
+    </DashboardLayout>
   );
 };
 

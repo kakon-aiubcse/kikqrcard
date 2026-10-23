@@ -1,12 +1,16 @@
 import clientPromise from "../../../../lib/mongodb/config";
+import { requireUser } from "../../../../lib/userAuth";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
+  const session = await requireUser(req, res);
+  if (!session) return;
+  const email = session.user.email;
+
   const {
-    email,
     cardName,
     name,
     profession,
